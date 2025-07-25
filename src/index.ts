@@ -6,6 +6,9 @@ export * from './components';
 // Export all hooks
 export * from './hooks';
 
+// Export all assets
+export * from './assets';
+
 // Export all utilities
 export * from './utils';
 

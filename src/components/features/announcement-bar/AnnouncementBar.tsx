@@ -12,6 +12,14 @@ interface AnnouncementBarProps {
 }
 
 export function AnnouncementBar({ apiUrl, platform, renderIcon }: AnnouncementBarProps) {
+  console.log('AnnouncementBar rendered with:', { apiUrl, platform });
+  
+  // Don't render if platform is invalid
+  if (!platform || platform === 'undefined') {
+    console.warn('AnnouncementBar: Invalid platform, not rendering');
+    return null;
+  }
+  
   const { announcements, isLoading } = useAnnouncements({ apiUrl, platform });
   const [isVisible, setIsVisible] = useState<boolean>(false);
 

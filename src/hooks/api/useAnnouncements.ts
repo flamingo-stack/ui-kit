@@ -35,7 +35,19 @@ export function useAnnouncements({ apiUrl, platform }: UseAnnouncementsProps) {
       setIsLoading(true);
       setError(null);
       
-      const response = await fetch(`${apiUrl}/api/announcements/active/${platform}`);
+      // Ensure platform is valid
+      if (!platform || platform === 'undefined') {
+        console.warn('useAnnouncements: Invalid platform provided:', platform);
+        setAnnouncements([]);
+        return;
+      }
+      
+      const url = apiUrl 
+        ? `${apiUrl}/api/announcements/active/${platform}`
+        : `/api/announcements/active/${platform}`;
+      
+      console.log('useAnnouncements fetching:', url);
+      const response = await fetch(url);
       
       if (response.ok) {
         const data = await response.json();
@@ -57,6 +69,8 @@ export function useAnnouncements({ apiUrl, platform }: UseAnnouncementsProps) {
   };
 
   useEffect(() => {
+    if (!platform) return;
+    
     fetchAnnouncements();
 
     // Refresh every 60 seconds
