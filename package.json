@@ -1,0 +1,68 @@
+{
+  "name": "@flamingo/design-system",
+  "version": "1.0.0",
+  "description": "Flamingo Design System - Shared UI components, design tokens, and features across all Flamingo products",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./components": "./src/components/index.ts",
+    "./components/ui": "./src/components/ui/index.ts",
+    "./components/features": "./src/components/features/index.ts",
+    "./hooks": "./src/hooks/index.ts",
+    "./hooks/api": "./src/hooks/api/index.ts",
+    "./hooks/ui": "./src/hooks/ui/index.ts",
+    "./hooks/platform": "./src/hooks/platform/index.ts",
+    "./styles": "./src/styles/index.css",
+    "./styles/*": "./src/styles/*",
+    "./utils": "./src/utils/index.ts",
+    "./types": "./src/types/index.ts",
+    "./tailwind-config": "./tailwind.config.js"
+  },
+  "files": [
+    "src"
+  ],
+  "scripts": {
+    "dev": "echo 'Design system is source-only during development'",
+    "lint": "echo 'Add linting when needed'",
+    "type-check": "tsc --noEmit"
+  },
+  "keywords": [
+    "design-system",
+    "ui-components",
+    "react",
+    "tailwindcss",
+    "typescript",
+    "flamingo",
+    "openmsp",
+    "openframe"
+  ],
+  "author": "Flamingo Team",
+  "license": "MIT",
+  "peerDependencies": {
+    "react": ">=18.0.0",
+    "react-dom": ">=18.0.0",
+    "next": ">=13.0.0",
+    "tailwindcss": ">=3.0.0"
+  },
+  "dependencies": {
+    "@radix-ui/react-slot": "^1.0.2",
+    "class-variance-authority": "^0.7.0",
+    "clsx": "^2.0.0",
+    "lucide-react": "^0.263.1",
+    "tailwind-merge": "^2.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.0.0",
+    "@types/react-dom": "^18.0.0",
+    "typescript": "^5.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-org/flamingo-design-system.git"
+  },
+  "bugs": {
+    "url": "https://github.com/your-org/flamingo-design-system/issues"
+  },
+  "homepage": "https://github.com/your-org/flamingo-design-system#readme"
+}

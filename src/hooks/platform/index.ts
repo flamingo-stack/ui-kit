@@ -1,0 +1,1 @@
+export { usePlatformConfig } from './use-platform-config';
