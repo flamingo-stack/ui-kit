@@ -37,17 +37,17 @@ const buttonVariants = cva(
       },
       size: {
         // Small size for secondary actions
-        sm: "h-10 px-6 py-2 text-base", 
+        sm: "h-10 px-6 py-2 text-sm", 
         // Default size for most buttons (ButtonFull default)
-        default: "h-12 px-8 py-3 text-lg",
-        // Large size for prominent CTAs (ButtonFull lg)
-        lg: "h-14 px-10 py-4 text-xl",
+        default: "h-12 px-8 py-3 text-base",
+        // Large size for prominent CTAs (ButtonFull lg) - adjusted for better text/icon fit
+        lg: "min-h-[48px] px-8 py-3 text-base",
         // Icon-only buttons
         icon: "h-10 w-10 p-0",
         // Icon-only large buttons (like hamburger menu)
         iconLg: "h-12 w-12 p-0",
         // Touch-friendly mobile sizing
-        touch: "min-h-[44px] px-6 py-3 text-lg",
+        touch: "min-h-[44px] px-6 py-3 text-base",
         // Search button specific sizing
         searchMobile: "min-h-[56px] px-4 py-3 text-lg",
         searchDesktop: "min-h-[52px] px-4 py-3 text-lg",
