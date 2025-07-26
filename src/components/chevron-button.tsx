@@ -1,7 +1,7 @@
 import React from 'react';
 import { ChevronDown } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { cn } from '@/lib/utils';
+import { Button } from "./ui/button";
+import { cn } from "../utils/cn";
 
 interface ChevronButtonProps {
   isExpanded?: boolean;

@@ -2,7 +2,7 @@
 
 import React, { forwardRef } from 'react';
 import { useInteractiveState, type InteractiveOptions } from '@/lib/hooks/use-interactive-state';
-import { cn } from '@/lib/utils';
+import { cn } from "../../utils/cn";
 
 interface InteractiveWrapperProps extends React.HTMLAttributes<HTMLDivElement> {
   /**

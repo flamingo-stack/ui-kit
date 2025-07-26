@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import { ChevronLeft, ChevronRight, MoreHorizontal } from "lucide-react"
-import { cn } from "@/lib/utils"
+import { cn } from "../../utils/cn"
 import { Button } from "@/components/ui/button"
 
 interface PaginationProps {

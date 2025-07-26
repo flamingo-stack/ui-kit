@@ -3,7 +3,7 @@ import { Slot } from "@radix-ui/react-slot"
 import { cva, type VariantProps } from "class-variance-authority"
 import Link from "next/link"
 
-import { cn } from "@/lib/utils"
+import { cn } from "../../utils/cn"
 
 const buttonVariants = cva(
   // Base styles following ButtonFull specifications with Figma-accurate typography

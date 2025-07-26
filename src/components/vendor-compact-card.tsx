@@ -4,7 +4,7 @@ import { ChevronButton } from '@/components/ui/chevron-button';
 import { XButton } from '@/components/ui/x-button';
 import { PricingDisplay, PRICING_STYLES } from '@/components/ui/pricing-display';
 import { EmptyVendorIcon } from '@/components/icons/empty-vendor-icon';
-import { cn } from '@/lib/utils';
+import { cn } from "../../utils/cn";
 import { VendorWithMedia } from '@/lib/utils/vendor-media';
 import { getStructuredPricingSummary, type ComparisonPricing } from '@/lib/data/compare-utils';
 import { OpenmspLogo } from '../icons/openmsp-logo';

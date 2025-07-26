@@ -1,5 +1,8 @@
 /* Main styles entry point for @flamingo/ui-kit */
-@import './globals.css';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 @import './ods-colors.css';
 @import './ods-design-tokens.css';
 @import './ods-dynamic-theming.css';

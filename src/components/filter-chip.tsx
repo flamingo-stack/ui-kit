@@ -1,4 +1,4 @@
-import { cn } from "@/lib/utils"
+import { cn } from "../../utils/cn"
 import { X } from "lucide-react"
 
 // Unified FilterChip component for consistent styling across the application

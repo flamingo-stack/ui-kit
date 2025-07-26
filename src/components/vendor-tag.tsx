@@ -1,6 +1,6 @@
 import { OpenSourceIcon, CoinsIcon } from "@/components/icons"
 import { OpenFrameLogo } from "@/components/icons/openframe-logo"
-import { cn } from "@/lib/utils"
+import { cn } from "../../utils/cn"
 import { Hand, Sparkles } from "lucide-react"
 
 export interface VendorTagProps {

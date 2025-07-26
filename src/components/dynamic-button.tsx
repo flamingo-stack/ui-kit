@@ -3,7 +3,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Button, type ButtonProps } from './button';
 import { useDynamicThemeContext } from '@/components/providers/dynamic-theme-provider';
-import { cn } from '@/lib/utils';
+import { cn } from "../../utils/cn";
 
 interface DynamicButtonProps extends ButtonProps {
   /**

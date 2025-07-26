@@ -5,7 +5,7 @@ import { useRouter, usePathname } from 'next/navigation';
 import { OpenFrameLogo } from '@/components/icons/openframe-logo';
 import { ResponsiveIconsBlock } from '@/components/ui/icons-block';
 import { JoinWaitlistButton } from '@/components/ui/join-waitlist-button';
-import { cn } from '@/lib/utils';
+import { cn } from "../../utils/cn";
 
 interface JoinWaitlistCTAProps {
   showBottomText?: boolean;

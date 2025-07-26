@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect, memo, useCallback } from 'react';
-import { cn } from '@/lib/utils';
+import { cn } from "../../utils/cn";
 import { MediaItem } from '@/lib/utils/media-carousel-utils';
 import { LiteYouTubeEmbed } from '@/lib/utils/lite-youtube-embed';
 

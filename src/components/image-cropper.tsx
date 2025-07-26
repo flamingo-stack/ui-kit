@@ -18,7 +18,7 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import Cropper from "react-easy-crop"
 import { Button } from "@/components/ui/button"
 import { Slider } from "@/components/ui/slider"
-import { cn } from "@/lib/utils"
+import { cn } from "../../utils/cn"
 import { Check, RotateCcw } from "lucide-react"
 
 /* ------------------------------------------------------------

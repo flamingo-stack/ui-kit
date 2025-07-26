@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect, useCallback } from 'react'
 import { ChevronButton } from '@/components/ui/chevron-button'
-import { cn } from '@/lib/utils'
+import { cn } from "../../utils/cn"
 
 export interface FaqItem {
   id: number | string

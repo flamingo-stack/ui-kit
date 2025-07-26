@@ -1,8 +1,8 @@
 "use client"
 
 import { X } from "lucide-react"
-import { useToast } from "@/hooks/use-toast"
-import { cn } from "@/lib/utils"
+import { useToast } from "../../hooks/use-toast"
+import { cn } from "../../utils/cn"
 import { useEffect, useState } from "react"
 
 export function Toaster() {

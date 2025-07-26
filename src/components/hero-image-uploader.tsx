@@ -3,7 +3,7 @@
 import { useRef, useState } from 'react';
 import { Loader2, Image as ImageIcon, Upload, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { useToast } from '@/hooks/use-toast';
+import { useToast } from "../../hooks/use-toast";
 
 interface HeroImageUploaderProps {
   /** Current image URL if one already exists */

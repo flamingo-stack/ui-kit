@@ -1,7 +1,7 @@
 "use client";
 
 import React from 'react';
-import { cn } from '@/lib/utils';
+import { cn } from "../../utils/cn";
 import { getProxiedImageUrl } from '@/lib/utils/image-proxy';
 
 interface SquareAvatarProps {

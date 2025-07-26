@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as AccordionPrimitive from '@radix-ui/react-accordion';
 import { ChevronButton } from '@/components/ui/chevron-button';
-import { cn } from '@/lib/utils';
+import { cn } from "../../utils/cn";
 
 // --- SmoothAccordion -----------------------------------------------------------------
 // Wrapper that re-exports AccordionPrimitive.Root for convenience
