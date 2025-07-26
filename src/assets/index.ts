@@ -1,2 +1,3 @@
-// Assets utilities - actual files served from /public/assets/
+// Assets exports
+// Font files and other static assets
 export * from './platform-utils'

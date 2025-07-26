@@ -1,19 +1,7 @@
-// Main entry point for @flamingo/design-system
-
-// Export all components
-export * from './components';
-
-// Export all hooks
-export * from './hooks';
-
-// Export all assets
-export * from './assets';
-
-// Export all utilities
-export * from './utils';
-
-// Export all types
-export * from './types';
-
-// Note: Styles are imported via CSS files:
-// import '@flamingo/design-system/styles'
+// Main export file for @flamingo/ui-kit
+export * from './components/ui'
+export * from './components/features'
+export * from './hooks'
+export * from './utils'
+export * from './types'
+export * from './assets'

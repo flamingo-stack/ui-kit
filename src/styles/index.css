@@ -1,20 +1,8 @@
-/* Flamingo Design System - Core Styles */
-
-/* Import all ODS design tokens and styles */
+/* Main styles entry point for @flamingo/ui-kit */
+@import './globals.css';
 @import './ods-colors.css';
 @import './ods-design-tokens.css';
+@import './ods-dynamic-theming.css';
+@import './ods-fluid-typography.css';
 @import './ods-interaction-states.css';
 @import './ods-responsive-tokens.css';
-@import './ods-fluid-typography.css';
-@import './ods-dynamic-theming.css';
-
-/* Base layer for consistent styling */
-@layer base {
-  * {
-    @apply border-border;
-  }
-  
-  body {
-    @apply bg-background text-foreground;
-  }
-}
