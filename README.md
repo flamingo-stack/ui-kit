@@ -1,4 +1,4 @@
-# @flamingo/design-system
+# @flamingo/ui-kit
 
 The shared design system for all Flamingo products including OpenMSP, OpenFrame, Admin Hub, Flamingo Website, and more.
 
@@ -24,23 +24,23 @@ git clone https://github.com/your-org/flamingo-design-system.git
 
 ```tsx
 // Import the complete design system styles
-import '@flamingo/design-system/styles'
+import '@flamingo/ui-kit/styles'
 ```
 
 ### Import Components
 
 ```tsx
 // UI Components
-import { Button, Card } from '@flamingo/design-system/components/ui'
+import { Button, Card } from '@flamingo/ui-kit/components/ui'
 
 // Feature Components  
-import { AnnouncementBar, SSOModal } from '@flamingo/design-system/components/features'
+import { AnnouncementBar, SSOModal } from '@flamingo/ui-kit/components/features'
 
 // Hooks
-import { useAnnouncements, useDebounce } from '@flamingo/design-system/hooks'
+import { useAnnouncements, useDebounce } from '@flamingo/ui-kit/hooks'
 
 // Utils
-import { cn, getPlatformAccentColor } from '@flamingo/design-system/utils'
+import { cn, getPlatformAccentColor } from '@flamingo/ui-kit/utils'
 ```
 
 ### Platform Configuration
@@ -60,7 +60,7 @@ The design system automatically detects the platform from `NEXT_PUBLIC_APP_TYPE`
 Extend your Tailwind config with the design system:
 
 ```js
-import designSystemConfig from '@flamingo/design-system/tailwind-config'
+import designSystemConfig from '@flamingo/ui-kit/tailwind-config'
 
 export default {
   ...designSystemConfig,

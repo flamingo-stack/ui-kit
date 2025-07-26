@@ -14,17 +14,17 @@ import '@/styles/globals.css'
 ### After (Design System)
 ```tsx
 // New imports
-import { Button } from '@flamingo/design-system/components/ui'
-import { useDebounce } from '@flamingo/design-system/hooks/ui'
-import { getPlatformAccentColor } from '@flamingo/design-system/utils'
-import '@flamingo/design-system/styles'
+import { Button } from '@flamingo/ui-kit/components/ui'
+import { useDebounce } from '@flamingo/ui-kit/hooks/ui'
+import { getPlatformAccentColor } from '@flamingo/ui-kit/utils'
+import '@flamingo/ui-kit/styles'
 ```
 
 ## Component Examples
 
 ### Announcement Bar
 ```tsx
-import { AnnouncementBar } from '@flamingo/design-system/components/features'
+import { AnnouncementBar } from '@flamingo/ui-kit/components/features'
 
 export default function Layout({ children }) {
   return (
@@ -47,7 +47,7 @@ export default function Layout({ children }) {
 
 ### Button Usage
 ```tsx
-import { Button } from '@flamingo/design-system/components/ui'
+import { Button } from '@flamingo/ui-kit/components/ui'
 
 export function MyComponent() {
   return (
@@ -68,7 +68,7 @@ export function MyComponent() {
 
 ### Auth Modal
 ```tsx
-import { SSOModal } from '@flamingo/design-system/components/features'
+import { SSOModal } from '@flamingo/ui-kit/components/features'
 import { ProviderButton } from '@/components/auth/provider-button' // Your custom provider button
 
 export function AuthExample() {
@@ -91,8 +91,8 @@ export function AuthExample() {
 
 ### Platform-Aware Hooks
 ```tsx
-import { usePlatformConfig } from '@flamingo/design-system/hooks/platform'
-import { useAnnouncements } from '@flamingo/design-system/hooks/api'
+import { usePlatformConfig } from '@flamingo/ui-kit/hooks/platform'
+import { useAnnouncements } from '@flamingo/ui-kit/hooks/api'
 
 export function PlatformAwareComponent() {
   const config = usePlatformConfig()
@@ -120,8 +120,8 @@ import {
   Button, 
   Card, 
   AnnouncementBar 
-} from '@flamingo/design-system'
-import '@flamingo/design-system/styles'
+} from '@flamingo/ui-kit'
+import '@flamingo/ui-kit/styles'
 
 export default function OpenFrameDashboard() {
   return (

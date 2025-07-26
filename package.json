@@ -1,7 +1,7 @@
 {
-  "name": "@flamingo/design-system",
+  "name": "@flamingo/ui-kit",
   "version": "1.0.0",
-  "description": "Flamingo Design System - Shared UI components, design tokens, and features across all Flamingo products",
+  "description": "Flamingo UI Kit - Shared UI components, hooks, and utilities across all Flamingo platforms",
   "main": "./src/index.ts",
   "types": "./src/index.ts",
   "exports": {
@@ -28,14 +28,14 @@
     "type-check": "tsc --noEmit"
   },
   "keywords": [
-    "design-system",
+    "ui-kit",
     "ui-components",
+    "shared-components",
     "react",
     "tailwindcss",
     "typescript",
     "flamingo",
-    "openmsp",
-    "openframe"
+    "multi-platform"
   ],
   "author": "Flamingo Team",
   "license": "MIT",
@@ -59,10 +59,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/your-org/flamingo-design-system.git"
+    "url": "https://github.com/Flamingo-CX/ui-kit.git"
   },
   "bugs": {
-    "url": "https://github.com/your-org/flamingo-design-system/issues"
+    "url": "https://github.com/Flamingo-CX/ui-kit/issues"
   },
-  "homepage": "https://github.com/your-org/flamingo-design-system#readme"
+  "homepage": "https://github.com/Flamingo-CX/ui-kit#readme"
 }
