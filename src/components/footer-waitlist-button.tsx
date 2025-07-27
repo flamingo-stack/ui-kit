@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter, usePathname } from 'next/navigation';
-import { JoinWaitlistButton } from './ui/join-waitlist-button';
+import { JoinWaitlistButton } from './join-waitlist-button';
 import React, { useCallback } from 'react';
 
 export interface FooterWaitlistButtonProps {

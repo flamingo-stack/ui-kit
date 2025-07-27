@@ -1,3 +1,5 @@
+"use client"
+
 import React, { useRef, useState, useEffect, useCallback } from 'react'
 import { ChevronButton } from './ui/chevron-button'
 import { cn } from "../utils/cn"

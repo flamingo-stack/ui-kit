@@ -140,21 +140,21 @@ export function AnnouncementBar() {
       className="relative w-full"
       style={{ backgroundColor: announcement.background_color }}
     >
-      <div className="flex items-center relative w-full">
-        <div className="flex flex-row gap-4 md:gap-6 items-center pl-4 md:pl-6 pr-8 md:pr-10 py-1.5 md:py-2 w-full">
+      <div className="flex items-center w-full max-w-full">
+        <div className="flex flex-row gap-2 md:gap-4 items-center pl-4 md:pl-6 py-1.5 md:py-2 flex-1 min-w-0">
           {renderIcon()}
 
-          <div className="flex-1 min-w-0">
-            <p className="font-body font-bold text-[14px] md:text-[18px] leading-tight tracking-tight mb-0 text-[#1A1A1A]">
+          <div className="flex-1 min-w-0 max-w-full">
+            <p className="font-body font-bold text-[14px] md:text-[18px] leading-tight tracking-tight mb-0 text-[#1A1A1A] truncate">
               {announcement.title}
             </p>
-            <p className="font-body text-[12px] md:text-[18px] leading-tight hidden sm:block text-[#1A1A1A]">
+            <p className="font-body text-[12px] md:text-[18px] leading-tight hidden sm:block text-[#1A1A1A] truncate">
               {announcement.description}
             </p>
           </div>
 
           {announcement.cta_enabled && announcement.cta_text && announcement.cta_url && (
-            <div className="flex-shrink-0 hidden sm:block">
+            <div className="flex-shrink-0 ml-1 md:ml-2">
               <Button
                 onClick={handleCtaClick}
                 variant="outline"
@@ -168,7 +168,7 @@ export function AnnouncementBar() {
                       )
                     : undefined
                 }
-                className="transition-opacity hover:opacity-90"
+                className="transition-opacity hover:opacity-90 text-xs md:text-sm whitespace-nowrap"
                 style={{
                   backgroundColor: announcement.cta_button_background_color || undefined,
                   color: announcement.cta_button_text_color || undefined,
@@ -183,7 +183,7 @@ export function AnnouncementBar() {
 
         <button
           onClick={handleDismiss}
-          className="absolute right-2 top-1/2 -translate-y-1/2 w-6 h-6 flex items-center justify-center hover:bg-[#1A1A1A]/10 rounded-sm focus:outline-none focus:ring-2 focus:ring-[#1A1A1A]"
+          className="flex-shrink-0 w-8 h-8 md:w-10 md:h-10 flex items-center justify-center hover:bg-[#1A1A1A]/10 focus:outline-none focus:ring-2 focus:ring-[#1A1A1A] mr-2 md:mr-4"
           aria-label="Dismiss announcement"
           type="button"
         >

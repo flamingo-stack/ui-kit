@@ -4,7 +4,7 @@ import React, { useCallback } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { OpenFrameLogo } from './openframe-logo';
 import { ResponsiveIconsBlock } from './ui/responsive-icons-block-stub';
-import { JoinWaitlistButton } from './join-waitlist-button-stub';
+import { JoinWaitlistButton } from './join-waitlist-button';
 import { cn } from "../utils/cn";
 
 interface JoinWaitlistCTAProps {
@@ -103,4 +103,4 @@ const JoinWaitlistCTA: React.FC<JoinWaitlistCTAProps> = ({ showBottomText = true
   );
 };
 
-export default JoinWaitlistCTA; 
+export default JoinWaitlistCTA;
