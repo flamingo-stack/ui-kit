@@ -11,6 +11,7 @@ export * from './radio-group'
 // Layout components
 export * from './dialog'
 export * from './alert-dialog'
+export * from './modal'
 export * from './sheet'
 export * from './tabs'
 export * from './separator'

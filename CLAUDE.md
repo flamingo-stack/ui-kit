@@ -110,35 +110,57 @@ Components automatically detect platform context and adapt:
 
 ## Known Issues & Workarounds
 
-### Dialog Components (CRITICAL)
-**Issue**: Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription components fail to render
-- **Symptoms**: Components import successfully but don't display in DOM
-- **Affected Components**: All modal/dialog implementations
-- **Current Workaround**: Native modal implementations using fixed positioning
-- **Status**: Under investigation - likely portal/provider or CSS visibility issues
+### Dialog Components (RESOLVED)
+**Issue**: Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription components failed to render
+- **Root Cause**: Version conflicts in @radix-ui/react-dialog dependencies
+  - Main project used v1.1.4, UI kit used v1.1.14, old cmdk used v1.0.0
+  - Multiple Dialog implementations conflicted, causing newer versions to fail silently
+- **Solution**: 
+  - Updated all @radix-ui/react-dialog dependencies to v1.1.14
+  - Added package.json overrides to force version consistency
+  - Updated cmdk from v0.2.0 to v1.0.4 to eliminate old Dialog dependency
+- **Status**: ⚠️ PARTIALLY FIXED - Version conflicts resolved but portal rendering issues remain
+- **Migration**: Reverted to native modal implementations for reliability
 
-**Example Workaround Pattern**:
+**Current Working Pattern (UI Kit Modal)**:
 ```typescript
-// Instead of UI kit Dialog
-// import { Dialog, DialogContent } from "@flamingo/ui-kit/components/ui"
+// UI Kit Modal component that works reliably
+import { Modal, ModalHeader, ModalTitle, ModalFooter } from "@flamingo/ui-kit/components/ui"
 
-// Use native modal implementation
-if (!isOpen) return null;
-
-return (
-  <div className="fixed inset-0 z-50 flex items-center justify-center">
-    <div className="absolute inset-0 bg-black/50" onClick={handleClose} />
-    <div className="relative z-10 w-full max-w-lg mx-4 bg-ods-card border border-ods-border rounded-lg shadow-xl">
-      {/* Modal content */}
-    </div>
-  </div>
-);
+<Modal isOpen={!!deleteItem} onClose={() => setDeleteItem(null)}>
+  <ModalHeader>
+    <ModalTitle>Confirm action?</ModalTitle>
+    <p className="text-ods-text-secondary text-sm mt-1">
+      Description of the action to be taken.
+    </p>
+  </ModalHeader>
+  <ModalFooter>
+    <Button variant="outline" onClick={() => setDeleteItem(null)}>Cancel</Button>
+    <Button onClick={handleAction}>Confirm</Button>
+  </ModalFooter>
+</Modal>
 ```
+
+**Current Implementation Status**:
+- ✅ AnnouncementManagementDashboard - UI Kit Modal (reliable)
+- ✅ UsersDashboard - UI Kit Modal (reliable)
+- ✅ ContactManagementDashboard - UI Kit Modal (reliable)  
+- ✅ BlogPostsDashboard - UI Kit Modal (reliable)
 
 ### Working Components
 - ✅ Button, Toaster, useToast hook
+- ✅ Modal, ModalHeader, ModalTitle, ModalFooter (custom implementation)
 - ✅ All styling and theme utilities
 - ✅ Platform-aware color system
+
+### Modal Component Features
+- ✅ **Reliable rendering** - Always shows when isOpen is true
+- ✅ **Escape key support** - Closes on Escape key press
+- ✅ **Click outside to close** - Click overlay to close
+- ✅ **Scroll blocking** - Background scroll is blocked when modal is open
+- ✅ **Proper z-index** - Always appears above other content (z-[1300])
+- ✅ **ODS theming** - Uses design system colors and spacing
+- ✅ **Accessibility** - Proper ARIA attributes and focus management
 
 ### Future Investigation Needed
 1. **Dialog Portal Setup**: Check if Dialog components need portal container
