@@ -1,1 +1,2 @@
-export { usePlatformConfig } from './use-platform-config';
+// Platform Hooks exports
+export * from './use-platform-config'

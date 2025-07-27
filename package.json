@@ -1,68 +1,91 @@
 {
   "name": "@flamingo/ui-kit",
   "version": "1.0.0",
-  "description": "Flamingo UI Kit - Shared UI components, hooks, and utilities across all Flamingo platforms",
+  "description": "Shared design system and components for all Flamingo platforms",
+  "type": "module",
   "main": "./src/index.ts",
   "types": "./src/index.ts",
   "exports": {
-    ".": "./src/index.ts",
-    "./components": "./src/components/index.ts",
-    "./components/ui": "./src/components/ui/index.ts",
-    "./components/features": "./src/components/features/index.ts",
-    "./hooks": "./src/hooks/index.ts",
-    "./hooks/api": "./src/hooks/api/index.ts",
-    "./hooks/ui": "./src/hooks/ui/index.ts",
-    "./hooks/platform": "./src/hooks/platform/index.ts",
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    },
+    "./components/ui": {
+      "types": "./src/components/ui/index.ts",
+      "default": "./src/components/ui/index.ts"
+    },
+    "./components/features": {
+      "types": "./src/components/features/index.ts",
+      "default": "./src/components/features/index.ts"
+    },
+    "./hooks": {
+      "types": "./src/hooks/index.ts",
+      "default": "./src/hooks/index.ts"
+    },
+    "./utils": {
+      "types": "./src/utils/index.ts",
+      "default": "./src/utils/index.ts"
+    },
     "./styles": "./src/styles/index.css",
-    "./styles/*": "./src/styles/*",
-    "./utils": "./src/utils/index.ts",
-    "./types": "./src/types/index.ts",
-    "./tailwind-config": "./tailwind.config.js"
+    "./types": {
+      "types": "./src/types/index.ts",
+      "default": "./src/types/index.ts"
+    },
+    "./assets": {
+      "types": "./src/assets/index.ts",
+      "default": "./src/assets/index.ts"
+    }
   },
-  "files": [
-    "src"
-  ],
   "scripts": {
-    "dev": "echo 'Design system is source-only during development'",
-    "lint": "echo 'Add linting when needed'",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "dev": "echo 'This is a source-only package. No build process required.'",
+    "lint": "echo 'Linting not configured yet'"
   },
-  "keywords": [
-    "ui-kit",
-    "ui-components",
-    "shared-components",
-    "react",
-    "tailwindcss",
-    "typescript",
-    "flamingo",
-    "multi-platform"
-  ],
-  "author": "Flamingo Team",
-  "license": "MIT",
   "peerDependencies": {
-    "react": ">=18.0.0",
-    "react-dom": ">=18.0.0",
-    "next": ">=13.0.0",
-    "tailwindcss": ">=3.0.0"
+    "next": "^15.0.0",
+    "react": "^18.0.0 || ^19.0.0",
+    "react-dom": "^18.0.0 || ^19.0.0"
   },
   "dependencies": {
-    "@radix-ui/react-slot": "^1.0.2",
+    "@radix-ui/react-accordion": "^1.1.2",
+    "@radix-ui/react-alert-dialog": "^1.1.14",
+    "@radix-ui/react-aspect-ratio": "^1.0.3",
+    "@radix-ui/react-avatar": "^1.0.4",
+    "@radix-ui/react-checkbox": "^1.0.4",
+    "@radix-ui/react-collapsible": "^1.0.3",
+    "@radix-ui/react-context-menu": "^2.1.5",
+    "@radix-ui/react-dialog": "^1.1.14",
+    "@radix-ui/react-dropdown-menu": "^2.0.6",
+    "@radix-ui/react-hover-card": "^1.0.7",
+    "@radix-ui/react-label": "^2.0.2",
+    "@radix-ui/react-menubar": "^1.0.4",
+    "@radix-ui/react-navigation-menu": "^1.1.4",
+    "@radix-ui/react-popover": "^1.0.7",
+    "@radix-ui/react-progress": "^1.0.3",
+    "@radix-ui/react-radio-group": "^1.1.3",
+    "@radix-ui/react-scroll-area": "^1.0.5",
+    "@radix-ui/react-select": "^2.1.4",
+    "@radix-ui/react-separator": "^1.0.3",
+    "@radix-ui/react-slider": "^1.1.2",
+    "@radix-ui/react-slot": "^1.1.0",
+    "@radix-ui/react-switch": "^1.0.3",
+    "@radix-ui/react-tabs": "^1.0.4",
+    "@radix-ui/react-toast": "^1.1.5",
+    "@radix-ui/react-toggle": "^1.0.3",
+    "@radix-ui/react-toggle-group": "^1.0.4",
+    "@radix-ui/react-tooltip": "^1.0.7",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
-    "lucide-react": "^0.263.1",
-    "tailwind-merge": "^2.0.0"
+    "cmdk": "^1.0.4",
+    "lucide-react": "^0.454.0",
+    "next-themes": "^0.2.1",
+    "sonner": "^1.2.4",
+    "tailwind-merge": "^2.0.0",
+    "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {
-    "@types/react": "^18.0.0",
-    "@types/react-dom": "^18.0.0",
+    "@types/react": "^19.1.8",
+    "@types/react-dom": "^19.1.6",
     "typescript": "^5.0.0"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/Flamingo-CX/ui-kit.git"
-  },
-  "bugs": {
-    "url": "https://github.com/Flamingo-CX/ui-kit/issues"
-  },
-  "homepage": "https://github.com/Flamingo-CX/ui-kit#readme"
+  }
 }

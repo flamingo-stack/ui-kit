@@ -1,10 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import type { PlatformConfig } from '@/types/platform';
-
-export interface PlatformOption {
-  value: string;
-  label: string;
-}
+import type { PlatformConfig, PlatformOption } from '@/types/platform';
 
 export interface UsePlatformConfigResult {
   platforms: PlatformConfig[];

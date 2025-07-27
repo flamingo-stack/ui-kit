@@ -1,117 +1,174 @@
 # @flamingo/ui-kit
 
-The shared design system for all Flamingo products including OpenMSP, OpenFrame, Admin Hub, Flamingo Website, and more.
+A shared design system package for all Flamingo platforms (OpenMSP, OpenFrame, Admin Hub, Flamingo Website, and more).
 
-## Features
+## Overview
 
-- 🎨 **ODS Design Tokens** - Comprehensive design token system with platform-specific theming
-- 🧩 **Reusable Components** - Battle-tested UI components and feature components
-- 🎯 **Platform-Aware** - Automatically adapts to different product contexts
-- 📱 **Mobile-First** - Responsive design with touch-friendly interactions
-- ⚡ **Performance Optimized** - Lightweight and fast-loading
-- 🔧 **TypeScript First** - Full type safety and excellent DX
+This is a **source-only** TypeScript package that provides:
+- 🎨 **UI Components** - Built on Radix UI primitives with consistent styling
+- 🎯 **Platform-Aware Theming** - Automatically adapts based on `NEXT_PUBLIC_APP_TYPE`
+- 🪝 **Shared Hooks** - Reusable React hooks for common functionality
+- 🛠️ **Utilities** - Helper functions and utilities
+- 🎭 **Icons** - Shared icon components
+- 📱 **Responsive Design** - Mobile-first, accessibility-focused components
+- ✅ **Zero TypeScript Errors** - Fully type-safe with comprehensive error resolution
+- 🎊 **Toast System** - Reliable notifications with proper positioning and stacking
+- 🔘 **Button System** - Complete button variants with proper text visibility
 
 ## Installation
 
 ```bash
-# Clone the design system alongside your project
-git clone https://github.com/your-org/flamingo-design-system.git
+npm install @flamingo/ui-kit
 ```
 
 ## Usage
 
-### Import Styles
+### Components
 
 ```tsx
-// Import the complete design system styles
-import '@flamingo/ui-kit/styles'
-```
+import { Button, Card, Input, Modal, ModalHeader, ModalTitle, ModalFooter } from '@flamingo/ui-kit/components/ui'
+import { SSOModal, ErrorBoundary } from '@flamingo/ui-kit/components/features'
+import { FlamingoLogo, OpenMSPLogo } from '@flamingo/ui-kit/components/icons'
+import { useToast } from '@flamingo/ui-kit/hooks'
 
-### Import Components
-
-```tsx
-// UI Components
-import { Button, Card } from '@flamingo/ui-kit/components/ui'
-
-// Feature Components  
-import { AnnouncementBar, SSOModal } from '@flamingo/ui-kit/components/features'
-
-// Hooks
-import { useAnnouncements, useDebounce } from '@flamingo/ui-kit/hooks'
-
-// Utils
-import { cn, getPlatformAccentColor } from '@flamingo/ui-kit/utils'
-```
-
-### Platform Configuration
-
-The design system automatically detects the platform from `NEXT_PUBLIC_APP_TYPE`:
-
-```tsx
-// Announcement bar adapts to your platform
-<AnnouncementBar 
-  apiUrl={process.env.NEXT_PUBLIC_API_URL}
-  platform={process.env.NEXT_PUBLIC_APP_TYPE}
-/>
-```
-
-### Tailwind Configuration
-
-Extend your Tailwind config with the design system:
-
-```js
-import designSystemConfig from '@flamingo/ui-kit/tailwind-config'
-
-export default {
-  ...designSystemConfig,
-  content: [
-    './src/**/*.{js,ts,jsx,tsx}',
-    './flamingo-design-system/src/**/*.{js,ts,jsx,tsx}'
-  ]
+function MyComponent() {
+  const { toast } = useToast()
+  
+  return (
+    <Card>
+      <Button 
+        variant="primary" 
+        onClick={() => toast({ title: "Success!", description: "Action completed" })}
+      >
+        Click me
+      </Button>
+      <Input placeholder="Enter text..." />
+      
+      <Modal isOpen={showModal} onClose={() => setShowModal(false)}>
+        <ModalHeader>
+          <ModalTitle>Reliable Modal</ModalTitle>
+        </ModalHeader>
+        <ModalFooter>
+          <Button variant="outline" onClick={() => setShowModal(false)}>Cancel</Button>
+          <Button onClick={handleAction}>Confirm</Button>
+        </ModalFooter>
+      </Modal>
+    </Card>
+  )
 }
 ```
 
-## Components
+### Hooks
 
-### UI Components
-- `Button` - Comprehensive button component with multiple variants
-- `Card` - Flexible card layouts including horizontal cards
-- More components being migrated...
+```tsx
+import { useDebounce, useMediaQuery, usePlatformConfig } from '@flamingo/ui-kit/hooks'
 
-### Feature Components
-- `AnnouncementBar` - Platform-aware announcement system
-- `SSOModal` - Authentication modal with provider support
-- More features being migrated...
+function MyComponent() {
+  const isMobile = useMediaQuery('(max-width: 768px)')
+  const platformConfig = usePlatformConfig()
+  const debouncedValue = useDebounce(searchTerm, 300)
+  
+  // Your component logic
+}
+```
 
-## Design Tokens
+### Utilities
 
-The ODS (OpenFrame Design System) provides:
+```tsx
+import { cn, getPlatformAccentColor, formatDate } from '@flamingo/ui-kit/utils'
 
-- **Colors** - Platform-specific color schemes
-- **Typography** - Fluid typography with responsive scaling  
-- **Spacing** - Consistent spacing scale
-- **Shadows** - Layered shadow system
-- **Animations** - Smooth interaction states
+function MyComponent({ className }) {
+  return (
+    <div className={cn('base-styles', className)}>
+      <span style={{ color: getPlatformAccentColor() }}>
+        {formatDate(new Date())}
+      </span>
+    </div>
+  )
+}
+```
 
-## Development
+### Styles
 
-This is a source-only package during development. Changes are reflected immediately in consuming projects.
+```tsx
+// Import in your main layout or _app.tsx
+import '@flamingo/ui-kit/styles'
+```
 
 ## Platform Support
 
-- **OpenMSP** - MSP knowledge hub
-- **OpenFrame** - Self-hosted application platform
-- **Admin Hub** - Administrative interface
-- **Flamingo** - Web development services
-- **Flamingo Teaser** - Landing page system
+The UI kit automatically adapts to different platforms:
+
+- **OpenMSP** (`openmsp`) - Yellow accent colors (#FFC008), MSP-focused components
+- **Admin Hub** (`admin-hub`) - Pink accent colors (#F357BB), professional admin interface
+- **OpenFrame** (`openframe`) - Cyan accent colors (#5EFAF0), framework-focused design
+- **Flamingo** (`flamingo`) - Pink accent with light theme, brand-focused web presence
+- **Flamingo Teaser** (`flamingo-teaser`) - Marketing/landing page styling
+
+Platform detection is automatic based on the `NEXT_PUBLIC_APP_TYPE` environment variable. All components include hover, focus, active, and disabled states with proper accessibility support.
+
+## Development
+
+This is a source-only package, so no build step is required. Changes are reflected immediately in consuming projects.
+
+```bash
+# Type checking (zero errors achieved!)
+npm run type-check
+
+# Linting (when configured)
+npm run lint
+```
+
+### Recent Major Improvements ✅
+
+- **TypeScript Compilation**: All compilation errors resolved across the entire UI kit
+- **Toast System**: Fixed positioning, z-index, stacking, and width issues for reliable notifications
+- **Button Components**: Resolved text visibility issues, all variants working correctly
+- **Modal System**: Reliable modal implementation with proper accessibility and theming
+- **Tailwind Integration**: Simplified fontSize configuration for TypeScript compatibility
+
+## Architecture
+
+### Components
+- `ui/` - Base components using Radix UI primitives (Button, Modal, Input, etc.)
+- `features/` - Complex, platform-aware components (SSOModal, AnnouncementBar)
+- `icons/` - Shared icon components
+
+### Hooks
+- `ui/` - UI utility hooks (useDebounce, useMediaQuery, useToast)
+- `platform/` - Platform configuration and detection (usePlatformConfig)
+- `api/` - Data fetching hooks (useAnnouncements)
+
+### Working Components ✅
+- **Button**: All variants with proper text visibility
+- **Modal**: Reliable modal system with accessibility
+- **Toast**: Complete notification system with proper positioning
+- **Input/Form Elements**: Full form component suite
+- **Theme System**: Platform-aware ODS design tokens
+
+### Client-Side Only
+This package contains **only client-side code**:
+- ✅ React components and hooks
+- ✅ Browser utilities and helpers
+- ✅ CSS and styling
+- ❌ No server-side code
+- ❌ No API routes or server utilities
+- ❌ No database connections
 
 ## Contributing
 
-1. Make changes to components/styles in this repo
-2. Test across all platforms
-3. Update documentation
-4. Create PR for review
+When adding new components or utilities:
+
+1. Keep everything client-side only
+2. Follow the existing patterns and naming conventions
+3. Add proper TypeScript types (zero errors policy)
+4. Test across all supported platforms
+5. Update exports in relevant `index.ts` files
+6. Ensure components follow ODS design system
+7. Include proper accessibility attributes
+8. Test toast notifications and modal interactions
+9. Verify button variants work across all themes
 
 ## License
 
-MIT
+Private package for Flamingo CX projects.

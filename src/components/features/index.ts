@@ -1,5 +1,4 @@
-// Announcement Bar
-export { AnnouncementBar } from './announcement-bar/AnnouncementBar';
-
-// Auth
-export { SSOModal } from './auth/SSOModal';
+// Feature Components exports
+export * from './sso-modal'
+export * from './error-boundary'
+export * from './loading-provider'

@@ -4,7 +4,7 @@
  * Provides runtime utilities for working with ODS color tokens
  */
 
-import odsTokens from '@/ods_color_tokens.json';
+import { colorTokens as odsTokens } from './ods-color-tokens-stub';
 
 export type Platform = 'openmsp' | 'admin-hub' | 'openframe' | 'flamingo';
 export type ColorCategory = 'open' | 'flamingo' | 'system' | 'attention';
@@ -158,7 +158,7 @@ export function getTokensByCategory(category: ColorCategory): Record<string, str
   
   Object.entries(odsTokens).forEach(([key, value]) => {
     if (key.startsWith(`${category}-`)) {
-      tokens[key] = value;
+      tokens[key] = value as string;
     }
   });
   

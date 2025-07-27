@@ -1,7 +1,6 @@
 import * as React from "react"
 import { Slot } from "@radix-ui/react-slot"
 import { cva, type VariantProps } from "class-variance-authority"
-import Link from "next/link"
 
 import { cn } from "../../utils/cn"
 
@@ -14,7 +13,7 @@ const buttonVariants = cva(
         // Primary variant for main CTAs (ButtonFull primary)
         primary: "bg-ods-accent text-ods-text-on-accent hover:bg-ods-accent-hover active:bg-ods-accent-active focus-visible:ring-2 focus-visible:ring-ods-focus disabled:bg-ods-disabled disabled:text-ods-text-disabled",
         // Secondary variant for alternative actions (ButtonFull secondary)
-        secondary: "bg-ods-text-primary text-ods-bg hover:bg-ods-text-secondary active:bg-ods-text-muted focus-visible:ring-2 focus-visible:ring-ods-focus disabled:bg-ods-disabled disabled:text-ods-text-disabled",
+        secondary: "bg-ods-text-primary text-black hover:bg-ods-text-secondary hover:text-black active:bg-ods-text-muted active:text-black focus-visible:ring-2 focus-visible:ring-ods-focus disabled:bg-ods-disabled disabled:text-ods-text-disabled",
         // Outline variant for Submit Product buttons and secondary actions
         outline: "border border-ods-border bg-transparent text-ods-text-primary hover:bg-ods-bg-hover active:bg-ods-bg-active focus-visible:ring-2 focus-visible:ring-ods-focus disabled:border-ods-disabled disabled:text-ods-text-disabled",
         // Transparent variant for ghost-like actions (ButtonFull transparent)
@@ -38,17 +37,17 @@ const buttonVariants = cva(
       },
       size: {
         // Small size for secondary actions
-        sm: "h-10 px-6 py-2 text-base", 
+        sm: "h-10 px-6 py-2 text-sm", 
         // Default size for most buttons (ButtonFull default)
-        default: "h-12 px-8 py-3 text-lg",
-        // Large size for prominent CTAs (ButtonFull lg)
-        lg: "h-14 px-10 py-4 text-xl",
+        default: "h-12 px-8 py-3 text-base",
+        // Large size for prominent CTAs (ButtonFull lg) - adjusted for better text/icon fit
+        lg: "min-h-[48px] px-8 py-3 text-base",
         // Icon-only buttons
         icon: "h-10 w-10 p-0",
         // Icon-only large buttons (like hamburger menu)
         iconLg: "h-12 w-12 p-0",
         // Touch-friendly mobile sizing
-        touch: "min-h-[44px] px-6 py-3 text-lg",
+        touch: "min-h-[44px] px-6 py-3 text-base",
         // Search button specific sizing
         searchMobile: "min-h-[56px] px-4 py-3 text-lg",
         searchDesktop: "min-h-[52px] px-4 py-3 text-lg",
@@ -132,10 +131,10 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       )
     }
     
-    // When href is provided, render as Link
+    // When href is provided, render as Link - note: consuming project should handle Next.js Link
     if (href) {
       return (
-        <Link
+        <a
           href={href}
           className={composedClassName}
           aria-disabled={isDisabled}
@@ -143,7 +142,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
           {...(props as any)}
         >
           {renderContent()}
-        </Link>
+        </a>
       )
     }
     
