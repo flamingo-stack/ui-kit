@@ -43,4 +43,4 @@ export const OpenFrameLogo = ({ className, lowerPathColor, upperPathColor,  ...p
       </g>
     </svg>
   );
-}; 
+};

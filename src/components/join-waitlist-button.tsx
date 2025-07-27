@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Button, type ButtonProps } from './ui/button';
-import { OpenFrameLogo } from '@/components/icons';
+import { OpenFrameLogo } from './openframe-logo';
 
 export interface JoinWaitlistButtonProps
   extends Omit<ButtonProps, 'variant' | 'size' | 'leftIcon' | 'rightIcon'> {
@@ -37,4 +37,4 @@ export const JoinWaitlistButton = React.forwardRef<
     </Button>
   );
 });
-JoinWaitlistButton.displayName = 'JoinWaitlistButton'; 
+JoinWaitlistButton.displayName = 'JoinWaitlistButton';
