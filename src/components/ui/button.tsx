@@ -13,7 +13,7 @@ const buttonVariants = cva(
         // Primary variant for main CTAs (ButtonFull primary)
         primary: "bg-ods-accent text-ods-text-on-accent hover:bg-ods-accent-hover active:bg-ods-accent-active focus-visible:ring-2 focus-visible:ring-ods-focus disabled:bg-ods-disabled disabled:text-ods-text-disabled",
         // Secondary variant for alternative actions (ButtonFull secondary)
-        secondary: "bg-ods-text-primary text-ods-text-inverted hover:bg-ods-text-secondary hover:text-ods-text-primary active:bg-ods-text-muted active:text-ods-text-primary focus-visible:ring-2 focus-visible:ring-ods-focus disabled:bg-ods-disabled disabled:text-ods-text-disabled",
+        secondary: "bg-ods-text-primary text-black hover:bg-ods-text-secondary hover:text-black active:bg-ods-text-muted active:text-black focus-visible:ring-2 focus-visible:ring-ods-focus disabled:bg-ods-disabled disabled:text-ods-text-disabled",
         // Outline variant for Submit Product buttons and secondary actions
         outline: "border border-ods-border bg-transparent text-ods-text-primary hover:bg-ods-bg-hover active:bg-ods-bg-active focus-visible:ring-2 focus-visible:ring-ods-focus disabled:border-ods-disabled disabled:text-ods-text-disabled",
         // Transparent variant for ghost-like actions (ButtonFull transparent)

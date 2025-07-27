@@ -22,7 +22,7 @@ export interface StructuredPricingSummary {
   classification: string;
 }
 
-export function getStructuredPricingSummary(vendor: any): StructuredPricingSummary {
+export function getStructuredPricingSummary(_vendor: any): StructuredPricingSummary {
   return {
     ranges: [{ min: 0, max: 100, currency: 'USD', model: 'per month', unit: 'user' }],
     primaryModel: 'subscription',
