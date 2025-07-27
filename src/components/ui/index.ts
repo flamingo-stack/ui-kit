@@ -29,10 +29,10 @@ export * from './toast'
 export * from './toaster'
 export * from './progress'
 // TODO: Add other UI components as they are moved to ui-kit
-// export * from './skeleton'
-// export * from './tooltip'
-// export * from './popover'
-// export * from './avatar'
+export * from './skeleton'
+export * from './tooltip'
+// export * from './popover'  // Not in ui/ subdirectory yet
+// export * from './avatar'   // Not in ui/ subdirectory yet
 // export * from './calendar'
 // export * from './carousel'
 // export * from './chart'
