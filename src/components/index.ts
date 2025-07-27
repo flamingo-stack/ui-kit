@@ -23,16 +23,13 @@ export * from './msp-display'
 export * from './vendor-compact-card'
 export * from './vendor-icon'
 export * from './selection-source-badge'
-export * from './square-avatar'
 export * from './x-button'
 export * from './yes-no-display'
 export * from './why-it-matters'
 export * from './open-source-features'
 export * from './image-cropper'
 export * from './media-carousel'
-export * from './chevron-button'
 export * from './use-mobile'
-export * from './custom-icons'
 export * from './fixed-layout-container'
 export * from './content-loading-container'
 export * from './dynamic-skeleton'
@@ -51,6 +48,9 @@ export * from './unified-pagination'
 
 // Loading components
 export * from './loading'
+
+// Auth-related exports
+export * from './auth-stub'
 
 // Priority UI components that exist in main components directory
 // Note: These are re-exported from ./ui already, no need to duplicate
