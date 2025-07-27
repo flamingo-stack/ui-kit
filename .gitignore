@@ -62,3 +62,4 @@ jspm_packages/
 # Original cache files
 .users_cache.json
 .channels_cache.json
+tsconfig.tsbuildinfo
