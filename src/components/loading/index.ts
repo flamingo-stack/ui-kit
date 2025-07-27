@@ -75,7 +75,7 @@ export {
 } from './content-skeleton'
 
 // Profile system loading skeleton
-export { ProfileLoadingSkeleton } from '../../profile/ProfileLoadingSkeleton';
+export { ProfileLoadingSkeleton } from '../profile/ProfileLoadingSkeleton';
 
 export { MspProfileFormSkeleton } from './msp-profile-form-skeleton'
 

@@ -1,16 +1,16 @@
 "use client"
 
 import * as React from "react"
-import { cn } from "../../utils/cn"
+import { cn } from "../utils/cn"
 
 interface StepsProps extends React.HTMLAttributes<HTMLDivElement> {
   currentStep: number
 }
 
-export const Steps = React.forwardRef<HTMLDivElement, StepsProps>(
+const StepsComponent = React.forwardRef<HTMLDivElement, StepsProps>(
   ({ currentStep, className, children, ...props }, ref) => {
     // Count the number of step children
-    const steps = React.Children.toArray(children).filter((child) => React.isValidElement(child) && child.type === Step)
+    const steps = React.Children.toArray(children).filter((child) => React.isValidElement(child))
 
     return (
       <div ref={ref} className={cn("space-y-4", className)} {...props}>
@@ -20,7 +20,7 @@ export const Steps = React.forwardRef<HTMLDivElement, StepsProps>(
           }
 
           // Clone the child with additional props
-          return React.cloneElement(child, {
+          return React.cloneElement(child as React.ReactElement<any>, {
             stepNumber: index + 1,
             isActive: currentStep === index + 1,
             isCompleted: currentStep > index + 1,
@@ -31,7 +31,7 @@ export const Steps = React.forwardRef<HTMLDivElement, StepsProps>(
     )
   },
 )
-Steps.displayName = "Steps"
+StepsComponent.displayName = "Steps"
 
 interface StepProps extends React.HTMLAttributes<HTMLDivElement> {
   title: string
@@ -94,6 +94,5 @@ const Step = React.forwardRef<HTMLDivElement, StepProps>(
 )
 Step.displayName = "Step"
 
-Steps.Step = Step
-
 export { Step }
+export { StepsComponent as Steps }

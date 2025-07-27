@@ -1,5 +1,5 @@
-import { Button } from '@/components/ui/button';
-import { GitHubIcon, RedditIcon, XLogo } from '@/components/icons';
+import { Button } from './ui/button';
+import { GitHubIcon, RedditIcon, XLogo } from './icons';
 
 interface SocialIconRowProps {
   className?: string;

@@ -1,8 +1,9 @@
 "use client";
 
 import React from 'react';
-import { cn } from "../../utils/cn";
-import { useThemeAware } from '@/lib/hooks/use-dynamic-theming';
+import { cn } from "../utils/cn";
+import { useDynamicTheming } from '../hooks/use-dynamic-theming';
+import { useThemeAware } from '../hooks/use-theme-aware';
 
 interface DynamicSkeletonProps {
   /**
@@ -335,7 +336,7 @@ export function ProgressiveSkeleton({
 
   // Show more detailed skeleton as loading progresses
   const stageConfig = {
-    0: { animation: 'pulse', variant: 'text' as const },
+    0: { animation: 'pulse' as const, variant: 'text' as const },
     1: { animation: 'shimmer' as const, variant: 'card' as const },
     2: { animation: 'wave' as const, variant: 'custom' as const }
   };

@@ -19,6 +19,7 @@ type ToasterToast = ToastProps & {
   description?: React.ReactNode
   action?: React.ReactNode
   visible: boolean
+  onOpenChange?: (open: boolean) => void
 }
 
 const actionTypes = {
@@ -167,7 +168,7 @@ function useToast() {
         variant,
         duration,
         visible: true,
-        onOpenChange: (open) => {
+        onOpenChange: (open: boolean) => {
           if (!open) dispatch({ type: "DISMISS_TOAST", toastId: id })
         },
       },

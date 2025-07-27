@@ -1,9 +1,9 @@
 "use client";
 
 import { useState, useRef, useEffect, memo, useCallback } from 'react';
-import { cn } from "../../utils/cn";
-import { MediaItem } from '@/lib/utils/media-carousel-utils';
-import { LiteYouTubeEmbed } from '@/lib/utils/lite-youtube-embed';
+import { cn } from "../utils/cn";
+import { MediaItem } from '../utils/media-carousel-utils-stub';
+import { LiteYouTubeEmbed } from '../utils/lite-youtube-embed-stub';
 
 // Navigation icons
 const ChevronLeftIcon = () => (

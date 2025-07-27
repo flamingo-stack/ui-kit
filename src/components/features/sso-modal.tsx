@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
-import { ProviderButton } from './provider-button';
+import { ProviderButton } from '../provider-button';
 
 interface SSOModalProps {
   isOpen: boolean;

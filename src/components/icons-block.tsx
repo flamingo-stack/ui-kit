@@ -8,13 +8,16 @@ import {
   VendorsIcon,
   CommunityIcon,
   CompareIcon,
-  SunIcon,
-  MoonIcon,
-  CheckCircleIcon,
-  GitHubIcon,
-  PlusCircleIcon,
-  OpenmspLogo
-} from '@/components/icons';
+} from './icons-stub';
+import { Sun, Moon, CheckCircle, Github, PlusCircle } from 'lucide-react';
+
+// Map lucide icons
+const SunIcon = Sun;
+const MoonIcon = Moon;
+const CheckCircleIcon = CheckCircle;
+const GitHubIcon = Github;
+const PlusCircleIcon = PlusCircle;
+const OpenmspLogo = () => <div>Logo</div>;
 
 interface IconsBlockProps {
   /**
@@ -135,7 +138,7 @@ export function ResponsiveIconsBlock({ loading = false }: IconsBlockProps) {
       role="presentation"
       aria-hidden="true"
     >
-      <style jsx>{`
+      <style>{`
         .icons-block svg,
         .icons-block svg * {
           filter: grayscale(100%) brightness(0) invert(1) brightness(0.4) !important;

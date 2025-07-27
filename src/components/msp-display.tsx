@@ -1,6 +1,6 @@
 import React from 'react';
-import { cn } from "../../utils/cn";
-import { SquareAvatar } from '@/components/ui/square-avatar';
+import { cn } from "../utils/cn";
+import { SquareAvatar } from './square-avatar';
 
 interface MSPDisplayProps {
   name: string;

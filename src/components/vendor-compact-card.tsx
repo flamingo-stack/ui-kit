@@ -1,13 +1,13 @@
 import React from 'react';
-import { VendorIcon } from '@/components/ui/vendor-icon';
-import { ChevronButton } from '@/components/ui/chevron-button';
-import { XButton } from '@/components/ui/x-button';
-import { PricingDisplay, PRICING_STYLES } from '@/components/ui/pricing-display';
-import { EmptyVendorIcon } from '@/components/icons/empty-vendor-icon';
-import { cn } from "../../utils/cn";
-import { VendorWithMedia } from '@/lib/utils/vendor-media';
-import { getStructuredPricingSummary, type ComparisonPricing } from '@/lib/data/compare-utils';
-import { OpenmspLogo } from '../icons/openmsp-logo';
+import { VendorIcon } from './vendor-icon';
+import { ChevronButton } from './chevron-button';
+import { XButton } from './x-button';
+import { PricingDisplay, PRICING_STYLES } from './pricing-display';
+import { EmptyVendorIcon } from './empty-vendor-icon';
+import { cn } from "../utils/cn";
+import { VendorWithMedia } from '../utils/vendor-media-stub';
+import { getStructuredPricingSummary, type ComparisonPricing } from '../utils/compare-utils-stub';
+import { OpenmspLogo } from './openmsp-logo';
 
 interface VendorCompactCardProps {
   vendor: VendorWithMedia & {

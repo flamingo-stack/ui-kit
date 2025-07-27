@@ -1,7 +1,7 @@
 "use client"
 
 import { useRouter, useSearchParams, usePathname } from "next/navigation"
-import { Pagination } from "@/components/ui/pagination"
+import { Pagination } from "./pagination"
 
 interface UnifiedPaginationProps {
   currentPage: number

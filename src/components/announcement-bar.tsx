@@ -2,15 +2,15 @@
 
 import { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { renderSvgIcon } from '@/components/icons/icon-utils';
+import { Button } from './ui/button';
+import { renderSvgIcon } from './icon-utils';
 import {
-  saveAnnouncementToLS,
-  loadAnnouncementFromLS,
-  clearAnnouncementFromLS,
-} from '@/lib/utils/announcement-storage';
-import { Announcement } from '@/types/announcement';
-import { getCurrentPlatform } from '@/lib/app-config';
+  setStoredAnnouncement,
+  getStoredAnnouncement,
+  clearStoredAnnouncement,
+} from '../utils/announcement-storage';
+import { Announcement } from '../types/announcement';
+import { getAppType } from '../utils/app-config';
 
 // Helper that defers to renderSvgIcon so we don't need local icon imports
 const getSvgIcon = (
@@ -36,7 +36,7 @@ export function AnnouncementBar() {
   const fetchActiveAnnouncement = async () => {
     try {
       // Get platform based on current app configuration
-      const platform = getCurrentPlatform();
+      const platform = getAppType();
       console.log(`📋 [${platform.toUpperCase()}] Fetching active announcement for current app`);
       
       const response = await fetch(`/api/announcements/active/${platform}`);
@@ -47,7 +47,7 @@ export function AnnouncementBar() {
           setAnnouncement(data.announcement);
 
           // persist latest announcement for quick future loads
-          saveAnnouncementToLS(data.announcement);
+          setStoredAnnouncement('announcement', data.announcement);
 
           // Check if this specific announcement was dismissed
           const isDismissed = localStorage.getItem(getDismissKey(data.announcement.id));
@@ -59,7 +59,7 @@ export function AnnouncementBar() {
           setIsVisible(false);
           
           // Use utility function to properly clear all announcement data
-          clearAnnouncementFromLS();
+          clearStoredAnnouncement();
         }
       } else {
         // Network or other error - hide announcement and clean up
@@ -68,7 +68,7 @@ export function AnnouncementBar() {
         setIsVisible(false);
         
         // Clear stale data on network errors too
-        clearAnnouncementFromLS();
+        clearStoredAnnouncement();
       }
     } catch (error) {
       console.error('Error fetching active announcement:', error);
@@ -76,13 +76,13 @@ export function AnnouncementBar() {
       setIsVisible(false);
       
       // Clear stale data on exceptions too
-      clearAnnouncementFromLS();
+      clearStoredAnnouncement();
     }
   };
 
   // Initial load: use cached announcement synchronously for instant paint
   useEffect(() => {
-    const cached = loadAnnouncementFromLS();
+    const cached = getStoredAnnouncement('announcement');
     if (cached) {
       const isDismissed = localStorage.getItem(getDismissKey(cached.id));
       setAnnouncement(cached);

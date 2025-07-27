@@ -2,7 +2,7 @@
 
 import type React from "react"
 import { createContext, useContext, useState, useEffect } from "react"
-import { Progress } from "@/components/ui/progress"
+import { Progress } from "../ui/progress"
 
 type LoadingContextType = {
   isLoading: boolean

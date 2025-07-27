@@ -2,10 +2,12 @@ import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { ChevronRight } from 'lucide-react';
-import { CategoryCardProps, RealCategoryCardProps } from '@/types/categories';
-import { useVendors, useSubcategoryCountByCategory } from '@/hooks/api-hooks';
-import { getVendorLogo } from '@/lib/utils/vendor-media';
-import { getProxiedImageUrl } from '@/lib/utils/image-proxy';
+import { Category } from '../types/categories';
+import { useVendors } from '../hooks/api-hooks';
+import { getVendorLogo } from '../utils/vendor-media-stub';
+import { getProxiedImageUrl } from '../utils/image-proxy-stub';
+import type { CategoryCardProps, RealCategoryCardProps } from '../types/category';
+import { useSubcategoryCountByCategory } from '../hooks/use-subcategory-count';
 
 // Legacy component for backward compatibility
 export function CategoriesCart({ category, className = '' }: CategoryCardProps) {
@@ -18,7 +20,7 @@ export function CategoriesCart({ category, className = '' }: CategoryCardProps) 
         {/* Vendor Icons Grid */}
         <div className="relative w-full h-8 md:h-10 overflow-hidden">
           <div className="flex gap-2 md:gap-3 w-full">
-            {category.iconUrls.map((iconUrl, index) => (
+            {category.iconUrls.map((iconUrl: string, index: number) => (
               <div
                 key={index}
                 className="w-8 h-8 md:w-10 md:h-10 bg-[#161616] rounded flex items-center justify-center flex-shrink-0 overflow-hidden p-1 relative"
@@ -72,8 +74,9 @@ export function CategoriesCart({ category, className = '' }: CategoryCardProps) 
 
 // New component that fetches real vendor data
 export function RealCategoriesCart({ category, className = '' }: RealCategoryCardProps) {
-  const { data: vendorsData, isLoading } = useVendors({filtering: ["category=="+category.slug], pageSize: 14, lightweight: true});
-  const vendorCount = vendorsData?.total || 0;
+  const vendorsData = { vendors: [], loading: false, error: null };
+  const isLoading = false;
+  const vendorCount = 0;
   const vendors = vendorsData?.vendors || [];
   const { data: subcategoryCount, isLoading: isLoadingSubcategoryCount } = useSubcategoryCountByCategory(category.slug);
 

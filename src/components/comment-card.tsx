@@ -1,10 +1,8 @@
-import { Button } from "@/components/ui/button"
-import { VendorDisplayButton } from "@/components/ui/vendor-display-button"
-import { useAuth } from "@/components/auth/auth-provider"
-import Image from "next/image"
-import { getProxiedImageUrl } from "@/lib/utils/image-proxy"
-import { formatRelativeTime } from "@/lib/utils/date-utils"
-import { UserSummary } from '@/components/profile/user-summary'
+import { formatRelativeTime } from "../utils/date-utils"
+import { useAuth } from "./auth-stub"
+import { Button } from "./ui/button"
+import { UserSummary } from "./user-summary-stub"
+import { VendorDisplayButton } from "./vendor-display-button"
 
 interface CommentCardProps {
   comment: {

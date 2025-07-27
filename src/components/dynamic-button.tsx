@@ -2,8 +2,9 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { Button, type ButtonProps } from './button';
-import { useDynamicThemeContext } from '@/components/providers/dynamic-theme-provider';
-import { cn } from "../../utils/cn";
+import { useDynamicTheme } from './providers/dynamic-theme-provider';
+import { useDynamicThemeContext } from '../hooks/use-dynamic-theme-context';
+import { cn } from "../utils/cn";
 
 interface DynamicButtonProps extends ButtonProps {
   /**
@@ -70,7 +71,7 @@ export function DynamicButton({
   const contextualStyle = React.useMemo(() => {
     if (!context || !enableDynamicColors) return {};
 
-    const contextColor = applyContextualColor(context, effectIntensity);
+    const contextColor = applyContextualColor(context);
     const textColor = getOptimalTextColor(contextColor);
 
     return {
@@ -103,7 +104,7 @@ export function DynamicButton({
     // Platform-specific animations
     if (enablePersonality && enableDynamicColors) {
       const accentColor = themeState.accentColor;
-      animateAccentColor(accentColor, 800);
+      animateAccentColor(accentColor);
     }
 
     setTimeout(() => setIsPressed(false), 150);
@@ -194,7 +195,7 @@ export function PlatformSwitchButton({
     if (targetPlatform === themeState.platform || isTransitioning) return;
     
     setIsTransitioning(true);
-    await transitionToPlatform(targetPlatform, true);
+    transitionToPlatform(targetPlatform);
     setIsTransitioning(false);
   };
 

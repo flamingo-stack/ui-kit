@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as AccordionPrimitive from '@radix-ui/react-accordion';
-import { ChevronButton } from '@/components/ui/chevron-button';
-import { cn } from "../../utils/cn";
+import { ChevronButton } from './ui/chevron-button';
+import { cn } from "../utils/cn";
 
 // --- SmoothAccordion -----------------------------------------------------------------
 // Wrapper that re-exports AccordionPrimitive.Root for convenience
@@ -44,7 +44,7 @@ export const SmoothAccordionTrigger = React.forwardRef<
         {label}
       </span>
       <ChevronButton
-        size="default"
+        size="md"
         isExpanded={false}
         backgroundColor="transparent"
         borderColor="#3A3A3A"

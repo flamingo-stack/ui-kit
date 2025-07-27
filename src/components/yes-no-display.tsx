@@ -1,4 +1,4 @@
-import { CheckCircleIcon, XCircleIcon } from '@/components/ui/custom-icons'
+import { CheckCircleIcon, XCircleIcon } from './ui/custom-icons'
 
 interface YesNoDisplayProps {
   value: boolean

@@ -1,13 +1,13 @@
 "use client";
 
 import React from 'react';
-import { OpenmspLogo } from '@/components/icons';
+import { OpenmspLogo } from '../icons-stub';
 
 export function OpenmspHeartbeatLoader({ className = '', progress = 0, label, barWidth = 'w-128' }: { className?: string; progress?: number; label?: string; barWidth?: string }) {
   return (
     <div className={"flex items-center justify-center max-w-screen max-h-screen min-h-screen " + className} role="status" aria-label="Generating report">
       {/* Inline keyframes to bypass Tailwind build issues */}
-      <style jsx>{`
+      <style>{`
         /* Lub-dub double-beat: quick pulse, quick pulse, rest */
         @keyframes heartbeatInline {
           0%   { transform: scale(1);      opacity: 0.96; }

@@ -1,7 +1,7 @@
-import { Button } from "@/components/ui/button"
-import { getVendorLogo, VendorMedia } from "@/lib/utils/vendor-media"
+import { Button } from "./ui/button"
+import { getVendorLogo, VendorWithMedia as VendorMedia } from "../utils/vendor-media-stub"
 import Image from "next/image"
-import { getProxiedImageUrl } from "@/lib/utils/image-proxy"
+import { getProxiedImageUrl } from "../utils/image-proxy-stub"
 
 interface VendorDisplayButtonProps {
   vendor: {

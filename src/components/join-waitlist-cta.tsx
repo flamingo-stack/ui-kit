@@ -2,10 +2,10 @@
 
 import React, { useCallback } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
-import { OpenFrameLogo } from '@/components/icons/openframe-logo';
-import { ResponsiveIconsBlock } from '@/components/ui/icons-block';
-import { JoinWaitlistButton } from '@/components/ui/join-waitlist-button';
-import { cn } from "../../utils/cn";
+import { OpenFrameLogo } from './openframe-logo';
+import { ResponsiveIconsBlock } from './ui/responsive-icons-block-stub';
+import { JoinWaitlistButton } from './join-waitlist-button-stub';
+import { cn } from "../utils/cn";
 
 interface JoinWaitlistCTAProps {
   showBottomText?: boolean;

@@ -1,4 +1,4 @@
-import { StructuredPricingItem } from '@/lib/data/compare-utils'
+import { StructuredPricingSummary as StructuredPricingItem } from '../utils/compare-utils-stub'
 
 // Using StructuredPricingItem from compare-utils instead of local interface
 
@@ -12,7 +12,7 @@ interface PricingStyleConfig {
 }
 
 interface PricingDisplayProps {
-  pricing: StructuredPricingItem[] | string // Support both new structure and legacy string
+  pricing: StructuredPricingItem[] | string | StructuredPricingItem // Support both new structure and legacy string
   className?: string
   styleConfig?: PricingStyleConfig
 }
@@ -62,8 +62,11 @@ export function PricingDisplay({
     return <LegacyPricingDisplay pricing={pricing} className={className} styleConfig={styleConfig} />
   }
   
+  // Convert to array if single item
+  const pricingArray = Array.isArray(pricing) ? pricing : [pricing];
+  
   // Handle empty pricing
-  if (!pricing || pricing.length === 0) {
+  if (!pricingArray || pricingArray.length === 0) {
     return (
       <span className={`${styleConfig.priceTextColor} ${styleConfig.priceTextSize} ${styleConfig.fontFamily} ${className}`}>
         No pricing data
@@ -72,17 +75,18 @@ export function PricingDisplay({
   }
   
   // Handle single pricing item
-  if (pricing.length === 1) {
-    const item = pricing[0]
+  if (pricingArray.length === 1) {
+    const item = pricingArray[0]
+    const price = item.ranges?.[0]?.min || 0;
+    const unit = item.ranges?.[0]?.unit;
     return (
       <span className={`${styleConfig.fontFamily} ${className}`}>
         <span className={`${styleConfig.priceTextColor} ${styleConfig.priceTextSize}`}>
-          {formatPriceValue(item.price, styleConfig.showTildePrefix)}
+          {formatPriceValue(price, styleConfig.showTildePrefix)}
         </span>
-        {(item.unit || item.cycle) && (
+        {unit && (
           <span className={`${styleConfig.secondaryTextColor} ${styleConfig.secondaryTextSize}`}>
-            {item.unit && `/${item.unit}`}
-            {item.cycle && `/${item.cycle}`}
+            /{unit}
           </span>
         )}
       </span>
@@ -90,20 +94,19 @@ export function PricingDisplay({
   }
   
   // Handle multiple pricing items
-  const priceValues = pricing.map(item => formatPriceValue(item.price, styleConfig.showTildePrefix))
+  const priceValues = pricingArray.map(item => formatPriceValue(item.ranges?.[0]?.min || 0, styleConfig.showTildePrefix))
   
-  // Find the first item that has unit/cycle info
-  const itemWithUnitCycle = pricing.find(item => item.unit || item.cycle)
+  // Find the first item that has unit info
+  const itemWithUnit = pricingArray.find(item => item.ranges?.[0]?.unit)
   
   return (
     <span className={`${styleConfig.fontFamily} ${className}`}>
       <span className={`${styleConfig.priceTextColor} ${styleConfig.priceTextSize}`}>
         {priceValues.join(' | ')}
       </span>
-      {itemWithUnitCycle && (itemWithUnitCycle.unit || itemWithUnitCycle.cycle) && (
+      {itemWithUnit && itemWithUnit.ranges?.[0]?.unit && (
         <span className={`${styleConfig.secondaryTextColor} ${styleConfig.secondaryTextSize}`}>
-          {itemWithUnitCycle.unit && `/${itemWithUnitCycle.unit}`}
-          {itemWithUnitCycle.cycle && `/${itemWithUnitCycle.cycle}`}
+          /{itemWithUnit.ranges[0].unit}
         </span>
       )}
     </span>

@@ -1,8 +1,20 @@
 "use client";
 
 import React, { forwardRef } from 'react';
-import { useInteractiveState, type InteractiveOptions } from '@/lib/hooks/use-interactive-state';
-import { cn } from "../../utils/cn";
+import { useInteractiveState } from '../hooks/use-interactive-state';
+import { cn } from "../utils/cn";
+
+interface InteractiveOptions {
+  enableHover?: boolean;
+  enableFocus?: boolean;
+  enablePress?: boolean;
+  enableRipple?: boolean;
+  enableAnimations?: boolean;
+  enableColorShifts?: boolean;
+  enableAccessibilityEnhancements?: boolean;
+  animations?: boolean;
+  enableHapticFeedback?: boolean;
+}
 
 interface InteractiveWrapperProps extends React.HTMLAttributes<HTMLDivElement> {
   /**
@@ -13,7 +25,7 @@ interface InteractiveWrapperProps extends React.HTMLAttributes<HTMLDivElement> {
   /**
    * Element type to render
    */
-  as?: keyof JSX.IntrinsicElements;
+  as?: keyof React.JSX.IntrinsicElements;
   
   /**
    * Whether to render ripple effect
@@ -81,12 +93,7 @@ export const InteractiveWrapper = forwardRef<HTMLElement, InteractiveWrapperProp
     setLoading,
     setDisabled,
     ref: interactiveRef
-  } = useInteractiveState({
-    enableAnimations: true,
-    enableColorShifts: true,
-    enableAccessibilityEnhancements: true,
-    ...interactive
-  });
+  } = useInteractiveState();
 
   // Update loading and disabled states
   React.useEffect(() => {
@@ -119,10 +126,10 @@ export const InteractiveWrapper = forwardRef<HTMLElement, InteractiveWrapperProp
   
   const mergedHandlers = {
     ...handlers,
-    onClick: (event: React.MouseEvent<HTMLElement>) => {
-      const result = handlers.onClick(event);
+    onClick: (event: React.MouseEvent<HTMLDivElement>) => {
+      handlers.onClick();
       if (onClick && !event.defaultPrevented) {
-        onClick(result);
+        onClick(event);
       }
     }
   };
@@ -218,10 +225,7 @@ export const InteractivePresets = {
       interactive={{
         enableAnimations: true,
         enableColorShifts: true,
-        animations: [
-          { type: 'glow', trigger: 'hover', duration: 300, intensity: 'subtle' },
-          { type: 'scale', trigger: 'click', duration: 150, intensity: 'normal' }
-        ]
+        animations: true
       }}
       className={cn('bg-ods-card border border-ods-border rounded-lg p-4', props.className)}
       focusable={true}
@@ -242,11 +246,7 @@ export const InteractivePresets = {
         enableColorShifts: true,
         enableAccessibilityEnhancements: true,
         enableHapticFeedback: true,
-        animations: [
-          { type: 'color-shift', trigger: 'hover', duration: 200, intensity: 'subtle' },
-          { type: 'ripple', trigger: 'click', duration: 400, intensity: 'normal' },
-          { type: 'pulse', trigger: 'focus', duration: 300, intensity: 'subtle' }
-        ]
+        animations: true
       }}
       className={cn('bg-ods-accent text-ods-text-on-accent px-4 py-2 rounded-md font-medium', props.className)}
       role="button"
@@ -264,9 +264,7 @@ export const InteractivePresets = {
       interactive={{
         enableAnimations: true,
         enableColorShifts: true,
-        animations: [
-          { type: 'color-shift', trigger: 'hover', duration: 150, intensity: 'subtle' }
-        ]
+        animations: true
       }}
       className={cn('block px-3 py-2 rounded-md text-ods-text-secondary hover:text-ods-text-primary', props.className)}
       focusable={true}
@@ -285,9 +283,7 @@ export const InteractivePresets = {
         enableAnimations: false,
         enableColorShifts: true,
         enableAccessibilityEnhancements: true,
-        animations: [
-          { type: 'glow', trigger: 'focus', duration: 200, intensity: 'normal' }
-        ]
+        animations: true
       }}
       className={cn('w-full px-3 py-2 bg-ods-bg border border-ods-border rounded-md text-ods-text-primary', props.className)}
       focusable={true}
@@ -308,9 +304,7 @@ export const InteractivePresets = {
           enableAnimations: true,
           enableColorShifts: true,
           enableHapticFeedback: true,
-          animations: [
-            { type: 'scale', trigger: 'click', duration: 100, intensity: 'subtle' }
-          ]
+          animations: true
         }}
         className={cn(
           'relative inline-flex w-12 h-6 rounded-full cursor-pointer transition-colors',

@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect, useCallback } from 'react'
-import { ChevronButton } from '@/components/ui/chevron-button'
-import { cn } from "../../utils/cn"
+import { ChevronButton } from './ui/chevron-button'
+import { cn } from "../utils/cn"
 
 export interface FaqItem {
   id: number | string
@@ -79,7 +79,7 @@ export function FaqAccordion({ items, defaultOpenIds = [] }: FaqAccordionProps) 
               </h3>
               <div className="flex-shrink-0">
                 <ChevronButton
-                  size="default"
+                  size="md"
                   isExpanded={isOpen}
                   backgroundColor="transparent"
                   borderColor="#3A3A3A"

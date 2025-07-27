@@ -1,5 +1,5 @@
 import React from 'react';
-import { cn } from "../../utils/cn";
+import { cn } from "../utils/cn";
 import { VendorTag } from './vendor-tag';
 
 export type SelectionSourceType = 'ai' | 'manual' | 'placeholder';

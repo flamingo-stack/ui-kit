@@ -2,7 +2,7 @@
 
 import React, { useCallback } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
-import { JoinWaitlistButton } from '@/components/ui/join-waitlist-button';
+import { JoinWaitlistButton } from './join-waitlist-button-stub';
 
 export function FooterWaitlistCard() {
   const router = useRouter();

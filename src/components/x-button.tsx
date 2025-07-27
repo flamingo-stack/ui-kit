@@ -1,7 +1,7 @@
 import React from 'react';
 import { X } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { cn } from "../../utils/cn";
+import { Button } from './ui/button';
+import { cn } from "../utils/cn";
 
 interface XButtonProps {
   className?: string;
