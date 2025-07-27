@@ -12,6 +12,8 @@ const buttonVariants = cva(
       variant: {
         // Primary variant for main CTAs (ButtonFull primary)
         primary: "bg-ods-accent text-ods-text-on-accent hover:bg-ods-accent-hover active:bg-ods-accent-active focus-visible:ring-2 focus-visible:ring-ods-focus disabled:bg-ods-disabled disabled:text-ods-text-disabled",
+        // White background variant for secondary actions (ButtonFull secondary)
+        white: "bg-white text-black hover:bg-ods-text-secondary hover:text-black active:bg-ods-text-muted active:text-black focus-visible:ring-2 focus-visible:ring-ods-focus disabled:bg-ods-disabled disabled:text-ods-text-disabled",
         // Secondary variant for alternative actions (ButtonFull secondary)
         secondary: "bg-ods-text-primary text-black hover:bg-ods-text-secondary hover:text-black active:bg-ods-text-muted active:text-black focus-visible:ring-2 focus-visible:ring-ods-focus disabled:bg-ods-disabled disabled:text-ods-text-disabled",
         // Outline variant for Submit Product buttons and secondary actions
@@ -119,15 +121,14 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     
     // When asChild is true, let the child element handle its own content structure
     if (asChild) {
-      const Comp = Slot
       return (
-        <Comp
+        <Slot
           className={composedClassName}
           ref={ref}
           {...props}
         >
           {children}
-        </Comp>
+        </Slot>
       )
     }
     
