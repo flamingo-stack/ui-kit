@@ -107,3 +107,41 @@ Components automatically detect platform context and adapt:
 - **Tailwind CSS**: Styling system with custom design tokens
 - **Class Variance Authority**: Component variant management
 - **Lucide React**: Icon system
+
+## Known Issues & Workarounds
+
+### Dialog Components (CRITICAL)
+**Issue**: Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription components fail to render
+- **Symptoms**: Components import successfully but don't display in DOM
+- **Affected Components**: All modal/dialog implementations
+- **Current Workaround**: Native modal implementations using fixed positioning
+- **Status**: Under investigation - likely portal/provider or CSS visibility issues
+
+**Example Workaround Pattern**:
+```typescript
+// Instead of UI kit Dialog
+// import { Dialog, DialogContent } from "@flamingo/ui-kit/components/ui"
+
+// Use native modal implementation
+if (!isOpen) return null;
+
+return (
+  <div className="fixed inset-0 z-50 flex items-center justify-center">
+    <div className="absolute inset-0 bg-black/50" onClick={handleClose} />
+    <div className="relative z-10 w-full max-w-lg mx-4 bg-ods-card border border-ods-border rounded-lg shadow-xl">
+      {/* Modal content */}
+    </div>
+  </div>
+);
+```
+
+### Working Components
+- ✅ Button, Toaster, useToast hook
+- ✅ All styling and theme utilities
+- ✅ Platform-aware color system
+
+### Future Investigation Needed
+1. **Dialog Portal Setup**: Check if Dialog components need portal container
+2. **CSS Conflicts**: Investigate z-index or visibility CSS issues
+3. **Provider Requirements**: Verify if Dialog components need additional providers
+4. **Package Export Issues**: Confirm Dialog components are properly exported
