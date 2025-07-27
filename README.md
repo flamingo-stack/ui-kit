@@ -126,6 +126,8 @@ npm run lint
 - **Button Components**: Resolved text visibility issues, all variants working correctly
 - **Modal System**: Reliable modal implementation with proper accessibility and theming
 - **Tailwind Integration**: Simplified fontSize configuration for TypeScript compatibility
+- **Deployment Integration**: Smart URL detection for production vs staging environments
+- **Form Integration**: Enhanced form modal components with proper API data binding
 
 ## Architecture
 
@@ -168,6 +170,8 @@ When adding new components or utilities:
 7. Include proper accessibility attributes
 8. Test toast notifications and modal interactions
 9. Verify button variants work across all themes
+10. Test form integrations and API data binding
+11. Validate component behavior in production and staging environments
 
 ## License
 

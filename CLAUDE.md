@@ -155,6 +155,8 @@ import { Modal, ModalHeader, ModalTitle, ModalFooter } from "@flamingo/ui-kit/co
 - ✅ TypeScript compilation (zero errors achieved)
 - ✅ Toast system (fixed z-index, positioning, stacking, and width issues)
 - ✅ Button variants (fixed secondary variant text visibility)
+- ✅ Form integration with proper API data binding
+- ✅ Environment-aware asset loading and URL generation
 
 ### Modal Component Features
 - ✅ **Reliable rendering** - Always shows when isOpen is true
@@ -202,6 +204,24 @@ import { Modal, ModalHeader, ModalTitle, ModalFooter } from "@flamingo/ui-kit/co
 - **Root Cause**: Using `text-ods-text-inverted` which could be unreliable
 - **Solution**: Changed secondary variant to use `text-black` for guaranteed visibility
 - **Status**: ✅ FULLY RESOLVED - All button variants working correctly
+
+### Form Integration & API Binding (RESOLVED ✅)
+- **Issue**: Form modal components not properly sending updated values to server APIs
+- **Root Cause**: Missing API field mappings and JSON parsing issues with color values
+- **Solution**: 
+  - Added proper field mapping in form modal to API request data
+  - Fixed API routes to handle all form fields including color properties
+  - Resolved JSON parsing conflicts between form strings and API expectations
+- **Status**: ✅ FULLY RESOLVED - Form modals now properly sync with server state
+
+### Deployment Environment Handling (RESOLVED ✅)
+- **Issue**: CSP errors in staging environments due to hardcoded production URLs
+- **Root Cause**: Asset paths using production domains instead of staging deployment URLs
+- **Solution**:
+  - Implemented smart environment detection in app-config.ts
+  - Production uses custom domains, staging uses VERCEL_URL
+  - Fixed manifest and asset loading to use correct base URLs
+- **Status**: ✅ FULLY RESOLVED - No more CSP violations in staging deployments
 
 ### Future Investigation Needed
 1. **Dialog Portal Setup**: Check if Dialog components need portal container
