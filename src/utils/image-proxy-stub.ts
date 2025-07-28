@@ -1,5 +1,6 @@
-// Image proxy utilities for UI kit
-// Real implementation copied from main project
+/**
+ * Utility functions for handling image proxy URLs
+ */
 
 /**
  * Get proxied image URL for external images
@@ -26,4 +27,15 @@ export function getProxiedImageUrl(imageUrl: string | null): string | null {
   
   // Return local/relative images as-is
   return imageUrl;
+}
+
+/**
+ * Check if an image URL needs to be proxied
+ */
+export function shouldProxyImage(imageUrl: string | null): boolean {
+  if (!imageUrl) return false;
+  
+  // Proxy external HTTP/HTTPS URLs that aren't already proxied
+  return (imageUrl.startsWith('http://') || imageUrl.startsWith('https://')) && 
+         !imageUrl.includes('/api/image-proxy');
 }

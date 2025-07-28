@@ -26,6 +26,10 @@ export interface RealCategoryCardProps {
   };
   vendorCount?: number;
   subcategoryCount?: number;
+  vendors?: any[];
+  isLoading?: boolean;
+  isLoadingVendorCount?: boolean;
+  isLoadingSubcategoryCount?: boolean;
   className?: string;
 }
 
