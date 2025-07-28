@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import type { PlatformConfig, PlatformOption } from '@/types/platform';
+import type { PlatformConfig, PlatformOption } from '@flamingo/ui-kit/types/platform';
 
 export interface UsePlatformConfigResult {
   platforms: PlatformConfig[];
