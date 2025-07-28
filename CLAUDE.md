@@ -46,6 +46,198 @@ Comprehensive design token system with:
 - **Component Tokens**: Predefined spacing, shadows, and sizing for common components
 - **Dark Mode Support**: Platform-specific dark theme adjustments
 
+### Authentication Components
+Unified authentication system supporting both page-based (OpenFrame) and modal-based (multi-platform-hub) patterns:
+
+#### Core Components
+- **AuthProvidersList**: For page-based authentication flows
+- **AuthTrigger**: For modal-based authentication flows
+- **ProviderButton**: Individual SSO provider buttons
+- **AuthModal**: Modal wrapper (used by AuthTrigger)
+
+#### SSO Provider Configuration
+```typescript
+interface SSOConfigStatus {
+  provider: string;        // 'google', 'microsoft', 'slack', 'github'
+  enabled: boolean;        // Whether provider is configured and enabled
+  clientId?: string;       // OAuth client ID (optional)
+}
+```
+
+#### Usage Patterns
+
+**Page-Based Authentication (OpenFrame pattern)**:
+```typescript
+import { AuthProvidersList, type SSOConfigStatus } from '@flamingo/ui-kit/components/features';
+
+function LoginPage() {
+  const [enabledProviders, setEnabledProviders] = useState<SSOConfigStatus[]>([]);
+  
+  useEffect(() => {
+    // Load enabled providers from your SSO service
+    loadEnabledProviders().then(setEnabledProviders);
+  }, []);
+
+  const handleProviderClick = async (provider: string) => {
+    // Implement your OAuth flow
+    switch (provider.toLowerCase()) {
+      case 'google':
+        await GoogleOAuthService.initiateLogin();
+        break;
+      case 'microsoft':
+        await MicrosoftOAuthService.initiateLogin();
+        break;
+      // Add other providers as needed
+    }
+  };
+
+  return (
+    <div className="auth-page">
+      {/* Your login form */}
+      <form>{/* Email/password fields */}</form>
+      
+      {/* SSO Providers */}
+      <AuthProvidersList
+        enabledProviders={enabledProviders}
+        onProviderClick={handleProviderClick}
+        loading={isLoading}
+        showDivider={true}
+        dividerText="or"
+        orientation="vertical"
+      />
+    </div>
+  );
+}
+```
+
+**Modal-Based Authentication (multi-platform-hub pattern)**:
+```typescript
+import { AuthTrigger, type SSOConfigStatus } from '@flamingo/ui-kit/components/features';
+
+function LoginModal() {
+  const [enabledProviders, setEnabledProviders] = useState<SSOConfigStatus[]>([]);
+  
+  const handleProviderClick = async (provider: string) => {
+    // Implement your OAuth flow
+    await authService.signInWithSSO(provider);
+  };
+
+  return (
+    <div className="login-section">
+      <AuthTrigger
+        buttonText="Sign Up"
+        variant="primary"
+        size="default"
+        enabledProviders={enabledProviders}
+        onProviderClick={handleProviderClick}
+        onModalOpen={() => console.log('Modal opened')}
+        onModalClose={() => console.log('Modal closed')}
+      />
+    </div>
+  );
+}
+```
+
+**Individual Provider Buttons**:
+```typescript
+import { ProviderButton } from '@flamingo/ui-kit/components/features';
+
+function CustomAuthFlow() {
+  const handleGoogleSignIn = async () => {
+    await GoogleOAuthService.initiateLogin();
+  };
+
+  return (
+    <ProviderButton
+      provider="google"
+      onClick={handleGoogleSignIn}
+      disabled={false}
+      loading={false}
+    />
+  );
+}
+```
+
+#### Component Props Reference
+
+**AuthProvidersList Props**:
+- `enabledProviders: SSOConfigStatus[]` - List of enabled SSO providers
+- `onProviderClick: (provider: string) => Promise<void>` - Callback when provider is clicked
+- `loading?: boolean` - Loading state for providers (default: false)
+- `showDivider?: boolean` - Show divider above providers list (default: true)
+- `dividerText?: string` - Custom divider text (default: "or")
+- `orientation?: 'vertical' | 'horizontal'` - Layout orientation (default: "vertical")
+
+**AuthTrigger Props**:
+- `buttonText?: string` - Button text to display (default: "Sign Up")
+- `variant?: ButtonVariant` - Button variant (default: "primary")
+- `size?: ButtonSize` - Button size (default: "default")
+- `className?: string` - Custom button className
+- `enabledProviders: SSOConfigStatus[]` - Enabled SSO providers
+- `onProviderClick: (provider: string) => Promise<void>` - Callback when provider is clicked
+- `onModalOpen?: () => void` - Optional callback when modal opens
+- `onModalClose?: () => void` - Optional callback when modal closes
+
+**ProviderButton Props**:
+- `provider: 'microsoft' | 'google' | 'slack' | 'github'` - Provider type
+- `onClick: () => Promise<void> | void` - Click handler
+- `disabled?: boolean` - Disabled state (default: false)
+- `loading?: boolean` - Loading state (default: false)
+
+#### Migration Guide for multi-platform-hub
+
+1. **Replace existing auth modals**:
+   ```typescript
+   // Before (multi-platform-hub)
+   import { SSOModal } from './sso-modal';
+   
+   // After (ui-kit)
+   import { AuthTrigger } from '@flamingo/ui-kit/components/features';
+   ```
+
+2. **Update provider click handlers**:
+   ```typescript
+   // Before
+   const handleProviderClick = async (provider: 'microsoft' | 'google' | 'slack') => {
+     const supabaseProvider = provider === 'microsoft' ? 'azure' : provider;
+     await signInWithSSO(supabaseProvider);
+   };
+   
+   // After
+   const handleProviderClick = async (provider: string) => {
+     const supabaseProvider = provider === 'microsoft' ? 'azure' : 
+                              provider === 'slack' ? 'slack_oidc' : provider;
+     await signInWithSSO(supabaseProvider as SSOProvider);
+   };
+   ```
+
+3. **Update component usage**:
+   ```typescript
+   // Before
+   <SSOModal
+     isOpen={isModalOpen}
+     onClose={() => setIsModalOpen(false)}
+     onProviderClick={handleProviderClick}
+   />
+   
+   // After
+   <AuthTrigger
+     buttonText="Sign Up"
+     variant="primary"
+     enabledProviders={enabledProviders}
+     onProviderClick={handleProviderClick}
+   />
+   ```
+
+#### Provider Icons
+All provider buttons include embedded SVG icons:
+- **Google**: Official Google colors and branding
+- **Microsoft**: Official Microsoft logo with brand colors
+- **Slack**: Official Slack logo with brand colors  
+- **GitHub**: Official GitHub logo (adapts to theme)
+
+Icons are embedded to avoid external dependencies and ensure consistent rendering across all platforms.
+
 ### Key Directories
 
 #### `/src/components/`
