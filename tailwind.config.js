@@ -55,6 +55,8 @@ export default {
       fontFamily: {
         sans: ["DM Sans", "sans-serif"],
         mono: ["Azeret Mono", "monospace"],
+        body: ["DM Sans", "sans-serif"],
+        heading: ["Azeret Mono", "monospace"],
       },
       keyframes: {
         "accordion-down": {

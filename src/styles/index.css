@@ -1,4 +1,6 @@
-/* Main styles entry point for @flamingo/ui-kit */
+/* Import Google Fonts FIRST */
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Azeret+Mono:wght@400;500;600;700&display=swap');
+
 /* Import the ODS design system files */
 @import "./ods-colors.css";
 @import "./ods-design-tokens.css";
@@ -6,10 +8,9 @@
 @import "./ods-responsive-tokens.css";
 @import "./ods-fluid-typography.css";
 @import "./ods-dynamic-theming.css";
+@import "./app-globals.css";
 
+/* Main styles entry point for @flamingo/ui-kit */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-/* Import application-specific global styles AFTER tailwind */
-@import "./app-globals.css";
