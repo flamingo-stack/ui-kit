@@ -1,5 +1,5 @@
 /* Main styles entry point for @flamingo/ui-kit */
-/* Import the ODS design system files that are now in ui-kit */
+/* Import the ODS design system files */
 @import "./ods-colors.css";
 @import "./ods-design-tokens.css";
 @import "./ods-interaction-states.css";
@@ -10,3 +10,6 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Import application-specific global styles AFTER tailwind */
+@import "./app-globals.css";

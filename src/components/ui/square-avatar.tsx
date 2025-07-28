@@ -1,6 +1,16 @@
 import * as React from "react"
 import { cn } from "../../utils/cn"
 
+// Extract initials from a name (first letter of first and last word)
+const getInitials = (name?: string): string => {
+  if (!name) return '';
+  const words = name.trim().split(/\s+/);
+  if (words.length === 1) {
+    return words[0].charAt(0).toUpperCase();
+  }
+  return (words[0].charAt(0) + words[words.length - 1].charAt(0)).toUpperCase();
+};
+
 interface SquareAvatarProps extends React.HTMLAttributes<HTMLDivElement> {
   src?: string;
   alt?: string;
@@ -36,7 +46,7 @@ const SquareAvatar = React.forwardRef<HTMLDivElement, SquareAvatarProps>(
         ) : (
           <div className="flex h-full w-full items-center justify-center bg-muted">
             <span className="text-xs font-medium">
-              {fallback || alt?.charAt(0)?.toUpperCase() || '?'}
+              {getInitials(fallback || alt) || '?'}
             </span>
           </div>
         )}

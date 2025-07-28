@@ -1,4 +1,5 @@
-import { OpenSourceIcon, CoinsIcon, OpenFrameLogo } from "./icons-stub"
+import { OpenSourceIcon, CoinsIcon } from "./icons-stub"
+import { OpenFrameLogo } from "./openframe-logo"
 import { cn } from "../utils/cn"
 import { Hand, Sparkles } from "lucide-react"
 
@@ -157,6 +158,11 @@ export function VendorTag({
               </div>
             )
           }
+        }
+      case 'openframe_selected':
+        return {
+          text: text || "OpenFrame Selected",
+          icon: <OpenFrameLogo lowerPathColor="#FFC008" upperPathColor="#FFC008" className="h-4 w-4" />
         }
       default:
         return {

@@ -1,64 +1,308 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-@import './ods-colors.css';
-@import './ods-dynamic-theming.css';
-
-body {
-  font-family: Arial, Helvetica, sans-serif;
+/* React Easy Crop Styles */
+.reactEasyCrop_Container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background: #1A1A1A;
 }
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
+.reactEasyCrop_Image,
+.reactEasyCrop_Video {
+  max-width: 100%;
+  max-height: 100%;
+  margin: auto;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  will-change: transform;
+}
+
+.reactEasyCrop_CropArea {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  box-sizing: border-box;
+  cursor: move;
+  background: rgba(0, 0, 0, 0.6);
+  overflow: hidden;
+}
+
+.reactEasyCrop_CropAreaRound {
+  border-radius: 50%;
+}
+
+.reactEasyCrop_CropAreaGrid::before {
+  content: '';
+  box-sizing: border-box;
+  position: absolute;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  top: 0;
+  bottom: 0;
+  left: 33.33%;
+  right: 33.33%;
+}
+
+.reactEasyCrop_CropAreaGrid::after {
+  content: '';
+  box-sizing: border-box;
+  position: absolute;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  top: 33.33%;
+  bottom: 33.33%;
+  left: 0;
+  right: 0;
+}
+
+:root {
+    --background: 0 0% 100%;
+    --foreground: 0 0% 10%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 10%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 10%;
+    --primary: 47.9 100% 50.2%;
+    --primary-foreground: 0 0% 9%;
+    --secondary: 0 0% 96.1%;
+    --secondary-foreground: 0 0% 9%;
+    --muted: 0 0% 96.1%;
+    --muted-foreground: 0 0% 45.1%;
+    --accent: 0 0% 96.1%;
+    --accent-foreground: 0 0% 9%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 89.8%;
+    --input: 0 0% 89.8%;
+    --ring: 47.9 100% 50.2%;
+    --radius: 0.5rem;
   }
 
-  /* Utility to hide scrollbars while keeping element scrollable */
-  .hide-scrollbar {
+  .dark {
+    --background: 0 0% 8.6%;
+    --foreground: 0 0% 98%;
+    --card: 0 0% 11%;
+    --card-foreground: 0 0% 98%;
+    --popover: 0 0% 11%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 47.9 100% 50.2%;
+    --primary-foreground: 0 0% 9%;
+    --secondary: 0 0% 14.9%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 0 0% 14.9%;
+    --muted-foreground: 0 0% 63.9%;
+    --accent: 0 0% 14.9%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 14.9%;
+    --input: 0 0% 14.9%;
+    --ring: 47.9 100% 50.2%;
+}
+
+* {
+    @apply border-border;
     scrollbar-width: none; /* Firefox */
     -ms-overflow-style: none; /* IE and Edge */
   }
-  .hide-scrollbar::-webkit-scrollbar {
-    display: none; /* Chrome, Safari */
-    width: 0 !important;
-    height: 0 !important;
-  }
-  .hide-scrollbar::-webkit-scrollbar-thumb {
-    background: transparent !important;
-  }
-  .hide-scrollbar::-webkit-scrollbar-track {
-    background: transparent !important;
-  }
-
-  /* Extra safeguards for WebKit & legacy engines */
-  .hide-scrollbar::-webkit-scrollbar-track-piece,
-  .hide-scrollbar::-webkit-scrollbar-corner,
-  .hide-scrollbar::-webkit-resizer {
-    background: transparent !important;
+  
+  *::-webkit-scrollbar {
+    width: 0px !important;
+    height: 0px !important;
     display: none !important;
   }
-
-  /* Force overlay scrollbars on macOS to be invisible as well */
-  .hide-scrollbar {
-    scrollbar-gutter: stable both-edges; /* Avoid layout shift */
+  
+  body {
+    @apply bg-background text-foreground font-body transition-colors duration-300;
   }
-
-  .animate-heartbeat {
-    animation: heartbeat 1.2s ease-in-out infinite;
-    transform-origin: center;
-    transform-box: fill-box;
-    will-change: transform;
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-heading tracking-tight;
   }
-
-  /* Scroll/interaction utility classes injected dynamically */
-  .no-scroll {
-    overflow: hidden !important;
+  h1 {
+    @apply text-3xl font-bold;
   }
-
-  .disable-click {
-    pointer-events: none !important;
+  h2 {
+    @apply text-2xl font-semibold;
   }
+  h3 {
+    @apply text-xl font-semibold;
+  }
+  h4 {
+    @apply text-lg font-medium;
+  }
+  img {
+    @apply rounded-lg; /* This applies an 8px border-radius to all images */
+  }
+  
+  /* Fixed dark theme for OpenMSP Platform */
+  html {
+    background-color: var(--color-bg);
+  }
+  
+body {
+  background-color: var(--color-bg);
+  color: var(--color-text-primary);
+}
+
+/* Utilities */
+.text-balance {
+  text-wrap: balance;
+}
+
+/* Utility to hide scrollbars while keeping element scrollable */
+.hide-scrollbar {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+}
+.hide-scrollbar::-webkit-scrollbar {
+  display: none; /* Chrome, Safari */
+  width: 0 !important;
+  height: 0 !important;
+}
+.hide-scrollbar::-webkit-scrollbar-thumb {
+  background: transparent !important;
+}
+.hide-scrollbar::-webkit-scrollbar-track {
+  background: transparent !important;
+}
+
+/* Extra safeguards for WebKit & legacy engines */
+.hide-scrollbar::-webkit-scrollbar-track-piece,
+.hide-scrollbar::-webkit-scrollbar-corner,
+.hide-scrollbar::-webkit-resizer {
+  background: transparent !important;
+  display: none !important;
+}
+
+/* Force overlay scrollbars on macOS to be invisible as well */
+.hide-scrollbar {
+  scrollbar-gutter: stable both-edges; /* Avoid layout shift */
+}
+
+.animate-heartbeat {
+  animation: heartbeat 1.2s ease-in-out infinite;
+  transform-origin: center;
+  transform-box: fill-box;
+  will-change: transform;
+}
+
+/* Scroll/interaction utility classes injected dynamically */
+.no-scroll {
+  overflow: hidden !important;
+}
+
+.disable-click {
+  pointer-events: none !important;
+}
+
+/* Light mode specific styles */
+:root:not(.dark) .light-mode-shadow {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+}
+
+:root:not(.dark) .light-mode-border {
+  border-color: rgba(0, 0, 0, 0.1);
+}
+
+:root:not(.dark) .light-mode-card {
+  background-color: white;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+:root:not(.dark) .light-mode-hover:hover {
+  background-color: rgba(0, 0, 0, 0.03);
+}
+
+/* Vendor logo styles */
+.vendor-logo-container {
+  @apply relative w-full max-w-xs mx-auto aspect-square overflow-hidden rounded-lg bg-background p-4 border border-border/30 shadow-sm;
+}
+
+.vendor-logo {
+  @apply object-contain p-2 rounded-lg;
+}
+
+.vendor-logo-thumbnail {
+  @apply rounded-lg overflow-hidden;
+}
+
+/* Add scrollbar hiding utility */
+.scrollbar-hide {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none; /* Chrome, Safari and Opera */
+}
+
+/* Theme transition */
+.theme-transition {
+  @apply transition-colors duration-300;
+}
+
+/* Prevent zoom on mobile focus/touch events */
+@media screen and (max-width: 767px) {
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="search"],
+  input[type="tel"],
+  input[type="url"],
+  input[type="number"],
+  textarea,
+  select {
+    font-size: 16px !important;
+    transform-origin: left top;
+    transform: scale(1);
+  }
+}
+
+/* Additional mobile zoom prevention */
+@media screen and (max-width: 767px) {
+  /* Prevent zoom on double tap */
+  * {
+    touch-action: manipulation;
+  }
+  
+  /* Prevent zoom on input focus */
+  input, textarea, select {
+    /* Ensure minimum font size to prevent zoom */
+    font-size: max(16px, 1rem) !important;
+  }
+}
+
+/* Platform-specific body styling using CSS variables */
+body[data-platform="openmsp"] {
+  background-color: var(--ods-system-greys-background);
+  color: var(--ods-system-greys-white);
+}
+
+body[data-platform="flamingo"] {
+  background-color: var(--ods-system-greys-white);
+  color: var(--ods-system-greys-background);
+}
+
+body[data-platform="flamingo-teaser"] {
+  background-color: var(--ods-system-greys-background);
+  color: var(--ods-system-greys-white);
+}
+
+body[data-platform="openframe"] {
+  background-color: var(--ods-system-greys-background);
+  color: var(--ods-system-greys-white);
+}
+
+body[data-platform="admin-hub"] {
+  background-color: var(--ods-system-greys-background);
+  color: var(--ods-system-greys-white);
 }
 
 /* React-scroll active states */
@@ -76,102 +320,6 @@ body {
 
 .nav-item-active span {
   color: var(--color-text-primary) !important;
-}
-
-@layer base {
-  :root {
-    --background: 0 0% 100%;
-    --foreground: 0 0% 3.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 0 0% 3.9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 3.9%;
-    --primary: 0 0% 9%;
-    --primary-foreground: 0 0% 98%;
-    --secondary: 0 0% 96.1%;
-    --secondary-foreground: 0 0% 9%;
-    --muted: 0 0% 96.1%;
-    --muted-foreground: 0 0% 45.1%;
-    --accent: 0 0% 96.1%;
-    --accent-foreground: 0 0% 9%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 89.8%;
-    --input: 0 0% 89.8%;
-    --ring: 0 0% 3.9%;
-    --chart-1: 12 76% 61%;
-    --chart-2: 173 58% 39%;
-    --chart-3: 197 37% 24%;
-    --chart-4: 43 74% 66%;
-    --chart-5: 27 87% 67%;
-    --radius: 0.5rem;
-    --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 240 5.3% 26.1%;
-    --sidebar-primary: 240 5.9% 10%;
-    --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 240 4.8% 95.9%;
-    --sidebar-accent-foreground: 240 5.9% 10%;
-    --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
-  }
-  .dark {
-    --background: 0 0% 3.9%;
-    --foreground: 0 0% 98%;
-    --card: 0 0% 3.9%;
-    --card-foreground: 0 0% 98%;
-    --popover: 0 0% 3.9%;
-    --popover-foreground: 0 0% 98%;
-    --primary: 0 0% 98%;
-    --primary-foreground: 0 0% 9%;
-    --secondary: 0 0% 14.9%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 0 0% 14.9%;
-    --muted-foreground: 0 0% 63.9%;
-    --accent: 0 0% 14.9%;
-    --accent-foreground: 0 0% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 14.9%;
-    --input: 0 0% 14.9%;
-    --ring: 0 0% 83.1%;
-    --chart-1: 220 70% 50%;
-    --chart-2: 160 60% 45%;
-    --chart-3: 30 80% 55%;
-    --chart-4: 280 65% 60%;
-    --chart-5: 340 75% 55%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
-  }
-}
-
-@layer base {
-  * {
-    @apply border-border;
-    scrollbar-width: none; /* Firefox */
-    -ms-overflow-style: none; /* IE and Edge */
-  }
-  
-  *::-webkit-scrollbar {
-    width: 0px !important;
-    height: 0px !important;
-    display: none !important;
-  }
-  
-  /* Fixed dark theme for OpenMSP Platform */
-  html {
-    background-color: var(--color-bg);
-  }
-  
-  body {
-    background-color: var(--color-bg);
-    color: var(--color-text-primary);
-  }
 }
 
 /* Dark theme styling for @uiw/react-md-editor */
