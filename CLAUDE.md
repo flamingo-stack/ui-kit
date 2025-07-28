@@ -24,7 +24,7 @@ The package uses granular exports for optimal tree-shaking:
 ```typescript
 // Main exports
 import { Button, Card } from '@flamingo/ui-kit/components/ui'
-import { AnnouncementBar, SSOModal } from '@flamingo/ui-kit/components/features'
+import { AnnouncementBar, AuthProvidersList, AuthTrigger, ProviderButton } from '@flamingo/ui-kit/components/features'
 import { useAnnouncements, useDebounce } from '@flamingo/ui-kit/hooks'
 import { cn, getPlatformAccentColor } from '@flamingo/ui-kit/utils'
 
