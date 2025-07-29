@@ -85,7 +85,7 @@ export function TableSkeleton({
         {Array.from({ length: rows }).map((_, rowIndex) => (
           <div 
             key={rowIndex} 
-            className="grid gap-4 py-2 border-b border-ods-border/30"
+            className="grid gap-4 py-2 border-b border-ods-divider"
             style={{ gridTemplateColumns: `repeat(${columns}, 1fr)` }}
           >
             {Array.from({ length: columns }).map((_, colIndex) => (
@@ -251,7 +251,7 @@ export function CommentSkeleton({
 
       {/* Replies */}
       {showReplies && (
-        <div className="ml-11 pl-4 border-l border-ods-border/30 space-y-4">
+        <div className="ml-11 pl-4 border-l border-ods-divider space-y-4">
           {Array.from({ length: 2 }).map((_, index) => (
             <div key={index} className="space-y-2">
               <div className="flex items-center gap-3">

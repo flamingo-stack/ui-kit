@@ -250,7 +250,7 @@ export function ArticleLayoutSkeleton({ className }: PageLayoutSkeletonProps) {
         </div>
         
         {/* Metadata */}
-        <div className="flex items-center gap-4 pt-4 border-t border-ods-border/30">
+        <div className="flex items-center gap-4 pt-4 border-t border-ods-divider">
           <div className="flex items-center gap-2">
             <MediaSkeleton.Avatar size="sm" />
             <TextSkeleton.Caption className="w-24" />
