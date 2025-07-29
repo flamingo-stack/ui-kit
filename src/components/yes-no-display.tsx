@@ -1,4 +1,4 @@
-import { CheckCircleIcon, XCircleIcon } from './ui/custom-icons'
+import { CheckCircleIcon as LucideCheckCircleIcon, XCircleIcon } from './ui/custom-icons'
 
 interface YesNoDisplayProps {
   value: boolean
@@ -19,7 +19,7 @@ export function YesNoDisplay({
   if (customText) {
     return (
       <div className={`flex items-center gap-2 ${className}`}>
-        <CheckCircleIcon className="h-6 w-6" />
+        <LucideCheckCircleIcon className="h-6 w-6" />
         <span className="text-ods-text-primary text-[16px]">{customText}</span>
       </div>
     )
@@ -29,7 +29,7 @@ export function YesNoDisplay({
   if (value) {
     return (
       <div className={`flex items-center gap-2 ${className}`}>
-        <CheckCircleIcon className="h-6 w-6" />
+        <LucideCheckCircleIcon className="h-6 w-6" />
         <span className="text-ods-text-primary text-[16px]">{yesText}</span>
       </div>
     )
