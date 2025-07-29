@@ -169,7 +169,7 @@ function BlogCardContent({ showActions, showMetadata }: { showActions: boolean; 
         {/* Metadata footer - Matches BlogMeta horizontal layout */}
         {showMetadata && (
           <div className="mt-auto">
-            <div className="flex items-center justify-between gap-4 pt-4 border-t border-ods-divider">
+            <div className="flex items-center justify-between gap-4 pt-4 border-t border-ods-border">
               {/* Author section - matches AuthorMeta */}
               <div className="flex items-center gap-2 min-w-0 flex-1">
                 <MediaSkeleton.Avatar size="sm" />
