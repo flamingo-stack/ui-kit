@@ -141,7 +141,19 @@ export function AnnouncementBar() {
       style={{ backgroundColor: announcement.background_color }}
     >
       <div className="flex items-center w-full max-w-full">
-        <div className="flex flex-row gap-2 md:gap-4 items-center pl-4 md:pl-6 py-1.5 md:py-2 flex-1 min-w-0">
+        {/* Mobile: Clickable content area, Desktop: Regular content */}
+        <div 
+          className={`flex flex-row gap-2 md:gap-4 items-center pl-4 md:pl-6 py-1.5 md:py-2 flex-1 min-w-0 ${
+            announcement.cta_enabled && announcement.cta_url ? 'md:cursor-default cursor-pointer' : ''
+          }`}
+          onClick={(e) => {
+            // Only handle click on mobile (< 768px) and if CTA is enabled
+            if (window.innerWidth < 768 && announcement.cta_enabled && announcement.cta_url) {
+              e.preventDefault();
+              handleCtaClick();
+            }
+          }}
+        >
           {renderIcon()}
 
           <div className="flex-1 min-w-0 max-w-full">
@@ -153,8 +165,9 @@ export function AnnouncementBar() {
             </p>
           </div>
 
+          {/* CTA Button - Hidden on mobile, shown on desktop */}
           {announcement.cta_enabled && announcement.cta_text && announcement.cta_url && (
-            <div className="flex-shrink-0 ml-1 md:ml-2">
+            <div className="hidden md:flex flex-shrink-0 ml-1 md:ml-2">
               <Button
                 onClick={handleCtaClick}
                 variant="outline"
@@ -181,8 +194,12 @@ export function AnnouncementBar() {
           )}
         </div>
 
+        {/* Dismiss button - always visible */}
         <button
-          onClick={handleDismiss}
+          onClick={(e) => {
+            e.stopPropagation(); // Prevent triggering the mobile CTA click
+            handleDismiss();
+          }}
           className="flex-shrink-0 w-8 h-8 md:w-10 md:h-10 flex items-center justify-center hover:bg-[#1A1A1A]/10 focus:outline-none focus:ring-2 focus:ring-[#1A1A1A] mr-2 md:mr-4"
           aria-label="Dismiss announcement"
           type="button"
