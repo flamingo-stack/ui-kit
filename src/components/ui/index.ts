@@ -25,8 +25,6 @@ export * from './navigation-menu'
 // Feedback components
 export * from './alert'
 export * from './badge'
-export * from './toast'
-export * from './toaster'
 export * from './progress'
 // TODO: Add other UI components as they are moved to ui-kit
 export * from './skeleton'

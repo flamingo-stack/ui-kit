@@ -18,6 +18,14 @@
       "types": "./src/components/features/index.ts",
       "default": "./src/components/features/index.ts"
     },
+    "./components/toast": {
+      "types": "./src/components/toast/index.ts",
+      "default": "./src/components/toast/index.ts"
+    },
+    "./components/icons": {
+      "types": "./src/components/icons/index.ts",
+      "default": "./src/components/icons/index.ts"
+    },
     "./hooks": {
       "types": "./src/hooks/index.ts",
       "default": "./src/hooks/index.ts"

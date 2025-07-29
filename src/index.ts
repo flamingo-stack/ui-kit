@@ -2,6 +2,7 @@
 export * from './components/ui'
 export * from './components/features'
 export * from './components/icons'
+export * from './components/toast'
 export * from './hooks'
 export * from './utils'
 export * from './types'
