@@ -1,15 +1,10 @@
 import { Button } from "./ui/button"
-import { getVendorLogo, VendorWithMedia as VendorMedia } from "../utils/vendor-media-stub"
+import { getVendorLogo, VendorWithMedia } from "../utils/vendor-media-stub"
 import Image from "next/image"
 import { getProxiedImageUrl } from "../utils/image-proxy-stub"
 
 interface VendorDisplayButtonProps {
-  vendor: {
-    id: number
-    title: string
-    slug: string
-    vendor_media?: VendorMedia[]
-  }
+  vendor: VendorWithMedia
   onClick?: (vendorSlug: string) => void
   variant?: 'default' | 'compact'
   externalUrl?: string
@@ -17,11 +12,11 @@ interface VendorDisplayButtonProps {
 
 export function VendorDisplayButton({ vendor, onClick, variant = 'default', externalUrl }: VendorDisplayButtonProps) {
   const handleClick = () => {
-    if (externalUrl) {
+    if (externalUrl && vendor.slug) {
       // Use environment variable or fallback to provided URL
       const baseUrl = process.env.NEXT_PUBLIC_OPENMSP_URL || externalUrl
       window.open(`${baseUrl}/vendor/${vendor.slug}`, '_blank', 'noopener,noreferrer')
-    } else if (onClick) {
+    } else if (onClick && vendor.slug) {
       onClick(vendor.slug)
     }
   }
