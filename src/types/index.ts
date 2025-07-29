@@ -2,15 +2,14 @@
 // All platform and application types are available from this single export
 
 // Core platform types
-export * from './platform'
-export * from './announcement'
-export * from './categories'
+export type { PlatformName, PlatformRecord, PlatformConfig as PlatformSettings, PlatformOption, PlatformFilter, LegacyPlatform, PlatformStats } from './platform'
+export type { Announcement, AnnouncementFormData } from './announcement'
+export type { CategoryCardProps, Category, RealCategoryCardProps } from './categories'
 export * from './category'
 export * from './media'
 
 // Database and API types
 export * from './supabase'
-export * from './supabase-new'
 
 // Authentication types
 export * from './auth'
@@ -22,7 +21,7 @@ export * from './vendor-links'
 
 // User and profile types
 export * from './user'
-export * from './profile'
+export type { ProfileData, ProfileResponse } from './profile'
 export * from './team'
 export * from './employee'
 

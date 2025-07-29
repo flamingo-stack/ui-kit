@@ -1,6 +1,5 @@
 // Feature Components exports
 export * from './provider-button'
-export * from './auth-trigger'
 export * from './auth-providers-list'
 export * from './error-boundary'
 export * from './loading-provider'
