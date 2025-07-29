@@ -243,6 +243,8 @@ Icons are embedded to avoid external dependencies and ensure consistent renderin
 #### `/src/components/`
 - **ui/**: Base components (Button, Card, Input, etc.) using Radix UI primitives
 - **features/**: Complex components (AnnouncementBar, SSOModal) with platform logic
+- **icons/**: Centralized icon components exported through `icons/index.ts`
+- **Individual icon files**: Legacy icon components being migrated to `icons/` directory
 
 #### `/src/hooks/`
 - **api/**: Data fetching hooks (useAnnouncements)
@@ -379,6 +381,55 @@ import { Modal, ModalHeader, ModalTitle, ModalFooter } from "@flamingo/ui-kit/co
 - ✅ **Proper z-index** - Always appears above other content (z-[1300])
 - ✅ **ODS theming** - Uses design system colors and spacing
 - ✅ **Accessibility** - Proper ARIA attributes and focus management
+
+## Icons System & Recent Refactor
+
+### Icon Component Structure
+The UI Kit includes a comprehensive icon system with both centralized and individual icon components:
+
+**Centralized Icons (in `/src/components/icons/`)**:
+- **GitHubIcon**: GitHub branding icon
+- **RedditIcon**: Reddit social platform icon  
+- **XLogo**: X (formerly Twitter) platform logo
+- **OpenFrameLogo**: OpenFrame branding with customizable colors
+
+**Individual Icon Components** (being consolidated):
+Numerous specialized icons throughout the components directory:
+- Platform icons: `flamingo-logo.tsx`, `openmsp-logo.tsx`, `elestio-logo.tsx`
+- UI icons: `hamburger-icon.tsx`, `menu-icon.tsx`, `chevron-button.tsx`
+- Social icons: `slack-icon.tsx`, `hubspot-icon.tsx`, `ms-icon.tsx`
+- Functional icons: `send-icon.tsx`, `user-icon.tsx`, `vendor-icon.tsx`
+- Custom icons: `check-circle-icon.tsx`, `plus-circle-icon.tsx`, `minus-circle-icon.tsx`
+
+### Icon Usage Patterns
+
+**Centralized Icons**:
+```typescript
+import { GitHubIcon, XLogo, OpenFrameLogo } from '@flamingo/ui-kit/components/icons'
+
+<OpenFrameLogo className="h-8 w-8" />
+<GitHubIcon size={24} />
+<XLogo color="#000" />
+```
+
+**Individual Icons** (current pattern):
+```typescript
+import { FlamingoLogo } from '@flamingo/ui-kit/components/flamingo-logo'
+import { UserIcon } from '@flamingo/ui-kit/components/user-icon'
+```
+
+### Icons Migration Status
+- ✅ **Icon Export Structure**: `icons/index.ts` created for centralized exports
+- 🔄 **Migration in Progress**: Individual icon files being consolidated into `/icons/` directory
+- ✅ **SVG Components**: All icons implemented as React SVG components with customizable props
+- ✅ **Platform Integration**: Icons adapt to platform theming and color schemes
+- ✅ **TypeScript Support**: Full type safety with proper prop interfaces
+
+### Recommended Migration Path
+1. **New Icons**: Add directly to `/src/components/icons/` directory
+2. **Export Pattern**: Export through `icons/index.ts` for clean imports
+3. **Legacy Support**: Existing individual icon imports continue to work during transition
+4. **Gradual Migration**: Move frequently used icons to centralized structure first
 
 ## Major Refactor Achievements (FULLY COMPLETED ✅)
 

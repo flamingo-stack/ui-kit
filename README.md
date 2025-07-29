@@ -28,7 +28,8 @@ npm install @flamingo/ui-kit
 ```tsx
 import { Button, Card, Input, Modal, ModalHeader, ModalTitle, ModalFooter } from '@flamingo/ui-kit/components/ui'
 import { SSOModal, ErrorBoundary } from '@flamingo/ui-kit/components/features'
-import { FlamingoLogo, OpenMSPLogo } from '@flamingo/ui-kit/components/icons'
+import { GitHubIcon, XLogo, OpenFrameLogo } from '@flamingo/ui-kit/components/icons'
+import { FlamingoLogo, OpenMSPLogo } from '@flamingo/ui-kit/components' // Legacy individual imports
 import { useToast } from '@flamingo/ui-kit/hooks'
 
 function MyComponent() {
@@ -107,6 +108,41 @@ The UI kit automatically adapts to different platforms:
 
 Platform detection is automatic based on the `NEXT_PUBLIC_APP_TYPE` environment variable. All components include hover, focus, active, and disabled states with proper accessibility support.
 
+## Icons System
+
+### Icon Organization
+The UI Kit provides icons in two patterns:
+
+**Centralized Icons** (recommended for new icons):
+```tsx
+import { GitHubIcon, XLogo, OpenFrameLogo, RedditIcon } from '@flamingo/ui-kit/components/icons'
+
+// Usage with customizable props
+<OpenFrameLogo className="h-8 w-8" />
+<GitHubIcon size={24} />
+<XLogo color="#1DA1F2" />
+```
+
+**Individual Icon Components** (legacy pattern):
+```tsx
+import { FlamingoLogo } from '@flamingo/ui-kit/components/flamingo-logo'
+import { UserIcon } from '@flamingo/ui-kit/components/user-icon'
+import { VendorIcon } from '@flamingo/ui-kit/components/vendor-icon'
+```
+
+### Available Icons
+- **Social/Platform**: GitHubIcon, XLogo, RedditIcon, SlackIcon, HubspotIcon
+- **Branding**: OpenFrameLogo, FlamingoLogo, OpenMSPLogo, ElestioLogo
+- **UI Elements**: HamburgerIcon, MenuIcon, SendIcon, UserIcon, VendorIcon
+- **Actions**: CheckCircleIcon, PlusCircleIcon, MinusCircleIcon, EditProfileIcon
+- **Custom**: CustomStarIcon, CustomForkIcon, CustomLicenseIcon, CustomTimeIcon
+
+### Migration Status
+- ✅ **Centralized Export**: `/src/components/icons/index.ts` established
+- 🔄 **Gradual Migration**: Individual icons being moved to centralized structure
+- ✅ **TypeScript Support**: Full type safety with proper prop interfaces
+- ✅ **Platform Theming**: Icons adapt to platform color schemes automatically
+
 ## Development
 
 This is a source-only package, so no build step is required. Changes are reflected immediately in consuming projects.
@@ -153,7 +189,8 @@ npm run lint
 ### Components
 - `ui/` - Base components using Radix UI primitives (Button, Modal, Input, etc.)
 - `features/` - Complex, platform-aware components (SSOModal, AnnouncementBar)
-- `icons/` - Shared icon components
+- `icons/` - Centralized icon components (GitHubIcon, XLogo, OpenFrameLogo, RedditIcon)
+- Individual icon files - Legacy pattern being migrated to centralized structure
 
 ### Hooks
 - `ui/` - UI utility hooks (useDebounce, useMediaQuery, useToast)
