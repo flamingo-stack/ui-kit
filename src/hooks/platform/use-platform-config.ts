@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+import { useState, useEffect } from 'react';
 import type { PlatformConfig, PlatformOption } from '../../types/platform';
 
 export interface UsePlatformConfigResult {
@@ -8,35 +8,74 @@ export interface UsePlatformConfigResult {
   error: Error | null;
 }
 
+// Cache for platform configs to avoid repeated fetches
+let platformCache: PlatformConfig[] | null = null;
+let fetchPromise: Promise<PlatformConfig[]> | null = null;
+
 /**
  * Custom hook to fetch platform configurations from API
  * Provides both full platform configs and simplified options for dropdowns
  * Heavily cached to prevent excessive API calls - should only call once per session
+ * 
+ * NOTE: This hook is designed to work without react-query dependency
  */
 export function usePlatformConfig(): UsePlatformConfigResult {
-  const { data, isLoading, error } = useQuery({
-    queryKey: ['platform-config'],
-    queryFn: async () => {
-      console.log('🔧 Fetching platform configurations from API (should only happen once)');
-      
-      const response = await fetch('/api/config/platforms');
-      if (!response.ok) {
-        throw new Error(`Failed to fetch platform config: ${response.statusText}`);
-      }
-      const platforms = await response.json();
-      
-      console.log('✅ Platform configurations loaded:', platforms.length, 'platforms');
-      return { platforms };
-    },
-    staleTime: Infinity, // Never consider stale - platforms rarely change
-    gcTime: Infinity, // Never garbage collect - keep forever in session
-    refetchOnWindowFocus: false, // Never refetch on window focus
-    refetchOnReconnect: false, // Never refetch on network reconnect
-    refetchOnMount: false, // Don't refetch when component mounts if data exists
-    retry: 1, // Only retry once on failure
-  });
+  const [platforms, setPlatforms] = useState<PlatformConfig[]>(platformCache || []);
+  const [isLoading, setIsLoading] = useState(!platformCache);
+  const [error, setError] = useState<Error | null>(null);
 
-  const platforms = data?.platforms || [];
+  useEffect(() => {
+    // If we already have cached platforms, use them
+    if (platformCache) {
+      setPlatforms(platformCache);
+      setIsLoading(false);
+      return;
+    }
+
+    // If a fetch is already in progress, wait for it
+    if (fetchPromise) {
+      fetchPromise
+        .then(data => {
+          setPlatforms(data);
+          setIsLoading(false);
+        })
+        .catch(err => {
+          setError(err);
+          setIsLoading(false);
+        });
+      return;
+    }
+
+    // Start a new fetch
+    console.log('🔧 Fetching platform configurations from API (should only happen once)');
+    
+    fetchPromise = fetch('/api/config/platforms')
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`Failed to fetch platform config: ${response.statusText}`);
+        }
+        return response.json();
+      })
+      .then(data => {
+        const platforms = data.platforms || data;
+        console.log('✅ Platform configurations loaded:', platforms.length, 'platforms');
+        platformCache = platforms;
+        fetchPromise = null;
+        return platforms;
+      });
+
+    fetchPromise
+      .then(data => {
+        setPlatforms(data);
+        setIsLoading(false);
+      })
+      .catch(err => {
+        console.error('❌ Failed to fetch platform config:', err);
+        setError(err);
+        setIsLoading(false);
+        fetchPromise = null;
+      });
+  }, []);
   
   // Create options for dropdowns with "All Platforms" option
   const platformOptions: PlatformOption[] = [
@@ -51,7 +90,7 @@ export function usePlatformConfig(): UsePlatformConfigResult {
     platforms,
     platformOptions,
     isLoading,
-    error: error as Error | null
+    error
   };
 }
 

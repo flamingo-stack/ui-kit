@@ -8,10 +8,20 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(({ classNa
   return (
     <textarea
       className={cn(
-        "flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
-        // Mobile zoom prevention
-        "md:text-sm text-base", // Ensure 16px minimum on mobile
-        "touch-manipulation", // Prevent double-tap zoom
+        // Layout & spacing to match Input
+        "flex min-h-[80px] w-full rounded-lg border p-2",
+        // Typography - EXACTLY match Input
+        "text-[14px] md:text-[18px] font-medium",
+        // Focus & disabled states - EXACTLY match Input
+        "placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#FFC008]/20 focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-50",
+        // Animations & touch UX
+        "transition-colors duration-200 touch-manipulation",
+        // Admin theme palette - EXACTLY match Input
+        "bg-[#161616] border-ods-border text-ods-text-primary placeholder:text-ods-text-secondary hover:border-[#FFC008]/30 focus:border-[#FFC008]",
+        // Ensure proper cursor/stacking
+        "cursor-text relative z-10",
+        // Textarea-specific properties
+        "resize-y",
         className,
       )}
       ref={ref}

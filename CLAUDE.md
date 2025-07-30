@@ -586,3 +586,135 @@ The UI Kit has achieved a state of complete functionality and integration with t
 8. **Join Waitlist Integration**: OpenFrame icons working in footer and CTA components
 9. **Comment System**: Full MSP display functionality with working deletion logic
 10. **Build Pipeline**: Zero compilation errors with clean import/export chains
+
+## Loading States & Skeleton Standards
+
+### Loading Behavior Guidelines
+Loading states and skeleton components must follow these standards for consistent user experience:
+
+#### Query Configuration for Loading States
+```typescript
+// CORRECT: Shows loading skeletons on filter changes
+const { data, isLoading } = useQuery({
+  queryKey: ['admin-data', filters],
+  queryFn: fetchData,
+  // Critical settings for proper loading states:
+  staleTime: 0,        // Data is immediately stale
+  gcTime: 0,           // No cache time (previously cacheTime)
+  refetchOnMount: true,
+  refetchOnWindowFocus: true,
+  // DO NOT use placeholderData - it prevents loading states
+});
+
+// INCORRECT: Keeps previous data, no loading state
+const { data, isLoading } = useQuery({
+  queryKey: ['admin-data', filters],
+  queryFn: fetchData,
+  placeholderData: (prev) => prev, // ❌ NEVER use this
+});
+```
+
+#### Skeleton Implementation Standards
+```typescript
+// Standard skeleton grid for admin pages
+{isLoading ? (
+  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    {[...Array(12)].map((_, i) => (
+      <div key={i} className="bg-ods-card border border-ods-border rounded-lg p-6 animate-pulse">
+        <div className="flex items-start justify-between mb-4">
+          <div>
+            <div className="h-5 w-40 bg-ods-border rounded mb-1" />
+            <div className="h-4 w-48 bg-ods-border rounded" />
+          </div>
+          <div className="h-6 w-20 bg-ods-border rounded-full" />
+        </div>
+        <div className="space-y-2 mb-4">
+          <div className="h-4 w-full bg-ods-border rounded" />
+          <div className="h-4 w-full bg-ods-border rounded" />
+          <div className="h-4 w-3/4 bg-ods-border rounded" />
+        </div>
+        <div className="flex gap-2 pt-4 border-t border-ods-border">
+          <div className="h-9 flex-1 bg-ods-border rounded" />
+          <div className="h-9 w-20 bg-ods-border rounded" />
+        </div>
+      </div>
+    ))}
+  </div>
+) : (
+  // Actual content
+)}
+```
+
+#### Key Loading Standards
+1. **Always show loading skeletons** when data is being fetched
+2. **Use 12 skeleton items** in a 3-column grid for consistency across admin pages
+3. **Never use `placeholderData`** - it prevents loading states from showing
+4. **Set `staleTime: 0` and `gcTime: 0`** to ensure fresh data on filter changes
+5. **Match skeleton structure** to actual content layout for smooth transitions
+
+#### Loading State Hierarchy
+```typescript
+// 1. Initial page load
+if (authLoading) {
+  return <PageLoadingSkeleton />;
+}
+
+// 2. Data fetching
+if (isLoading) {
+  return <DataGridSkeleton />;
+}
+
+// 3. Empty state
+if (data?.length === 0) {
+  return <EmptyState />;
+}
+
+// 4. Actual content
+return <DataGrid data={data} />;
+```
+
+#### Filter Change Behavior
+When users change filters (platform, status, search, etc.), the UI should:
+1. **Immediately show loading skeletons** (not keep previous data)
+2. **Maintain filter UI state** (selected buttons stay selected)
+3. **Update result counts** after data loads
+4. **Prevent layout shift** by using consistent skeleton dimensions
+
+#### Example Implementation
+```typescript
+// Admin dashboard with proper loading states
+export function AdminDashboard() {
+  const [platformFilter, setPlatformFilter] = useState('all');
+  const [statusFilter, setStatusFilter] = useState('all');
+  
+  const { data, isLoading } = useQuery({
+    queryKey: ['admin-data', platformFilter, statusFilter],
+    queryFn: () => fetchAdminData({ platform: platformFilter, status: statusFilter }),
+    staleTime: 0,
+    gcTime: 0,
+  });
+  
+  return (
+    <div>
+      {/* Filters maintain state during loading */}
+      <FilterControls 
+        platform={platformFilter}
+        status={statusFilter}
+        onPlatformChange={setPlatformFilter}
+        onStatusChange={setStatusFilter}
+      />
+      
+      {/* Loading skeletons appear on filter change */}
+      {isLoading ? (
+        <AdminGridSkeleton />
+      ) : data?.length === 0 ? (
+        <EmptyState />
+      ) : (
+        <AdminGrid data={data} />
+      )}
+    </div>
+  );
+}
+```
+
+These loading standards ensure consistent, predictable behavior across all admin interfaces and provide clear visual feedback during data fetching operations.
