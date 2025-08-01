@@ -21,6 +21,8 @@ export * from './dropdown-menu'
 export * from './accordion'
 export * from './breadcrumb'
 export * from './menubar'
+export * from './header'
+export * from './mobile-nav-panel'
 export * from './navigation-menu'
 // Feedback components
 export * from './alert'
