@@ -8,11 +8,14 @@ export interface NavigationItem {
   label: string
   href?: string
   icon?: React.ReactNode
-  badge?: number | string
+  badge?: React.ReactNode | number | string
   isActive?: boolean
   children?: NavigationItem[]
   onClick?: () => void
   element?: React.ReactNode // For completely custom navigation items
+  isExternal?: boolean // For external links that open in new tab
+  type?: 'single' | 'dropdown' // Type of navigation item
+  dropdownContent?: React.ReactNode // Additional content for dropdown (e.g., social icons)
 }
 
 /**
@@ -35,7 +38,8 @@ export interface HeaderConfig {
     enabled: boolean
     menuIcon?: React.ReactNode
     closeIcon?: React.ReactNode
-    onMenuToggle?: (isOpen: boolean) => void
+    onToggle?: () => void
+    isOpen?: boolean
   }
   className?: string
 }

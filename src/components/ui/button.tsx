@@ -1,6 +1,7 @@
 import React from "react"
 import { Slot } from "@radix-ui/react-slot"
 import { cva, type VariantProps } from "class-variance-authority"
+import Link from "next/link"
 
 import { cn } from "../../utils/cn"
 
@@ -134,10 +135,10 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       )
     }
     
-    // When href is provided, render as Link - note: consuming project should handle Next.js Link
+    // When href is provided, render as Next.js Link for client-side navigation
     if (href) {
       return (
-        <a
+        <Link
           href={href}
           className={composedClassName}
           aria-disabled={isDisabled}
@@ -145,7 +146,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
           {...(props as any)}
         >
           {renderContent()}
-        </a>
+        </Link>
       )
     }
     

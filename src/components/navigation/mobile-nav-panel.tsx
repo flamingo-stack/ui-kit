@@ -24,7 +24,9 @@ export function MobileNavPanel({ isOpen, config }: MobileNavPanelProps) {
     }
   }, [isOpen])
 
-  if (!isOpen) return null
+  if (!isOpen) {
+    return null
+  }
 
   const renderNavigationItem = (item: NavigationItem) => {
     // If custom element provided, render it
@@ -40,14 +42,14 @@ export function MobileNavPanel({ isOpen, config }: MobileNavPanelProps) {
           onClick={config.onClose}
           className={cn(
             "flex items-center justify-start h-12 px-4 bg-transparent border-none",
-            "text-ods-text-primary hover:bg-ods-bg-hover gap-3 rounded-md transition-colors",
-            item.isActive && "bg-ods-bg-hover"
+            "hover:bg-ods-bg-hover gap-3 rounded-md transition-colors",
+            item.isActive ? "bg-ods-accent/10 text-ods-text-primary font-semibold" : "text-ods-text-primary"
           )}
         >
-          {item.icon && <span className="mr-3">{item.icon}</span>}
+          {item.icon && <span className="flex-shrink-0">{item.icon}</span>}
           <span className="flex-1">{item.label}</span>
           {item.badge !== undefined && (
-            <span className="ml-auto">{item.badge}</span>
+            <span className="flex-shrink-0">{item.badge}</span>
           )}
         </a>
       )
@@ -64,8 +66,8 @@ export function MobileNavPanel({ isOpen, config }: MobileNavPanelProps) {
         leftIcon={item.icon}
         className={cn(
           "h-12 px-4 w-full justify-start",
-          "text-ods-text-primary hover:bg-ods-bg-hover",
-          item.isActive && "bg-ods-bg-hover"
+          "hover:bg-ods-bg-hover",
+          item.isActive ? "bg-ods-accent/10 text-ods-text-primary font-semibold" : "text-ods-text-primary"
         )}
       >
         <span className="flex-1 text-left">{item.label}</span>
@@ -78,28 +80,25 @@ export function MobileNavPanel({ isOpen, config }: MobileNavPanelProps) {
 
   return (
     <>
-      {/* Backdrop - closes nav when clicked outside */}
+      {/* Backdrop */}
       <div
-        className="fixed inset-0 z-[9999998] bg-black/50"
+        className="fixed inset-0 z-[9998]"
+        style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}
         onClick={config.onClose}
       />
 
       {/* Navigation Panel */}
       <div
         className={cn(
-          "fixed z-[9999999] bg-ods-card border border-ods-border rounded-lg shadow-xl",
-          // Responsive positioning and sizing
-          "right-2 left-2 sm:right-4 sm:left-auto sm:w-96 sm:max-w-[calc(100vw-2rem)]",
-          "md:right-6 md:w-[400px] md:max-w-[calc(100vw-3rem)]",
-          // Height constraints with proper mobile spacing
-          "top-[72px] max-h-[calc(100vh-130px)] sm:max-h-[calc(100vh-88px)]",
-          "flex flex-col",
-          config.className
+          "fixed z-[9999] bg-ods-card border border-ods-border rounded-lg shadow-xl",
+          "right-4 top-20 w-80 max-w-[calc(100vw-2rem)]",
+          "max-h-[calc(100vh-6rem)]",
+          "flex flex-col"
         )}
-        onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside nav
+        onClick={(e) => e.stopPropagation()}
       >
-        {/* Header with close button - fixed at top */}
-        <div className="flex justify-end p-2 border-b border-ods-border flex-shrink-0">
+        {/* Header with close button */}
+        <div className="flex justify-end p-2 border-b border-ods-border">
           <Button
             variant="ghost"
             size="sm"
@@ -114,7 +113,7 @@ export function MobileNavPanel({ isOpen, config }: MobileNavPanelProps) {
         </div>
 
         {/* Scrollable content area */}
-        <div className="flex-1 overflow-y-auto overflow-x-hidden px-2 py-2">
+        <div className="flex-1 overflow-y-auto px-2 py-2">
           <div className="flex flex-col space-y-1">
             {config.sections.map((section, index) => (
               <div key={index}>
@@ -131,9 +130,9 @@ export function MobileNavPanel({ isOpen, config }: MobileNavPanelProps) {
           </div>
         </div>
 
-        {/* Footer - fixed at bottom */}
+        {/* Footer */}
         {config.footer && (
-          <div className="border-t border-ods-border p-4 flex-shrink-0">
+          <div className="border-t border-ods-border p-4">
             {config.footer}
           </div>
         )}
