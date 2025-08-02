@@ -33,3 +33,6 @@ export * from './waitlist'
 export * from './stack'
 export * from './report'
 export * from './faq'
+
+// Navigation types
+export * from './navigation'

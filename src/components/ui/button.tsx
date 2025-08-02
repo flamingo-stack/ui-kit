@@ -22,6 +22,8 @@ const buttonVariants = cva(
         transparent: "bg-transparent text-ods-text-primary hover:bg-ods-bg-hover active:bg-ods-bg-active focus-visible:ring-2 focus-visible:ring-ods-focus disabled:text-ods-text-disabled",
         // Ghost variant for subtle interactions
         ghost: "bg-transparent text-ods-text-primary hover:bg-ods-bg-hover active:bg-ods-bg-active focus-visible:ring-2 focus-visible:ring-ods-focus disabled:text-ods-text-disabled",
+        // Ghost navigation variant - left-aligned for navigation menus
+        "ghost-nav": "bg-transparent text-ods-text-primary hover:bg-ods-bg-hover active:bg-ods-bg-active focus-visible:ring-2 focus-visible:ring-ods-focus disabled:text-ods-text-disabled justify-start",
         // Link variant for text-like buttons
         link: "bg-transparent text-ods-link underline-offset-4 hover:underline hover:text-ods-link-hover focus-visible:ring-2 focus-visible:ring-ods-focus disabled:text-ods-text-disabled",
         // Search variant for search containers

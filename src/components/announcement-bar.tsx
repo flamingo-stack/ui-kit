@@ -137,8 +137,9 @@ export function AnnouncementBar() {
 
   return (
     <div
-      className="relative w-full"
+      className="relative w-full z-50"
       style={{ backgroundColor: announcement.background_color }}
+      data-announcement-bar
     >
       <div className="flex items-center w-full max-w-full">
         {/* Mobile: Clickable content area, Desktop: Regular content */}
