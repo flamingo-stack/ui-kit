@@ -12,8 +12,8 @@ export interface HeaderProps {
 }
 
 export function Header({ config }: HeaderProps) {
-  const [isVisible, setIsVisible] = useState(true)
-  const lastScrollY = useRef(0)
+  const [show, setShow] = useState(true)
+  const scrollYRef = useRef(0)
   const [openDropdowns, setOpenDropdowns] = useState<Record<string, boolean>>({})
   const dropdownRefs = useRef<Record<string, HTMLElement | null>>({})
   
@@ -21,19 +21,32 @@ export function Header({ config }: HeaderProps) {
     const handleScroll = () => {
       const currentScrollY = window.scrollY
       
-      if (currentScrollY <= 10) {
-        setIsVisible(true)
-      } else if (currentScrollY > lastScrollY.current && currentScrollY > 100) {
-        setIsVisible(false)
-      } else if (currentScrollY < lastScrollY.current) {
-        setIsVisible(true)
+      console.log('Scroll:', {
+        current: currentScrollY,
+        last: scrollYRef.current,
+        show: show,
+        goingDown: currentScrollY > scrollYRef.current,
+        pastThreshold: currentScrollY > 100
+      })
+      
+      if (currentScrollY > scrollYRef.current && currentScrollY > 100) {
+        // scrolling down & past threshold
+        console.log('HIDING HEADER')
+        setShow(false)
+      } else if (currentScrollY < scrollYRef.current || currentScrollY <= 10) {
+        // scrolling up or at top
+        console.log('SHOWING HEADER')
+        setShow(true)
       }
       
-      lastScrollY.current = currentScrollY
+      scrollYRef.current = currentScrollY
     }
 
     window.addEventListener('scroll', handleScroll, { passive: true })
-    return () => window.removeEventListener('scroll', handleScroll)
+    
+    return () => {
+      window.removeEventListener('scroll', handleScroll)
+    }
   }, [])
 
   // Clean up dropdowns on unmount to prevent focus errors
@@ -183,18 +196,19 @@ export function Header({ config }: HeaderProps) {
   return (
     <div 
       className={cn(
-        "sticky top-0 z-40 w-full",
-        "transition-all duration-300 ease-in-out",
-        !isVisible ? "-translate-y-full" : "translate-y-0"
+        "sticky top-0 z-40 w-full transition-transform duration-300 ease-in-out",
+        !show && "-translate-y-full"
       )}
+      style={{
+        transform: show ? 'translateY(0)' : 'translateY(-100%)',
+        border: show ? '2px solid green' : '2px solid red'
+      }}
     >
       <header 
         className={cn(
           "w-full flex items-center justify-between", 
           "bg-ods-card border-b border-ods-border backdrop-blur-sm",
           "px-6 py-3",
-          "transition-shadow duration-300",
-          !isAtTop && "shadow-md",
           config.className
         )}
       >
