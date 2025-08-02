@@ -36,22 +36,21 @@ export function MobileNavPanel({ isOpen, config }: MobileNavPanelProps) {
 
     if (item.href) {
       return (
-        <a
+        <Button
           key={item.id}
+          variant="ghost"
           href={item.href}
           onClick={config.onClose}
+          leftIcon={item.icon}
+          rightIcon={item.badge}
           className={cn(
-            "flex items-center justify-start h-12 px-4 bg-transparent border-none",
-            "hover:bg-ods-bg-hover gap-3 rounded-md transition-colors",
+            "h-12 px-4 w-full justify-start",
+            "hover:bg-ods-bg-hover",
             item.isActive ? "bg-ods-accent/10 text-ods-text-primary font-semibold" : "text-ods-text-primary"
           )}
         >
-          {item.icon && <span className="flex-shrink-0">{item.icon}</span>}
-          <span className="flex-1">{item.label}</span>
-          {item.badge !== undefined && (
-            <span className="flex-shrink-0">{item.badge}</span>
-          )}
-        </a>
+          {item.label}
+        </Button>
       )
     }
 

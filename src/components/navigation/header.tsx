@@ -13,7 +13,7 @@ export interface HeaderProps {
 
 export function Header({ config }: HeaderProps) {
   const [show, setShow] = useState(true)
-  const scrollYRef = useRef(0)
+  const [lastScrollY, setLastScrollY] = useState(0)
   const [openDropdowns, setOpenDropdowns] = useState<Record<string, boolean>>({})
   const dropdownRefs = useRef<Record<string, HTMLElement | null>>({})
   
@@ -21,25 +21,19 @@ export function Header({ config }: HeaderProps) {
     const handleScroll = () => {
       const currentScrollY = window.scrollY
       
-      console.log('Scroll:', {
-        current: currentScrollY,
-        last: scrollYRef.current,
-        show: show,
-        goingDown: currentScrollY > scrollYRef.current,
-        pastThreshold: currentScrollY > 100
+      setLastScrollY(prevScrollY => {
+        // Determine if we should show or hide the header
+        const shouldHide = currentScrollY > prevScrollY && currentScrollY > 50
+        const shouldShow = currentScrollY < prevScrollY || currentScrollY <= 10
+        
+        if (shouldHide) {
+          setShow(false)
+        } else if (shouldShow) {
+          setShow(true)
+        }
+        
+        return currentScrollY
       })
-      
-      if (currentScrollY > scrollYRef.current && currentScrollY > 100) {
-        // scrolling down & past threshold
-        console.log('HIDING HEADER')
-        setShow(false)
-      } else if (currentScrollY < scrollYRef.current || currentScrollY <= 10) {
-        // scrolling up or at top
-        console.log('SHOWING HEADER')
-        setShow(true)
-      }
-      
-      scrollYRef.current = currentScrollY
     }
 
     window.addEventListener('scroll', handleScroll, { passive: true })
@@ -70,9 +64,11 @@ export function Header({ config }: HeaderProps) {
           open={openDropdowns[item.id] || false}
           onOpenChange={(open) => {
             // Safely update state to prevent focus issues
-            setTimeout(() => {
+            try {
               setOpenDropdowns(prev => ({ ...prev, [item.id]: open }))
-            }, 0)
+            } catch (error) {
+              console.warn('Dropdown state update error:', error)
+            }
           }}
           modal={false}
         >
@@ -95,15 +91,34 @@ export function Header({ config }: HeaderProps) {
           <DropdownMenu.Portal>
             <DropdownMenu.Content 
               className={cn(
-                "bg-ods-card border border-ods-border rounded-lg shadow-xl z-[1000]",
+                "bg-ods-card border border-ods-border rounded-lg shadow-xl z-[9999]",
                 item.id === 'community' ? "min-w-[240px]" : "min-w-[220px]"
               )}
-              onCloseAutoFocus={(e) => e.preventDefault()}
-              onEscapeKeyDown={(e) => e.preventDefault()}
+              onCloseAutoFocus={(e) => {
+                // Prevent focus errors when closing
+                try {
+                  e.preventDefault()
+                } catch (error) {
+                  console.warn('Dropdown close focus error:', error)
+                }
+              }}
+              onEscapeKeyDown={(e) => {
+                // Safely handle escape key
+                try {
+                  e.preventDefault()
+                } catch (error) {
+                  console.warn('Dropdown escape key error:', error)
+                }
+              }}
               onPointerDownOutside={(e) => {
-                // Prevent focus issues
-                const target = e.target as HTMLElement
-                if (!target) return
+                // Prevent focus issues on outside clicks
+                try {
+                  const target = e.target as HTMLElement
+                  if (!target) return
+                  // Allow the dropdown to close naturally
+                } catch (error) {
+                  console.warn('Dropdown outside click error:', error)
+                }
               }}>
             <div className="p-2">
               {item.children.map((child, index) => (
@@ -111,9 +126,13 @@ export function Header({ config }: HeaderProps) {
                   key={child.id} 
                   asChild
                   onSelect={(e) => {
-                    if (child.href && !child.onClick) {
-                      // Let the link handle navigation
-                      e.preventDefault()
+                    try {
+                      if (child.href && !child.onClick) {
+                        // Let the link handle navigation
+                        e.preventDefault()
+                      }
+                    } catch (error) {
+                      console.warn('Dropdown item select error:', error)
                     }
                   }}
                 >
@@ -193,15 +212,14 @@ export function Header({ config }: HeaderProps) {
     )
   }
   
+  
   return (
     <div 
       className={cn(
-        "sticky top-0 z-40 w-full transition-transform duration-300 ease-in-out",
-        !show && "-translate-y-full"
+        "sticky top-0 z-40 w-full transition-transform duration-300 ease-in-out"
       )}
       style={{
-        transform: show ? 'translateY(0)' : 'translateY(-100%)',
-        border: show ? '2px solid green' : '2px solid red'
+        transform: !show ? 'translateY(-100%)' : 'translateY(0)'
       }}
     >
       <header 
