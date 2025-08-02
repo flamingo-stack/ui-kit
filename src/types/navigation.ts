@@ -16,6 +16,7 @@ export interface NavigationItem {
   isExternal?: boolean // For external links that open in new tab
   type?: 'single' | 'dropdown' // Type of navigation item
   dropdownContent?: React.ReactNode // Additional content for dropdown (e.g., social icons)
+  showDropdownDivider?: boolean // Whether to show divider above dropdown content
 }
 
 /**

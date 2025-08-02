@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { cn } from '../../utils'
 import { HeaderConfig, NavigationItem } from '../../types/navigation'
 import { Button } from '../ui/button'
-import * as DropdownMenu from '@radix-ui/react-dropdown-menu'
+import { useState as useDropdownState, useRef as useDropdownRef, useEffect as useDropdownEffect } from 'react'
 
 export interface HeaderProps {
   config: HeaderConfig
@@ -15,7 +15,59 @@ export function Header({ config }: HeaderProps) {
   const [show, setShow] = useState(true)
   const [lastScrollY, setLastScrollY] = useState(0)
   const [openDropdowns, setOpenDropdowns] = useState<Record<string, boolean>>({})
-  const dropdownRefs = useRef<Record<string, HTMLElement | null>>({})
+  const dropdownRefs = useRef<Record<string, HTMLDivElement | null>>({})
+  const triggerRefs = useRef<Record<string, HTMLButtonElement | null>>({})
+  
+  // Handle click outside and escape key for custom dropdown
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as HTMLElement
+      if (!target) return
+
+      // Check if click is outside all dropdowns
+      const isOutsideAllDropdowns = Object.keys(openDropdowns).every(id => {
+        const dropdown = dropdownRefs.current[id]
+        const trigger = triggerRefs.current[id]
+        
+        if (!dropdown || !trigger) return true
+        
+        return !dropdown.contains(target) && !trigger.contains(target)
+      })
+
+      if (isOutsideAllDropdowns) {
+        setOpenDropdowns({})
+      }
+    }
+
+    const handleEscapeKey = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setOpenDropdowns({})
+      }
+    }
+
+    // Only add listeners if any dropdown is open
+    const hasOpenDropdowns = Object.values(openDropdowns).some(Boolean)
+    if (hasOpenDropdowns) {
+      document.addEventListener('mousedown', handleClickOutside)
+      document.addEventListener('keydown', handleEscapeKey)
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+      document.removeEventListener('keydown', handleEscapeKey)
+    }
+  }, [openDropdowns])
+
+  // Force close all dropdowns and cleanup on unmount
+  useEffect(() => {
+    return () => {
+      // Close all dropdowns before unmounting to prevent focus errors
+      setOpenDropdowns({})
+      // Clear any stored refs
+      dropdownRefs.current = {}
+      triggerRefs.current = {}
+    }
+  }, [])
   
   useEffect(() => {
     const handleScroll = () => {
@@ -43,12 +95,6 @@ export function Header({ config }: HeaderProps) {
     }
   }, [])
 
-  // Clean up dropdowns on unmount to prevent focus errors
-  useEffect(() => {
-    return () => {
-      setOpenDropdowns({})
-    }
-  }, [])
 
   const renderNavigationItem = (item: NavigationItem) => {
     // If custom element provided, use it
@@ -56,93 +102,62 @@ export function Header({ config }: HeaderProps) {
       return <React.Fragment key={item.id}>{item.element}</React.Fragment>
     }
 
-    // If it has children, render as dropdown
+    // If it has children, render as custom dropdown
     if (item.children && item.children.length > 0) {
+      const isOpen = openDropdowns[item.id] || false
+      
       return (
-        <DropdownMenu.Root 
-          key={item.id}
-          open={openDropdowns[item.id] || false}
-          onOpenChange={(open) => {
-            // Safely update state to prevent focus issues
-            try {
-              setOpenDropdowns(prev => ({ ...prev, [item.id]: open }))
-            } catch (error) {
-              console.warn('Dropdown state update error:', error)
-            }
-          }}
-          modal={false}
-        >
-          <DropdownMenu.Trigger asChild>
-            <Button
-              variant="ghost"
-              leftIcon={item.icon}
-              rightIcon={item.badge}
+        <div key={item.id} className="relative">
+          <Button
+            ref={(el) => { triggerRefs.current[item.id] = el }}
+            variant="ghost"
+            leftIcon={item.icon}
+            rightIcon={item.badge}
+            onClick={() => {
+              setOpenDropdowns(prev => ({ 
+                ...prev, 
+                [item.id]: !prev[item.id] 
+              }))
+            }}
+            className={cn(
+              "h-10 px-3 py-2",
+              "font-['DM_Sans'] font-bold text-[16px] leading-none tracking-[-0.32px]",
+              "hover:bg-ods-bg-hover focus:bg-ods-bg-hover",
+              "whitespace-nowrap",
+              item.isActive ? 'text-ods-text-primary' : 'text-ods-text-secondary',
+              isOpen && 'bg-ods-bg-hover'
+            )}
+          >
+            {item.label}
+          </Button>
+          
+          {isOpen && (
+            <div
+              ref={(el) => { dropdownRefs.current[item.id] = el }}
               className={cn(
-                "h-10 px-3 py-2",
-                "font-['DM_Sans'] font-bold text-[16px] leading-none tracking-[-0.32px]",
-                "hover:bg-ods-bg-hover focus:bg-ods-bg-hover",
-                "whitespace-nowrap",
-                item.isActive ? 'text-ods-text-primary' : 'text-ods-text-secondary'
-              )}
-            >
-              {item.label}
-            </Button>
-          </DropdownMenu.Trigger>
-          <DropdownMenu.Portal>
-            <DropdownMenu.Content 
-              className={cn(
+                "absolute top-full left-0 mt-1",
                 "bg-ods-card border border-ods-border rounded-lg shadow-xl z-[9999]",
                 item.id === 'community' ? "min-w-[240px]" : "min-w-[220px]"
               )}
-              onCloseAutoFocus={(e) => {
-                // Prevent focus errors when closing
-                try {
-                  e.preventDefault()
-                } catch (error) {
-                  console.warn('Dropdown close focus error:', error)
-                }
-              }}
-              onEscapeKeyDown={(e) => {
-                // Safely handle escape key
-                try {
-                  e.preventDefault()
-                } catch (error) {
-                  console.warn('Dropdown escape key error:', error)
-                }
-              }}
-              onPointerDownOutside={(e) => {
-                // Prevent focus issues on outside clicks
-                try {
-                  const target = e.target as HTMLElement
-                  if (!target) return
-                  // Allow the dropdown to close naturally
-                } catch (error) {
-                  console.warn('Dropdown outside click error:', error)
-                }
-              }}>
-            <div className="p-2">
-              {item.children.map((child, index) => (
-                <DropdownMenu.Item 
-                  key={child.id} 
-                  asChild
-                  onSelect={(e) => {
-                    try {
-                      if (child.href && !child.onClick) {
-                        // Let the link handle navigation
-                        e.preventDefault()
-                      }
-                    } catch (error) {
-                      console.warn('Dropdown item select error:', error)
-                    }
-                  }}
-                >
+            >
+              <div className="p-2">
+                {item.children.map((child, index) => (
                   <Button 
+                    key={child.id}
                     variant="ghost" 
                     size="sm" 
                     leftIcon={child.icon} 
                     rightIcon={child.badge}
                     href={child.href}
-                    onClick={child.onClick}
+                    onClick={(e) => {
+                      // Close dropdown when item is clicked
+                      setOpenDropdowns(prev => ({ ...prev, [item.id]: false }))
+                      
+                      // Call the original onClick if provided
+                      if (child.onClick) {
+                        child.onClick(e)
+                      }
+                    }}
                     className={cn(
                       "flex justify-start w-full",
                       index < item.children.length - 1 && "mb-1",
@@ -152,20 +167,19 @@ export function Header({ config }: HeaderProps) {
                   >
                     {child.label}
                   </Button>
-                </DropdownMenu.Item>
-              ))}
+                ))}
+              </div>
+              {item.dropdownContent && (
+                <>
+                  {item.showDropdownDivider !== false && <div className="h-px my-2 mx-2 bg-ods-border" />}
+                  <div className="px-2 pb-2">
+                    {item.dropdownContent}
+                  </div>
+                </>
+              )}
             </div>
-            {item.dropdownContent && (
-              <>
-                <DropdownMenu.Separator className="h-px my-2 mx-2 bg-ods-border" />
-                <div className="px-2 pb-2">
-                  {item.dropdownContent}
-                </div>
-              </>
-            )}
-          </DropdownMenu.Content>
-          </DropdownMenu.Portal>
-        </DropdownMenu.Root>
+          )}
+        </div>
       )
     }
 
