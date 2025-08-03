@@ -13,6 +13,7 @@ import {
   FloatingPortal,
   useHover,
   safePolygon,
+  arrow,
 } from '@floating-ui/react'
 import { cn } from "../../utils/cn"
 
@@ -47,15 +48,17 @@ function parseColoredText(text: string): React.ReactNode {
     const color = match[1].toLowerCase()
     const coloredText = match[2]
     
-    // Map colors to CSS classes
-    const colorClass = color === 'yellow' ? 'text-[#FFC008]' : 
-                      color === 'green' ? 'text-green-400' :
-                      color === 'red' ? 'text-red-400' :
-                      color === 'blue' ? 'text-blue-400' :
-                      'text-[#FFC008]' // Default to yellow
+    // Map colors to ODS CSS classes using correct Tailwind class names
+    const colorClass = color === 'yellow' ? 'text-ods-accent' : 
+                      color === 'green' ? 'text-ods-success' :
+                      color === 'red' ? 'text-ods-error' :
+                      color === 'blue' ? 'text-ods-info' :
+                      color === 'pink' ? 'text-ods-accent' :
+                      color === 'cyan' ? 'text-ods-info' :
+                      'text-ods-accent' // Default to ODS accent
     
     parts.push(
-      <span key={`color-${keyIndex++}`} className={cn("font-semibold", colorClass)} style={{ color: color === 'yellow' ? '#FFC008' : undefined }}>
+      <span key={`color-${keyIndex++}`} className={cn("font-semibold", colorClass)}>
         {coloredText}
       </span>
     )
@@ -80,19 +83,21 @@ export function FloatingTooltip({
   delayDuration = 0 
 }: FloatingTooltipProps) {
   const [isOpen, setIsOpen] = React.useState(false)
+  const arrowRef = React.useRef<HTMLDivElement>(null)
 
-  const { refs, floatingStyles, context } = useFloating({
+  const { refs, floatingStyles, context, placement, middlewareData } = useFloating({
     open: isOpen,
     onOpenChange: setIsOpen,
     placement: side,
     middleware: [
-      offset(8),
+      offset(12),
       flip({
         fallbackAxisSideDirection: "start",
         crossAxis: false,
         padding: 8,
       }),
       shift({ padding: 8 }),
+      arrow({ element: arrowRef }),
     ],
     whileElementsMounted: autoUpdate,
   })
@@ -119,6 +124,16 @@ export function FloatingTooltip({
     return content
   }, [content])
 
+  // Calculate arrow position
+  const { x: arrowX, y: arrowY } = middlewareData.arrow ?? {}
+  
+  const staticSide = {
+    top: 'bottom',
+    right: 'left',
+    bottom: 'top',
+    left: 'right',
+  }[placement.split('-')[0]]
+
   return (
     <>
       <div ref={refs.setReference} {...getReferenceProps()}>
@@ -134,11 +149,36 @@ export function FloatingTooltip({
             }}
             {...getFloatingProps()}
             className={cn(
-              "max-w-xs overflow-hidden rounded-md bg-[#1A1A1A] border border-[#333333] px-3 py-2 text-sm text-[#FAFAFA] shadow-lg whitespace-pre-line",
+              // ODS Design System tooltip styling
+              "max-w-xs overflow-hidden rounded-md",
+              "bg-ods-card border border-ods-border",
+              "px-3 py-2.5 text-sm leading-relaxed text-ods-text-primary",
+              "whitespace-pre-line",
+              // ODS shadows for proper elevation
+              "shadow-[var(--shadow-md)]",
               className
             )}
           >
             {parsedContent}
+            {/* Arrow element */}
+            <div
+              ref={arrowRef}
+              style={{
+                left: arrowX != null ? `${arrowX}px` : '',
+                top: arrowY != null ? `${arrowY}px` : '',
+                ...(staticSide && { [staticSide as string]: '-4px' }),
+              }}
+              className={cn(
+                "absolute w-2 h-2 rotate-45",
+                "bg-ods-card border-ods-border",
+                {
+                  'border-r border-b': staticSide === 'left',
+                  'border-l border-b': staticSide === 'right',
+                  'border-t border-r': staticSide === 'bottom',
+                  'border-b border-l': staticSide === 'top',
+                }
+              )}
+            />
           </div>
         )}
       </FloatingPortal>
