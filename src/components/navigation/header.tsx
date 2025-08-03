@@ -294,9 +294,8 @@ export function Header({ config }: HeaderProps) {
                 config.mobile?.onToggle?.()
               }}
               aria-label={config.mobile?.isOpen ? "Close menu" : "Open menu"}
+              centerIcon={config.mobile?.menuIcon || <span>☰</span>}
             >
-              {config.mobile?.menuIcon || <span>☰</span>}
-            
             </Button>
         )}
       </div>
