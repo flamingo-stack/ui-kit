@@ -11,6 +11,9 @@ export interface HeaderProps {
   config: HeaderConfig
 }
 
+// Re-export from types for convenience
+export type { HeaderConfig } from '../../types/navigation'
+
 export function Header({ config }: HeaderProps) {
   const [show, setShow] = useState(true)
   const [lastScrollY, setLastScrollY] = useState(0)
@@ -155,12 +158,12 @@ export function Header({ config }: HeaderProps) {
                       
                       // Call the original onClick if provided
                       if (child.onClick) {
-                        child.onClick(e)
+                        child.onClick()
                       }
                     }}
                     className={cn(
                       "flex justify-start w-full",
-                      index < item.children.length - 1 && "mb-1",
+                      index < (item.children?.length ?? 0) - 1 && "mb-1",
                       child.isActive ? 'text-ods-text-primary' : 'text-ods-text-secondary'
                     )}
                     {...(child.isExternal && { target: "_blank", rel: "noopener noreferrer" })}
@@ -282,17 +285,17 @@ export function Header({ config }: HeaderProps) {
         )}
 
         {/* Mobile Menu Toggle */}
-        {config.mobile?.enabled && (
+        {config.mobile && config.mobile.enabled && (
           <Button
               variant="ghost"
               size="sm"
               className="md:hidden p-2 h-10 w-10 flex items-center justify-center"
               onClick={() => {
-                config.mobile.onToggle?.()
+                config.mobile?.onToggle?.()
               }}
-              aria-label={config.mobile.isOpen ? "Close menu" : "Open menu"}
+              aria-label={config.mobile?.isOpen ? "Close menu" : "Open menu"}
             >
-              {config.mobile.menuIcon || <span>☰</span>}
+              {config.mobile?.menuIcon || <span>☰</span>}
             
             </Button>
         )}

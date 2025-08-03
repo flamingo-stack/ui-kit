@@ -63,3 +63,4 @@ jspm_packages/
 .users_cache.json
 .channels_cache.json
 tsconfig.tsbuildinfo
+package-lock.json
