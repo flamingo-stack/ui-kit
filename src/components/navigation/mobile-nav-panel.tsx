@@ -14,25 +14,16 @@ export interface MobileNavPanelProps {
 export function MobileNavPanel({ isOpen, config }: MobileNavPanelProps) {
   const panelRef = useRef<HTMLDivElement>(null)
 
-  // Lock body scroll when open
+  // Prevent body scroll when menu is open - using the original working approach
   useEffect(() => {
     if (isOpen) {
-      const scrollY = window.scrollY
-      document.body.style.position = 'fixed'
-      document.body.style.top = `-${scrollY}px`
-      document.body.style.width = '100%'
+      document.body.style.overflow = 'hidden'
     } else {
-      const scrollY = document.body.style.top
-      document.body.style.position = ''
-      document.body.style.top = ''
-      document.body.style.width = ''
-      window.scrollTo(0, parseInt(scrollY || '0') * -1)
+      document.body.style.overflow = 'unset'
     }
 
     return () => {
-      document.body.style.position = ''
-      document.body.style.top = ''
-      document.body.style.width = ''
+      document.body.style.overflow = 'unset'
     }
   }, [isOpen])
 
@@ -68,15 +59,15 @@ export function MobileNavPanel({ isOpen, config }: MobileNavPanelProps) {
       return (
         <Button
           key={item.id}
-          variant="ghost"
+          variant="outline"
+          size="sm"
           href={item.href}
           onClick={handleClick}
           leftIcon={item.icon}
           rightIcon={item.badge}
           className={cn(
-            "h-12 px-4 w-full justify-start",
-            "hover:bg-ods-bg-hover",
-            item.isActive ? "bg-ods-accent/10 text-ods-text-primary font-semibold" : "text-ods-text-primary"
+            "justify-start h-12 px-4 bg-transparent border-none text-ods-text-primary hover:bg-ods-bg-hover gap-3 rounded-md transition-colors",
+            item.isActive ? "bg-ods-bg-hover" : ""
           )}
         >
           {item.label}
@@ -87,13 +78,13 @@ export function MobileNavPanel({ isOpen, config }: MobileNavPanelProps) {
     return (
       <Button
         key={item.id}
-        variant="ghost"
+        variant="outline"
+        size="sm"
         onClick={handleClick}
         leftIcon={item.icon}
         className={cn(
-          "h-12 px-4 w-full justify-start",
-          "hover:bg-ods-bg-hover",
-          item.isActive ? "bg-ods-accent/10 text-ods-text-primary font-semibold" : "text-ods-text-primary"
+          "justify-start h-12 px-4 bg-transparent border-none text-ods-text-primary hover:bg-ods-bg-hover gap-3 rounded-md transition-colors",
+          item.isActive ? "bg-ods-bg-hover" : ""
         )}
       >
         <span className="flex-1 text-left">{item.label}</span>
@@ -106,53 +97,45 @@ export function MobileNavPanel({ isOpen, config }: MobileNavPanelProps) {
 
   return (
     <>
-      {/* Backdrop with super high z-index */}
+      {/* Backdrop - closes nav when clicked outside */}
       <div
-        className="fixed inset-0 bg-black/50 backdrop-blur-sm"
-        style={{ zIndex: 99998 }}
+        className="fixed inset-0 z-[1200] bg-black/50"
         onClick={config.onClose}
       />
 
-      {/* Panel with even higher z-index */}
+      {/* Navigation Panel - modal style like the original working version */}
       <div
         ref={panelRef}
         className={cn(
-          "fixed bg-ods-card shadow-2xl",
+          "fixed z-[1250] bg-ods-card border border-ods-border rounded-lg shadow-xl",
+          // Responsive positioning and sizing - matching original working version
+          "right-2 left-2 sm:right-4 sm:left-auto sm:w-96 sm:max-w-[calc(100vw-2rem)]",
+          "md:right-6 md:w-[400px] md:max-w-[calc(100vw-3rem)]",
+          // Height constraints with proper mobile spacing
+          "top-[72px] max-h-[calc(100vh-130px)] sm:max-h-[calc(100vh-88px)]",
           "flex flex-col"
         )}
-        style={{
-          zIndex: 99999,
-          top: 0,
-          right: 0,
-          bottom: 0,
-          width: '100%',
-          maxWidth: '320px',
-          transform: isOpen ? 'translateX(0)' : 'translateX(100%)',
-          transition: 'transform 300ms ease-in-out'
-        }}
-        onClick={(e) => e.stopPropagation()}
+        onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside nav
       >
-        {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-ods-border">
-          <h2 className="text-lg font-semibold">Menu</h2>
+        {/* Header with close button - fixed at top */}
+        <div className="flex justify-end p-2 border-b border-ods-border flex-shrink-0">
           <Button
+            aria-label="Close menu"
+            size="icon"
             variant="ghost"
-            size="sm"
-            className="h-8 w-8 p-0"
+            centerIcon={<X className="w-4 h-4 text-ods-text-primary" />}
             onClick={config.onClose}
-          >
-            <X className="h-4 w-4" />
-            <span className="sr-only">Close</span>
-          </Button>
+            className="hover:bg-ods-bg-hover"
+          />
         </div>
 
-        {/* Scrollable content */}
-        <div className="flex-1 overflow-y-auto px-2 py-2">
+        {/* Scrollable content area */}
+        <div className="flex-1 overflow-y-auto overflow-x-hidden px-2 py-2">
           <div className="flex flex-col space-y-1">
             {config.sections.map((section, index) => (
               <div key={index}>
                 {section.title && (
-                  <div className="px-4 pt-4 pb-1 text-xs font-semibold text-ods-text-secondary uppercase tracking-wide">
+                  <div className="px-4 pt-2 pb-1 text-xs font-semibold text-ods-text-secondary uppercase tracking-wide">
                     {section.title}
                   </div>
                 )}
@@ -164,9 +147,9 @@ export function MobileNavPanel({ isOpen, config }: MobileNavPanelProps) {
           </div>
         </div>
 
-        {/* Footer */}
+        {/* Footer with action button - fixed at bottom */}
         {config.footer && (
-          <div className="border-t border-ods-border p-4">
+          <div className="border-t border-ods-border p-4 flex-shrink-0">
             {config.footer}
           </div>
         )}
