@@ -8,15 +8,93 @@ import { Button } from '../ui/button'
 
 export interface SlidingSidebarProps {
   config: SlidingSidebarConfig
-  children?: React.ReactNode
 }
 
-export function SlidingSidebar({ config, children }: SlidingSidebarProps) {
+export function SlidingSidebar({ config }: SlidingSidebarProps) {
   const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set())
   const [mounted, setMounted] = useState(false)
+  const [headerHeight, setHeaderHeight] = useState(64) // Default to 64px
 
   useEffect(() => {
     setMounted(true)
+    
+    // Function to calculate total header height
+    const calculateHeaderHeight = () => {
+      let totalHeight = 0
+      
+      // Find and measure the header
+      const header = document.querySelector('header')
+      if (header) {
+        totalHeight += header.offsetHeight
+      }
+      
+      // Find and measure the announcement bar (if exists)
+      const announcementBar = document.querySelector('[data-announcement-bar]')
+      if (announcementBar && announcementBar instanceof HTMLElement) {
+        totalHeight += announcementBar.offsetHeight
+      }
+      
+      // Update the header height if we found elements
+      if (totalHeight > 0) {
+        setHeaderHeight(totalHeight)
+      } else {
+        // If no header found, default to 64px
+        setHeaderHeight(64)
+      }
+    }
+    
+    // Calculate initial height with a small delay to ensure elements are rendered
+    setTimeout(calculateHeaderHeight, 100)
+    
+    // Also calculate immediately in case elements are already there
+    calculateHeaderHeight()
+    
+    // Recalculate on window resize
+    window.addEventListener('resize', calculateHeaderHeight)
+    
+    // Use ResizeObserver to detect header size changes
+    const resizeObserver = new ResizeObserver(calculateHeaderHeight)
+    
+    // Observe header
+    const header = document.querySelector('header')
+    if (header) {
+      resizeObserver.observe(header)
+    }
+    
+    // Observe announcement bar
+    const announcementBar = document.querySelector('[data-announcement-bar]')
+    if (announcementBar) {
+      resizeObserver.observe(announcementBar)
+    }
+    
+    // Use MutationObserver to detect when announcement bar is added/removed
+    const mutationObserver = new MutationObserver((mutations) => {
+      // Check if announcement bar was added or removed
+      for (const mutation of mutations) {
+        if (mutation.type === 'childList') {
+          // Recalculate height when DOM changes
+          calculateHeaderHeight()
+          
+          // If announcement bar was added, start observing it
+          const newAnnouncementBar = document.querySelector('[data-announcement-bar]')
+          if (newAnnouncementBar) {
+            resizeObserver.observe(newAnnouncementBar)
+          }
+        }
+      }
+    })
+    
+    // Observe the body for changes (announcement bar might be added/removed)
+    mutationObserver.observe(document.body, {
+      childList: true,
+      subtree: true
+    })
+    
+    return () => {
+      window.removeEventListener('resize', calculateHeaderHeight)
+      resizeObserver.disconnect()
+      mutationObserver.disconnect()
+    }
   }, [])
 
   const toggleExpanded = (itemId: string) => {
@@ -148,7 +226,7 @@ export function SlidingSidebar({ config, children }: SlidingSidebarProps) {
   }
 
   if (!mounted) {
-    return <div>{children}</div>
+    return null
   }
 
   return (
@@ -164,7 +242,7 @@ export function SlidingSidebar({ config, children }: SlidingSidebarProps) {
               duration: 0.3, 
               ease: [0.4, 0, 0.2, 1]
             }}
-            className="fixed inset-0 top-16 bg-black/50 z-[9998]"
+            className="fixed inset-0 bg-black/50 z-[35]"
             onClick={() => config.onClose()}
           />
         )}
@@ -185,11 +263,14 @@ export function SlidingSidebar({ config, children }: SlidingSidebarProps) {
           velocity: config.isOpen ? 5 : -5
         }}
         className={cn(
-          "fixed top-16 bottom-0 z-[9999] w-64 bg-ods-card border-ods-border flex flex-col shadow-xl",
+          "fixed top-0 bottom-0 z-[35] w-64 bg-ods-card border-ods-border flex flex-col shadow-xl",
           config.position === 'right' ? "right-0 border-l" : "left-0 border-r",
           config.className
         )}
       >
+        {/* Header spacer - dynamic height */}
+        <div className="flex-shrink-0" style={{ height: `${headerHeight}px` }} />
+        
         {/* Navigation */}
         <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
           {config.items.map(item => renderMenuItem(item))}
@@ -203,10 +284,6 @@ export function SlidingSidebar({ config, children }: SlidingSidebarProps) {
         )}
       </motion.aside>
 
-      {/* Content area */}
-      <div className="relative min-h-screen">
-        {children}
-      </div>
     </>
   )
 }
