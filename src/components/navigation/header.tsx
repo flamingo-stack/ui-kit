@@ -289,7 +289,7 @@ export function Header({ config }: HeaderProps) {
           <Button
               variant="ghost"
               size="sm"
-              className="md:hidden p-2 h-10 w-10 flex items-center justify-center"
+              className="flex md:hidden p-2 h-10 w-10 items-center justify-center"
               onClick={() => {
                 config.mobile?.onToggle?.()
               }}
