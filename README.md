@@ -201,6 +201,7 @@ npm run lint
 - **Button**: All variants with proper text visibility and icon support (leftIcon, rightIcon)
 - **Modal**: Reliable modal system with accessibility and escape key handling
 - **Toast**: Complete notification system with proper positioning, z-index, and stacking
+- **Header**: Navigation header with configurable auto-hide behavior on scroll
 - **Comment Card**: Full MSP display with avatar overlays and deletion functionality
 - **User Summary**: Complete user display with MSP badges and responsive layouts
 - **Join Waitlist Button**: OpenFrame icon integration with customizable colors

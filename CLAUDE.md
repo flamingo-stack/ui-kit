@@ -238,6 +238,47 @@ All provider buttons include embedded SVG icons:
 
 Icons are embedded to avoid external dependencies and ensure consistent rendering across all platforms.
 
+### Header Component Configuration
+
+The Header component supports platform-specific auto-hide behavior through the `HeaderConfig` interface:
+
+```typescript
+interface HeaderConfig {
+  logo: {
+    element: React.ReactNode
+    href: string
+  }
+  navigation?: {
+    items: NavigationItem[]
+    position?: 'left' | 'center' | 'right'
+  }
+  actions?: {
+    left?: React.ReactNode[]
+    right?: React.ReactNode[]
+  }
+  mobile?: {
+    enabled: boolean
+    menuIcon?: React.ReactNode
+    closeIcon?: React.ReactNode
+    onToggle?: () => void
+    isOpen?: boolean
+  }
+  autoHide?: boolean  // Controls header auto-hide on scroll
+  className?: string
+}
+```
+
+**Auto-Hide Behavior**:
+- When `autoHide: true` - Header hides on scroll down, shows on scroll up
+- When `autoHide: false` - Header remains fixed and visible at all times
+- Default behavior if not specified: auto-hide enabled
+
+**Platform Configuration Example**:
+- **OpenMSP**: `autoHide: true` - Better content visibility while scrolling
+- **Admin Hub**: `autoHide: false` - Always visible for navigation accessibility
+- **OpenFrame**: `autoHide: true` - Clean, minimal interface
+- **Flamingo**: `autoHide: true` - Modern web experience
+
 ### Key Directories
 
 #### `/src/components/`
@@ -245,6 +286,7 @@ Icons are embedded to avoid external dependencies and ensure consistent renderin
 - **features/**: Complex components (AnnouncementBar, SSOModal) with platform logic
 - **icons/**: Centralized icon components exported through `icons/index.ts`
 - **Individual icon files**: Legacy icon components being migrated to `icons/` directory
+- **navigation/**: Navigation components including Header with configurable behaviors
 
 #### `/src/hooks/`
 - **api/**: Data fetching hooks (useAnnouncements)
@@ -365,6 +407,7 @@ import { Modal, ModalHeader, ModalTitle, ModalFooter } from "@flamingo/ui-kit/co
 ### Working Components
 - ✅ Button, Toaster, useToast hook (with fixed positioning and width issues)
 - ✅ Modal, ModalHeader, ModalTitle, ModalFooter (custom implementation)
+- ✅ Header with configurable auto-hide behavior (respects platform settings)
 - ✅ All styling and theme utilities
 - ✅ Platform-aware color system
 - ✅ TypeScript compilation (zero errors achieved)
@@ -583,9 +626,10 @@ The UI Kit has achieved a state of complete functionality and integration with t
 5. **Toast System**: Reliable notifications with proper positioning, z-index, and stacking
 6. **Modal System**: Custom Modal implementation working across all admin dashboards
 7. **Button System**: All variants working with proper text visibility and icon support
-8. **Join Waitlist Integration**: OpenFrame icons working in footer and CTA components
-9. **Comment System**: Full MSP display functionality with working deletion logic
-10. **Build Pipeline**: Zero compilation errors with clean import/export chains
+8. **Header System**: Navigation header with platform-specific auto-hide configuration
+9. **Join Waitlist Integration**: OpenFrame icons working in footer and CTA components
+10. **Comment System**: Full MSP display functionality with working deletion logic
+11. **Build Pipeline**: Zero compilation errors with clean import/export chains
 
 ## Loading States & Skeleton Standards
 
