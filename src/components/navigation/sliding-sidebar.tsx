@@ -132,18 +132,19 @@ export function SlidingSidebar({ config }: SlidingSidebarProps) {
         <div key={item.id} className="space-y-1">
           <Button
             variant="ghost-nav"
+            size="default"
             onClick={() => toggleExpanded(item.id)}
             leftIcon={item.icon}
             rightIcon={chevronIcon}
             className={cn(
-              "w-full justify-between px-3 py-2 text-sm font-medium rounded-lg transition-colors h-auto",
+              "w-full rounded-lg transition-colors",
               level === 0 ? "pl-3" : "pl-6",
               item.isActive ? "bg-ods-accent text-ods-text-on-accent hover:bg-ods-accent/90" : "text-ods-text-primary hover:bg-ods-border"
             )}
           >
             {item.label}
             {item.badge !== undefined && (
-              <span className="ml-2">{item.badge}</span>
+              <span className="ml-auto mr-2">{item.badge}</span>
             )}
           </Button>
           
@@ -178,6 +179,7 @@ export function SlidingSidebar({ config }: SlidingSidebarProps) {
         <Button
           key={item.id}
           variant="ghost-nav"
+          size="default"
           onClick={() => {
             // Let the parent handle navigation
             item.onClick?.()
@@ -185,7 +187,7 @@ export function SlidingSidebar({ config }: SlidingSidebarProps) {
           }}
           leftIcon={item.icon}
           className={cn(
-            "w-full px-3 py-2 text-sm font-medium rounded-lg transition-colors h-auto",
+            "w-full rounded-lg transition-colors",
             level === 0 ? "pl-3" : "pl-6",
             item.isActive 
               ? "bg-ods-accent text-ods-text-on-accent hover:bg-ods-accent/90" 
@@ -204,13 +206,14 @@ export function SlidingSidebar({ config }: SlidingSidebarProps) {
       <Button
         key={item.id}
         variant="ghost-nav"
+        size="default"
         onClick={() => {
           item.onClick?.()
           config.onClose()
         }}
         leftIcon={item.icon}
         className={cn(
-          "w-full px-3 py-2 text-sm font-medium rounded-lg transition-colors h-auto",
+          "w-full rounded-lg transition-colors",
           level === 0 ? "pl-3" : "pl-6",
           item.isActive 
             ? "bg-ods-accent text-ods-text-on-accent hover:bg-ods-accent/90" 

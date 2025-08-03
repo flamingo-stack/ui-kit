@@ -73,6 +73,12 @@ export function Header({ config }: HeaderProps) {
   }, [])
   
   useEffect(() => {
+    // Only add scroll listener if autoHide is enabled
+    if (!config.autoHide) {
+      setShow(true) // Always show header when autoHide is disabled
+      return
+    }
+    
     const handleScroll = () => {
       const currentScrollY = window.scrollY
       
@@ -96,7 +102,7 @@ export function Header({ config }: HeaderProps) {
     return () => {
       window.removeEventListener('scroll', handleScroll)
     }
-  }, [])
+  }, [config.autoHide])
 
 
   const renderNavigationItem = (item: NavigationItem) => {
