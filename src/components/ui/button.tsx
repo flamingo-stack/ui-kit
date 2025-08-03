@@ -1,6 +1,7 @@
 import React from "react"
 import { Slot } from "@radix-ui/react-slot"
 import { cva, type VariantProps } from "class-variance-authority"
+import Link from "next/link"
 
 import { cn } from "../../utils/cn"
 
@@ -22,6 +23,8 @@ const buttonVariants = cva(
         transparent: "bg-transparent text-ods-text-primary hover:bg-ods-bg-hover active:bg-ods-bg-active focus-visible:ring-2 focus-visible:ring-ods-focus disabled:text-ods-text-disabled",
         // Ghost variant for subtle interactions
         ghost: "bg-transparent text-ods-text-primary hover:bg-ods-bg-hover active:bg-ods-bg-active focus-visible:ring-2 focus-visible:ring-ods-focus disabled:text-ods-text-disabled",
+        // Ghost navigation variant - left-aligned for navigation menus
+        "ghost-nav": "bg-transparent text-ods-text-primary hover:bg-ods-bg-hover active:bg-ods-bg-active focus-visible:ring-2 focus-visible:ring-ods-focus disabled:text-ods-text-disabled justify-start",
         // Link variant for text-like buttons
         link: "bg-transparent text-ods-link underline-offset-4 hover:underline hover:text-ods-link-hover focus-visible:ring-2 focus-visible:ring-ods-focus disabled:text-ods-text-disabled",
         // Search variant for search containers
@@ -132,10 +135,10 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       )
     }
     
-    // When href is provided, render as Link - note: consuming project should handle Next.js Link
+    // When href is provided, render as Next.js Link for client-side navigation
     if (href) {
       return (
-        <a
+        <Link
           href={href}
           className={composedClassName}
           aria-disabled={isDisabled}
@@ -143,7 +146,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
           {...(props as any)}
         >
           {renderContent()}
-        </a>
+        </Link>
       )
     }
     

@@ -29,6 +29,7 @@ export * from './progress'
 // TODO: Add other UI components as they are moved to ui-kit
 export * from './skeleton'
 export * from './tooltip'
+export { FloatingTooltip } from './floating-tooltip'
 export * from './slider'
 export * from './toggle'
 export * from './square-avatar'
