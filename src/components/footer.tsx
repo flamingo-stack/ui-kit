@@ -87,7 +87,7 @@ function UniversalFooter({ config, renderLink }: { config: FooterConfig; renderL
             <h3 className="font-heading font-semibold text-sm leading-[1.43] uppercase tracking-[-0.02em] text-ods-text-muted">
               {section.title}
             </h3>
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col gap-0">
               {section.links.map((link, linkIndex) => (
                 <Suspense key={linkIndex} fallback={<NavLinkSkeleton />}>
                   {linkRenderer(link)}

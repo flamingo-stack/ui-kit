@@ -39,6 +39,12 @@ const buttonVariants = cva(
         warning: "bg-ods-warning text-ods-text-on-accent hover:bg-ods-warning-hover active:bg-ods-warning-active focus-visible:ring-2 focus-visible:ring-ods-focus disabled:bg-ods-disabled disabled:text-ods-text-disabled",
         // Info variant for informational actions
         info: "bg-ods-info text-ods-text-on-dark hover:bg-ods-info-hover active:bg-ods-info-active focus-visible:ring-2 focus-visible:ring-ods-focus disabled:bg-ods-disabled disabled:text-ods-text-disabled",
+        // Flamingo primary variant - pink background with black text
+        "flamingo-primary": "bg-[var(--ods-flamingo-pink-base)] text-[var(--ods-system-greys-black)] hover:bg-[var(--ods-flamingo-pink-hover)] active:bg-[var(--ods-flamingo-pink-active)] focus-visible:ring-2 focus-visible:ring-ods-focus disabled:bg-ods-disabled disabled:text-ods-text-disabled",
+        // Flamingo secondary variant - dark background with border
+        "flamingo-secondary": "bg-[var(--ods-system-greys-black)] border border-[var(--ods-system-greys-soft-grey)] text-[var(--ods-system-greys-white)] hover:border-[var(--ods-system-greys-grey)] hover:bg-[var(--ods-system-greys-dark-grey)] active:bg-[var(--ods-system-greys-grey)] focus-visible:ring-2 focus-visible:ring-ods-focus disabled:bg-ods-disabled disabled:text-ods-text-disabled",
+        // Footer link variant - minimal spacing, left-aligned, no gap
+        "footer-link": "!gap-0 !p-0 !h-auto bg-transparent text-ods-text-primary hover:text-ods-accent-primary transition-colors justify-start font-body font-medium !text-md md:!text-md leading-[1.33] mb-1",
       },
       size: {
         // Small size for secondary actions
@@ -56,6 +62,8 @@ const buttonVariants = cva(
         // Search button specific sizing
         searchMobile: "min-h-[56px] px-4 py-3 text-lg",
         searchDesktop: "min-h-[52px] px-4 py-3 text-lg",
+        // No size - used for footer links
+        none: "",
       },
     },
     defaultVariants: {
@@ -85,12 +93,18 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant, size, asChild = false, href, leftIcon, rightIcon, centerIcon, loading, children, disabled, ...props }, ref) => {
     const isDisabled = disabled || loading
     
+    // Extract props that shouldn't be passed to DOM elements
+    const { isExternal, ...domProps } = props as any
+    
     const isCenterIconOnly = !!centerIcon && !children && !leftIcon && !rightIcon
+    const isFooterLink = variant === "footer-link"
     const composedClassName = cn(
       buttonVariants({ variant, size, className }),
       // Remove the default gap when we have a single centered icon so the icon
       // sits exactly in the middle.
-      isCenterIconOnly && "gap-0"
+      isCenterIconOnly && "gap-0",
+      // Also remove gap for footer links
+      isFooterLink && "gap-0"
     )
     
     // Content to render inside the button/link
@@ -128,7 +142,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         <Slot
           className={composedClassName}
           ref={ref}
-          {...props}
+          {...domProps}
         >
           {children}
         </Slot>
@@ -143,7 +157,9 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
           className={composedClassName}
           aria-disabled={isDisabled}
           tabIndex={isDisabled ? -1 : undefined}
-          {...(props as any)}
+          target={isExternal ? '_blank' : undefined}
+          rel={isExternal ? 'noopener noreferrer' : undefined}
+          {...domProps}
         >
           {renderContent()}
         </Link>
@@ -156,7 +172,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         className={composedClassName}
         ref={ref}
         disabled={isDisabled}
-        {...props}
+        {...domProps}
       >
         {renderContent()}
       </button>

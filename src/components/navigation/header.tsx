@@ -158,12 +158,11 @@ export function Header({ config, platform }: HeaderProps) {
                     size="sm" 
                     leftIcon={child.icon} 
                     rightIcon={child.badge}
-                    href={child.href}
-                    onClick={(e) => {
+                    onClick={() => {
                       // Close dropdown when item is clicked
                       setOpenDropdowns(prev => ({ ...prev, [item.id]: false }))
                       
-                      // Call the original onClick if provided
+                      // Call the onClick handler
                       if (child.onClick) {
                         child.onClick()
                       }
@@ -193,18 +192,18 @@ export function Header({ config, platform }: HeaderProps) {
       )
     }
 
-    // Regular navigation item
-    if (item.href) {
+    // Regular navigation item with onClick
+    if (item.href || item.onClick) {
       return (
         <Button
           key={item.id}
           variant="ghost"
-          href={item.href}
+          onClick={item.onClick || (() => {})}
           leftIcon={item.icon}
           rightIcon={item.badge}
           className={cn(
             "h-10 px-3 py-2",
-            "font-['DM_Sans'] font-bold text-[18px] leading-none tracking-[-0.36px]",
+            "font-['DM_Sans'] font-bold text-[16px] leading-none tracking-[-0.32px]",
             platform === 'flamingo' 
               ? "hover:bg-transparent focus:bg-transparent text-[#FAFAFA] hover:opacity-80" 
               : "hover:bg-ods-bg-hover focus:bg-ods-bg-hover",
@@ -227,7 +226,7 @@ export function Header({ config, platform }: HeaderProps) {
         rightIcon={item.badge}
         className={cn(
           "h-10 px-3 py-2",
-          "font-['DM_Sans'] font-bold text-[18px] leading-none tracking-[-0.36px]",
+          "font-['DM_Sans'] font-bold text-[16px] leading-none tracking-[-0.32px]",
           platform === 'flamingo' 
             ? "hover:bg-transparent focus:bg-transparent text-[#FAFAFA] hover:opacity-80" 
             : "hover:bg-ods-bg-hover focus:bg-ods-bg-hover",
