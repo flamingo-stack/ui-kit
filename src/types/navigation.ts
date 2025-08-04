@@ -43,6 +43,8 @@ export interface HeaderConfig {
     isOpen?: boolean
   }
   className?: string
+  style?: React.CSSProperties
+  autoHide?: boolean
 }
 
 /**

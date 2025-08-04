@@ -9,12 +9,13 @@ import { useState as useDropdownState, useRef as useDropdownRef, useEffect as us
 
 export interface HeaderProps {
   config: HeaderConfig
+  platform?: string
 }
 
 // Re-export from types for convenience
 export type { HeaderConfig } from '../../types/navigation'
 
-export function Header({ config }: HeaderProps) {
+export function Header({ config, platform }: HeaderProps) {
   const [show, setShow] = useState(true)
   const [lastScrollY, setLastScrollY] = useState(0)
   const [openDropdowns, setOpenDropdowns] = useState<Record<string, boolean>>({})
@@ -203,10 +204,12 @@ export function Header({ config }: HeaderProps) {
           rightIcon={item.badge}
           className={cn(
             "h-10 px-3 py-2",
-            "font-['DM_Sans'] font-bold text-[16px] leading-none tracking-[-0.32px]",
-            "hover:bg-ods-bg-hover focus:bg-ods-bg-hover",
+            "font-['DM_Sans'] font-bold text-[18px] leading-none tracking-[-0.36px]",
+            platform === 'flamingo' 
+              ? "hover:bg-transparent focus:bg-transparent text-[#FAFAFA] hover:opacity-80" 
+              : "hover:bg-ods-bg-hover focus:bg-ods-bg-hover",
             "whitespace-nowrap",
-            item.isActive ? 'text-ods-text-primary' : 'text-ods-text-secondary'
+            platform !== 'flamingo' && (item.isActive ? 'text-ods-text-primary' : 'text-ods-text-secondary')
           )}
         >
           {item.label}
@@ -224,10 +227,12 @@ export function Header({ config }: HeaderProps) {
         rightIcon={item.badge}
         className={cn(
           "h-10 px-3 py-2",
-          "font-['DM_Sans'] font-bold text-[16px] leading-none tracking-[-0.32px]",
-          "hover:bg-ods-bg-hover focus:bg-ods-bg-hover",
+          "font-['DM_Sans'] font-bold text-[18px] leading-none tracking-[-0.36px]",
+          platform === 'flamingo' 
+            ? "hover:bg-transparent focus:bg-transparent text-[#FAFAFA] hover:opacity-80" 
+            : "hover:bg-ods-bg-hover focus:bg-ods-bg-hover",
           "whitespace-nowrap",
-          item.isActive ? 'text-ods-text-primary' : 'text-ods-text-secondary'
+          platform !== 'flamingo' && (item.isActive ? 'text-ods-text-primary' : 'text-ods-text-secondary')
         )}
       >
         {item.label}
@@ -248,10 +253,13 @@ export function Header({ config }: HeaderProps) {
       <header 
         className={cn(
           "w-full flex items-center justify-between", 
-          "bg-ods-card border-b border-ods-border backdrop-blur-sm",
+          "border-b backdrop-blur-sm",
           "px-6 py-3",
+          // Default styling (can be overridden by config.className)
+          !config.className && "bg-ods-card border-ods-border",
           config.className
         )}
+        style={config.style}
       >
       {/* Left: Logo */}
       <div className="flex items-center justify-start flex-shrink-0">
