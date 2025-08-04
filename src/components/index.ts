@@ -45,6 +45,7 @@ export * from './pagination'
 export * from './persistent-pagination'
 export * from './unified-filter-logic'
 export * from './unified-pagination'
+export * from './footer'
 
 // Loading components
 export * from './loading'
