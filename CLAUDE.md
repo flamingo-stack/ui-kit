@@ -275,6 +275,38 @@ All provider buttons include embedded SVG icons:
 
 Icons are embedded to avoid external dependencies and ensure consistent rendering across all platforms.
 
+### Tooltip Component
+
+The UI Kit provides a Radix-based Tooltip component for consistent hover interactions:
+
+```typescript
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@flamingo/ui-kit/components/ui'
+
+// Basic usage
+<TooltipProvider>
+  <Tooltip>
+    <TooltipTrigger asChild>
+      <Info className="h-4 w-4 text-ods-text-secondary" />
+    </TooltipTrigger>
+    <TooltipContent>
+      <p className="text-sm">Helpful information here</p>
+    </TooltipContent>
+  </Tooltip>
+</TooltipProvider>
+
+// With max width constraint
+<TooltipContent className="max-w-xs">
+  <p className="text-sm">Longer tooltip content that needs width constraint</p>
+</TooltipContent>
+```
+
+**Features**:
+- Proper z-index management (`z-[2147483647]`) to appear above all content
+- Dark theme styling with ODS design tokens
+- Smooth animations and positioning
+- Accessibility support with ARIA attributes
+- Works seamlessly with all platforms
+
 ### Header Component Configuration
 
 The Header component supports platform-specific auto-hide behavior through the `HeaderConfig` interface:
@@ -302,6 +334,7 @@ interface HeaderConfig {
   }
   autoHide?: boolean  // Controls header auto-hide on scroll
   className?: string
+  style?: React.CSSProperties  // Custom styles for header
 }
 ```
 
@@ -315,6 +348,12 @@ interface HeaderConfig {
 - **Admin Hub**: `autoHide: false` - Always visible for navigation accessibility
 - **OpenFrame**: `autoHide: true` - Clean, minimal interface
 - **Flamingo**: `autoHide: true` - Modern web experience
+
+**Z-Index Management**:
+- Header: `z-[50]` - Ensures header stays above page content
+- Sliding Sidebar: `z-[40]` (overlay) and `z-[45]` (sidebar) - Below header for proper layering
+- Dropdowns: `z-[9999]` - Above all other elements
+- CSS ensures `border-ods-border` is always applied even with custom className
 
 ### Key Directories
 
@@ -392,6 +431,7 @@ All major UI components have been successfully migrated from the main project to
 - ✅ **Toast System** - Fixed positioning (z-index 9999), proper stacking, content-based sizing, no React warnings
 - ✅ **Form Components** - Input, Textarea, Checkbox, Switch with full validation support
 - ✅ **Card Components** - Basic card layouts with ODS theming
+- ✅ **Tooltip Component** - Radix-based tooltip with proper z-index management
 
 **Business Components (✅ COMPLETED)**:
 - ✅ **CommentCard** - Full MSP display functionality with working deletion logic and auth integration
