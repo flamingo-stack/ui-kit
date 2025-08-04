@@ -6,6 +6,43 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 @flamingo/ui-kit is a shared design system package for all Flamingo products (OpenMSP, OpenFrame, Admin Hub, Flamingo Website, and more). It's a source-only TypeScript package that provides components, hooks, styles, and utilities for consistent UI across platforms.
 
+## Recent Updates (✅ Configuration-Driven Architecture)
+
+The UI kit now supports configuration-driven rendering for platform-specific elements:
+
+### Footer Component Enhancement
+The Footer component now accepts:
+- **`config.logo`**: Custom logo via React element
+- **`config.nameElement`**: Custom platform name with specific fonts (e.g., DM Sans for OpenMSP, Azeret Mono for Flamingo)
+- **`config.sections`**: Dynamic footer sections
+- **`config.customComponent`**: Platform-specific content (e.g., waitlist cards)
+
+### Button Component Variants
+The Button component includes a special footer variant:
+- **`footer-link`**: Minimal spacing variant for footer navigation links
+  - No padding (`!p-0`), no gap (`!gap-0`)
+  - Left-aligned text (`justify-start`)
+  - Auto height (`!h-auto`)
+  - Transparent background with hover effects
+
+### Platform Configuration Example
+```typescript
+// In platform config files (e.g., openmsp.config.tsx)
+footer: {
+  logo: {
+    getElement: () => <OpenmspLogo className="w-8 h-8" />
+  },
+  name: {
+    getElement: () => (
+      <span className="font-['DM_Sans'] text-heading-5 font-bold">
+        OpenMSP
+      </span>
+    )
+  },
+  sections: [...]
+}
+```
+
 ## Commands
 
 ### Development
@@ -238,6 +275,38 @@ All provider buttons include embedded SVG icons:
 
 Icons are embedded to avoid external dependencies and ensure consistent rendering across all platforms.
 
+### Tooltip Component
+
+The UI Kit provides a Radix-based Tooltip component for consistent hover interactions:
+
+```typescript
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@flamingo/ui-kit/components/ui'
+
+// Basic usage
+<TooltipProvider>
+  <Tooltip>
+    <TooltipTrigger asChild>
+      <Info className="h-4 w-4 text-ods-text-secondary" />
+    </TooltipTrigger>
+    <TooltipContent>
+      <p className="text-sm">Helpful information here</p>
+    </TooltipContent>
+  </Tooltip>
+</TooltipProvider>
+
+// With max width constraint
+<TooltipContent className="max-w-xs">
+  <p className="text-sm">Longer tooltip content that needs width constraint</p>
+</TooltipContent>
+```
+
+**Features**:
+- Proper z-index management (`z-[2147483647]`) to appear above all content
+- Dark theme styling with ODS design tokens
+- Smooth animations and positioning
+- Accessibility support with ARIA attributes
+- Works seamlessly with all platforms
+
 ### Header Component Configuration
 
 The Header component supports platform-specific auto-hide behavior through the `HeaderConfig` interface:
@@ -265,6 +334,7 @@ interface HeaderConfig {
   }
   autoHide?: boolean  // Controls header auto-hide on scroll
   className?: string
+  style?: React.CSSProperties  // Custom styles for header
 }
 ```
 
@@ -278,6 +348,12 @@ interface HeaderConfig {
 - **Admin Hub**: `autoHide: false` - Always visible for navigation accessibility
 - **OpenFrame**: `autoHide: true` - Clean, minimal interface
 - **Flamingo**: `autoHide: true` - Modern web experience
+
+**Z-Index Management**:
+- Header: `z-[50]` - Ensures header stays above page content
+- Sliding Sidebar: `z-[40]` (overlay) and `z-[45]` (sidebar) - Below header for proper layering
+- Dropdowns: `z-[9999]` - Above all other elements
+- CSS ensures `border-ods-border` is always applied even with custom className
 
 ### Key Directories
 
@@ -355,6 +431,7 @@ All major UI components have been successfully migrated from the main project to
 - ✅ **Toast System** - Fixed positioning (z-index 9999), proper stacking, content-based sizing, no React warnings
 - ✅ **Form Components** - Input, Textarea, Checkbox, Switch with full validation support
 - ✅ **Card Components** - Basic card layouts with ODS theming
+- ✅ **Tooltip Component** - Radix-based tooltip with proper z-index management
 
 **Business Components (✅ COMPLETED)**:
 - ✅ **CommentCard** - Full MSP display functionality with working deletion logic and auth integration
@@ -362,6 +439,10 @@ All major UI components have been successfully migrated from the main project to
 - ✅ **JoinWaitlistButton** - OpenFrame icon support across all contexts (footer, CTA components)
 - ✅ **Pagination & Slider** - Properly exported with clean import chains
 - ✅ **AnnouncementBar** - Platform-aware announcements with proper API integration
+- ✅ **Footer** - Configuration-driven footer with custom logos and platform names
+  - Accepts `config.logo` for custom logo elements
+  - Accepts `config.nameElement` for custom platform name with fonts
+  - Supports dynamic sections and custom components per platform
 
 **Integration Components (✅ COMPLETED)**:
 - ✅ **Authentication Integration** - Real auth context forwarding from main app via AuthHookSetup

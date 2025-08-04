@@ -9,12 +9,13 @@ import { useState as useDropdownState, useRef as useDropdownRef, useEffect as us
 
 export interface HeaderProps {
   config: HeaderConfig
+  platform?: string
 }
 
 // Re-export from types for convenience
 export type { HeaderConfig } from '../../types/navigation'
 
-export function Header({ config }: HeaderProps) {
+export function Header({ config, platform }: HeaderProps) {
   const [show, setShow] = useState(true)
   const [lastScrollY, setLastScrollY] = useState(0)
   const [openDropdowns, setOpenDropdowns] = useState<Record<string, boolean>>({})
@@ -157,12 +158,11 @@ export function Header({ config }: HeaderProps) {
                     size="sm" 
                     leftIcon={child.icon} 
                     rightIcon={child.badge}
-                    href={child.href}
-                    onClick={(e) => {
+                    onClick={() => {
                       // Close dropdown when item is clicked
                       setOpenDropdowns(prev => ({ ...prev, [item.id]: false }))
                       
-                      // Call the original onClick if provided
+                      // Call the onClick handler
                       if (child.onClick) {
                         child.onClick()
                       }
@@ -192,21 +192,23 @@ export function Header({ config }: HeaderProps) {
       )
     }
 
-    // Regular navigation item
-    if (item.href) {
+    // Regular navigation item with onClick
+    if (item.href || item.onClick) {
       return (
         <Button
           key={item.id}
           variant="ghost"
-          href={item.href}
+          onClick={item.onClick || (() => {})}
           leftIcon={item.icon}
           rightIcon={item.badge}
           className={cn(
             "h-10 px-3 py-2",
             "font-['DM_Sans'] font-bold text-[16px] leading-none tracking-[-0.32px]",
-            "hover:bg-ods-bg-hover focus:bg-ods-bg-hover",
+            platform === 'flamingo' 
+              ? "hover:bg-transparent focus:bg-transparent text-[#FAFAFA] hover:opacity-80" 
+              : "hover:bg-ods-bg-hover focus:bg-ods-bg-hover",
             "whitespace-nowrap",
-            item.isActive ? 'text-ods-text-primary' : 'text-ods-text-secondary'
+            platform !== 'flamingo' && (item.isActive ? 'text-ods-text-primary' : 'text-ods-text-secondary')
           )}
         >
           {item.label}
@@ -225,9 +227,11 @@ export function Header({ config }: HeaderProps) {
         className={cn(
           "h-10 px-3 py-2",
           "font-['DM_Sans'] font-bold text-[16px] leading-none tracking-[-0.32px]",
-          "hover:bg-ods-bg-hover focus:bg-ods-bg-hover",
+          platform === 'flamingo' 
+            ? "hover:bg-transparent focus:bg-transparent text-[#FAFAFA] hover:opacity-80" 
+            : "hover:bg-ods-bg-hover focus:bg-ods-bg-hover",
           "whitespace-nowrap",
-          item.isActive ? 'text-ods-text-primary' : 'text-ods-text-secondary'
+          platform !== 'flamingo' && (item.isActive ? 'text-ods-text-primary' : 'text-ods-text-secondary')
         )}
       >
         {item.label}
@@ -239,7 +243,7 @@ export function Header({ config }: HeaderProps) {
   return (
     <div 
       className={cn(
-        "sticky top-0 z-40 w-full transition-transform duration-300 ease-in-out"
+        "sticky top-0 z-[50] w-full transition-transform duration-300 ease-in-out"
       )}
       style={{
         transform: !show ? 'translateY(-100%)' : 'translateY(0)'
@@ -248,15 +252,18 @@ export function Header({ config }: HeaderProps) {
       <header 
         className={cn(
           "w-full flex items-center justify-between", 
-          "bg-ods-card border-b border-ods-border backdrop-blur-sm",
+          "border-b border-ods-border backdrop-blur-sm",
           "px-6 py-3",
+          // Default styling (can be overridden by config.className)
+          !config.className && "bg-ods-card",
           config.className
         )}
+        style={config.style}
       >
       {/* Left: Logo */}
       <div className="flex items-center justify-start flex-shrink-0">
         {config.actions?.left && (
-          <div className="flex items-center gap-2 mr-4">
+          <div className="flex items-center">
             {config.actions.left}
           </div>
         )}

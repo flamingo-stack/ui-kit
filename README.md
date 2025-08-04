@@ -14,6 +14,8 @@ This is a **source-only** TypeScript package that provides:
 - ✅ **Zero TypeScript Errors** - Fully type-safe with comprehensive error resolution
 - 🎊 **Toast System** - Reliable notifications with proper positioning and stacking
 - 🔘 **Button System** - Complete button variants with proper text visibility
+- 💬 **Tooltip System** - Radix-based tooltips with proper z-index management
+- 🎯 **Header Z-Index** - Fixed layering for headers, sidebars, and dropdowns
 
 ## Installation
 
@@ -26,35 +28,47 @@ npm install @flamingo/ui-kit
 ### Components
 
 ```tsx
-import { Button, Card, Input, Modal, ModalHeader, ModalTitle, ModalFooter } from '@flamingo/ui-kit/components/ui'
+import { Button, Card, Input, Modal, ModalHeader, ModalTitle, ModalFooter, Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@flamingo/ui-kit/components/ui'
 import { SSOModal, ErrorBoundary } from '@flamingo/ui-kit/components/features'
 import { GitHubIcon, XLogo, OpenFrameLogo } from '@flamingo/ui-kit/components/icons'
 import { FlamingoLogo, OpenMSPLogo } from '@flamingo/ui-kit/components' // Legacy individual imports
 import { useToast } from '@flamingo/ui-kit/hooks'
+import { Info } from 'lucide-react'
 
 function MyComponent() {
   const { toast } = useToast()
   
   return (
-    <Card>
-      <Button 
-        variant="primary" 
-        onClick={() => toast({ title: "Success!", description: "Action completed" })}
-      >
-        Click me
-      </Button>
-      <Input placeholder="Enter text..." />
-      
-      <Modal isOpen={showModal} onClose={() => setShowModal(false)}>
-        <ModalHeader>
-          <ModalTitle>Reliable Modal</ModalTitle>
-        </ModalHeader>
-        <ModalFooter>
-          <Button variant="outline" onClick={() => setShowModal(false)}>Cancel</Button>
-          <Button onClick={handleAction}>Confirm</Button>
-        </ModalFooter>
-      </Modal>
-    </Card>
+    <TooltipProvider>
+      <Card>
+        <Button 
+          variant="primary" 
+          onClick={() => toast({ title: "Success!", description: "Action completed" })}
+        >
+          Click me
+        </Button>
+        <Input placeholder="Enter text..." />
+        
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Info className="h-4 w-4 text-ods-text-secondary" />
+          </TooltipTrigger>
+          <TooltipContent>
+            <p className="text-sm">Helpful information about this feature</p>
+          </TooltipContent>
+        </Tooltip>
+        
+        <Modal isOpen={showModal} onClose={() => setShowModal(false)}>
+          <ModalHeader>
+            <ModalTitle>Reliable Modal</ModalTitle>
+          </ModalHeader>
+          <ModalFooter>
+            <Button variant="outline" onClick={() => setShowModal(false)}>Cancel</Button>
+            <Button onClick={handleAction}>Confirm</Button>
+          </ModalFooter>
+        </Modal>
+      </Card>
+    </TooltipProvider>
   )
 }
 ```
@@ -201,7 +215,9 @@ npm run lint
 - **Button**: All variants with proper text visibility and icon support (leftIcon, rightIcon)
 - **Modal**: Reliable modal system with accessibility and escape key handling
 - **Toast**: Complete notification system with proper positioning, z-index, and stacking
-- **Header**: Navigation header with configurable auto-hide behavior on scroll
+- **Tooltip**: Radix-based tooltips with z-index 2147483647 for proper layering
+- **Header**: Navigation header with configurable auto-hide behavior on scroll (z-[50])
+- **Sliding Sidebar**: Mobile navigation with proper z-index management (z-[40]/z-[45])
 - **Comment Card**: Full MSP display with avatar overlays and deletion functionality
 - **User Summary**: Complete user display with MSP badges and responsive layouts
 - **Join Waitlist Button**: OpenFrame icon integration with customizable colors

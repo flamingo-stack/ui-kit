@@ -24,7 +24,7 @@ export function FooterWaitlistCard() {
   }, [pathname, router]);
 
   return (
-    <div className="bg-[#424242] rounded-lg p-4 p-6 w-full  flex flex-col gap-4 lg:self-center">
+    <div className="bg-[#424242] rounded-lg p-4 md:p-6 w-full flex flex-col gap-4">
       <h3 className="font-['DM_Sans'] text-lg font-semibold text-ods-text-primary text-bold leading-tight text-left">
         OpenFrame – Coming Soon
       </h3>
