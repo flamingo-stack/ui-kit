@@ -245,7 +245,7 @@ export function SlidingSidebar({ config }: SlidingSidebarProps) {
               duration: 0.3, 
               ease: [0.4, 0, 0.2, 1]
             }}
-            className="fixed inset-0 bg-black/50 z-[10000]"
+            className="fixed inset-0 bg-black/50 z-[40]"
             onClick={() => config.onClose()}
           />
         )}
@@ -266,7 +266,7 @@ export function SlidingSidebar({ config }: SlidingSidebarProps) {
           velocity: config.isOpen ? 5 : -5
         }}
         className={cn(
-          "fixed top-0 bottom-0 z-[10001] w-64 bg-ods-card border-ods-border flex flex-col shadow-xl",
+          "fixed top-0 bottom-0 z-[45] w-64 bg-ods-card border-ods-border flex flex-col shadow-xl",
           config.position === 'right' ? "right-0 border-l" : "left-0 border-r",
           config.className
         )}

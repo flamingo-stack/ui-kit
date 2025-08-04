@@ -243,7 +243,7 @@ export function Header({ config, platform }: HeaderProps) {
   return (
     <div 
       className={cn(
-        "sticky top-0 z-40 w-full transition-transform duration-300 ease-in-out"
+        "sticky top-0 z-[50] w-full transition-transform duration-300 ease-in-out"
       )}
       style={{
         transform: !show ? 'translateY(-100%)' : 'translateY(0)'
@@ -252,10 +252,10 @@ export function Header({ config, platform }: HeaderProps) {
       <header 
         className={cn(
           "w-full flex items-center justify-between", 
-          "border-b backdrop-blur-sm",
+          "border-b border-ods-border backdrop-blur-sm",
           "px-6 py-3",
           // Default styling (can be overridden by config.className)
-          !config.className && "bg-ods-card border-ods-border",
+          !config.className && "bg-ods-card",
           config.className
         )}
         style={config.style}
@@ -263,7 +263,7 @@ export function Header({ config, platform }: HeaderProps) {
       {/* Left: Logo */}
       <div className="flex items-center justify-start flex-shrink-0">
         {config.actions?.left && (
-          <div className="flex items-center gap-2 mr-4">
+          <div className="flex items-center">
             {config.actions.left}
           </div>
         )}

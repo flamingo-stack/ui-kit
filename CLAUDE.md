@@ -17,6 +17,14 @@ The Footer component now accepts:
 - **`config.sections`**: Dynamic footer sections
 - **`config.customComponent`**: Platform-specific content (e.g., waitlist cards)
 
+### Button Component Variants
+The Button component includes a special footer variant:
+- **`footer-link`**: Minimal spacing variant for footer navigation links
+  - No padding (`!p-0`), no gap (`!gap-0`)
+  - Left-aligned text (`justify-start`)
+  - Auto height (`!h-auto`)
+  - Transparent background with hover effects
+
 ### Platform Configuration Example
 ```typescript
 // In platform config files (e.g., openmsp.config.tsx)

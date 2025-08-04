@@ -1,5 +1,5 @@
 // Announcement system TypeScript types
-import type { PlatformName, PlatformRecord, LegacyPlatform } from './platform';
+import type { PlatformName, PlatformRecord, LegacyPlatform, PlatformFilter } from './platform';
 
 // For backward compatibility, maintain the old Platform type temporarily
 export type Platform = LegacyPlatform;
@@ -146,7 +146,7 @@ export interface AnnouncementFormData {
 
 // API Query Parameters
 export interface GetAnnouncementsOptions {
-  platform?: Platform;
+  platform?: PlatformFilter;  // Changed from Platform to PlatformFilter to include 'all'
   is_active?: boolean;
   page?: number;
   pageSize?: number;

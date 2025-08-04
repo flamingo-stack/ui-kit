@@ -68,7 +68,7 @@ function UniversalFooter({ config, renderLink }: { config: FooterConfig; renderL
           <div className="flex items-center gap-2">
             {config.logo && (
               <Suspense fallback={<Skeleton className="w-8 h-8" />}>
-                {config.logo}
+                {config.logo as any}
               </Suspense>
             )}
             {config.nameElement || <span className="font-heading text-heading-5 font-bold text-ods-text-primary whitespace-nowrap">{config.name}</span>}
@@ -90,7 +90,7 @@ function UniversalFooter({ config, renderLink }: { config: FooterConfig; renderL
             <div className="flex flex-col gap-0">
               {section.links.map((link, linkIndex) => (
                 <Suspense key={linkIndex} fallback={<NavLinkSkeleton />}>
-                  {linkRenderer(link)}
+                  {linkRenderer(link) as any}
                 </Suspense>
               ))}
             </div>
@@ -101,7 +101,7 @@ function UniversalFooter({ config, renderLink }: { config: FooterConfig; renderL
         {config.customComponent && (
           <div className="flex flex-col col-span-2 md:col-span-1 lg:col-span-1 justify-center">
             <Suspense fallback={<Skeleton className="h-32 w-full" />}>
-              {config.customComponent}
+              {config.customComponent as any}
             </Suspense>
           </div>
         )}

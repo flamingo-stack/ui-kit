@@ -43,7 +43,7 @@ export function useAuth() {
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   return (
     <AuthContext.Provider value={{ user: { id: 'mock-user-id', name: 'Mock User' }, isLoading: false }}>
-      {children}
+      {children as any}
     </AuthContext.Provider>
   );
 }
