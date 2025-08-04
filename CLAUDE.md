@@ -6,6 +6,35 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 @flamingo/ui-kit is a shared design system package for all Flamingo products (OpenMSP, OpenFrame, Admin Hub, Flamingo Website, and more). It's a source-only TypeScript package that provides components, hooks, styles, and utilities for consistent UI across platforms.
 
+## Recent Updates (✅ Configuration-Driven Architecture)
+
+The UI kit now supports configuration-driven rendering for platform-specific elements:
+
+### Footer Component Enhancement
+The Footer component now accepts:
+- **`config.logo`**: Custom logo via React element
+- **`config.nameElement`**: Custom platform name with specific fonts (e.g., DM Sans for OpenMSP, Azeret Mono for Flamingo)
+- **`config.sections`**: Dynamic footer sections
+- **`config.customComponent`**: Platform-specific content (e.g., waitlist cards)
+
+### Platform Configuration Example
+```typescript
+// In platform config files (e.g., openmsp.config.tsx)
+footer: {
+  logo: {
+    getElement: () => <OpenmspLogo className="w-8 h-8" />
+  },
+  name: {
+    getElement: () => (
+      <span className="font-['DM_Sans'] text-heading-5 font-bold">
+        OpenMSP
+      </span>
+    )
+  },
+  sections: [...]
+}
+```
+
 ## Commands
 
 ### Development
@@ -362,6 +391,10 @@ All major UI components have been successfully migrated from the main project to
 - ✅ **JoinWaitlistButton** - OpenFrame icon support across all contexts (footer, CTA components)
 - ✅ **Pagination & Slider** - Properly exported with clean import chains
 - ✅ **AnnouncementBar** - Platform-aware announcements with proper API integration
+- ✅ **Footer** - Configuration-driven footer with custom logos and platform names
+  - Accepts `config.logo` for custom logo elements
+  - Accepts `config.nameElement` for custom platform name with fonts
+  - Supports dynamic sections and custom components per platform
 
 **Integration Components (✅ COMPLETED)**:
 - ✅ **Authentication Integration** - Real auth context forwarding from main app via AuthHookSetup
