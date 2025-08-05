@@ -10,7 +10,7 @@ const buttonVariants = cva(
   "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-[6px] font-['DM_Sans'] font-bold text-lg leading-tight transition-colors duration-200 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0",
   {
     variants: {
-      variant: {
+      variant: { 
         // Primary variant for main CTAs (ButtonFull primary)
         primary: "bg-ods-accent text-ods-text-on-accent hover:bg-ods-accent-hover active:bg-ods-accent-active focus-visible:ring-2 focus-visible:ring-ods-focus disabled:bg-ods-disabled disabled:text-ods-text-disabled",
         // White background variant for secondary actions (ButtonFull secondary)
