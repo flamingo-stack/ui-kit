@@ -50,5 +50,14 @@ export { CustomLicenseIcon } from './custom-license-icon';
 export { CustomTimeIcon } from './custom-time-icon';
 export { CustomExternalLinkIcon } from './custom-external-link-icon';
 
+// Vendor Showcase Icons
+export { 
+  VendorShowcaseMainIcon,
+  TransparentTrustedIcon,
+  ModularHellIcon,
+  RapidInnovationIcon,
+  LowerTCOIcon
+} from './vendor-showcase-icons';
+
 // Utility exports
 export * from './icon-utils';
