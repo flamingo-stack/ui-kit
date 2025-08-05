@@ -29,14 +29,18 @@ export function AnnouncementBar() {
   const [announcement, setAnnouncement] = useState<Announcement | null>(null);
   const [isVisible, setIsVisible] = useState<boolean>(false);
 
+  // Get the platform type for platform-specific localStorage keys
+  const platform = getAppType();
+
   // Helper to determine dismissal key for localStorage
-  const getDismissKey = (id: string) => `announcement-${id}-dismissed`;
+  const getDismissKey = (id: string) => `${platform}-announcement-${id}-dismissed`;
+  
+  // Helper to get platform-specific cache key
+  const getCacheKey = () => `${platform}-announcement-cache`;
 
   // Fetch active announcement from API and update state + LS
   const fetchActiveAnnouncement = async () => {
     try {
-      // Get platform based on current app configuration
-      const platform = getAppType();
       console.log(`📋 [${platform.toUpperCase()}] Fetching active announcement for current app`);
       
       const response = await fetch(`/api/announcements/active/${platform}`);
@@ -46,8 +50,8 @@ export function AnnouncementBar() {
         if (data.announcement) {
           setAnnouncement(data.announcement);
 
-          // persist latest announcement for quick future loads
-          setStoredAnnouncement('announcement', data.announcement);
+          // persist latest announcement for quick future loads with platform-specific key
+          setStoredAnnouncement(getCacheKey(), data.announcement);
 
           // Check if this specific announcement was dismissed
           const isDismissed = localStorage.getItem(getDismissKey(data.announcement.id));
@@ -58,8 +62,8 @@ export function AnnouncementBar() {
           setAnnouncement(null);
           setIsVisible(false);
           
-          // Use utility function to properly clear all announcement data
-          clearStoredAnnouncement();
+          // Use utility function to properly clear platform-specific announcement data
+          clearStoredAnnouncement(getCacheKey());
         }
       } else {
         // Network or other error - hide announcement and clean up
@@ -68,7 +72,7 @@ export function AnnouncementBar() {
         setIsVisible(false);
         
         // Clear stale data on network errors too
-        clearStoredAnnouncement();
+        clearStoredAnnouncement(getCacheKey());
       }
     } catch (error) {
       console.error('Error fetching active announcement:', error);
@@ -76,13 +80,13 @@ export function AnnouncementBar() {
       setIsVisible(false);
       
       // Clear stale data on exceptions too
-      clearStoredAnnouncement();
+      clearStoredAnnouncement(getCacheKey());
     }
   };
 
   // Initial load: use cached announcement synchronously for instant paint
   useEffect(() => {
-    const cached = getStoredAnnouncement('announcement');
+    const cached = getStoredAnnouncement(getCacheKey());
     if (cached) {
       const isDismissed = localStorage.getItem(getDismissKey(cached.id));
       setAnnouncement(cached);
