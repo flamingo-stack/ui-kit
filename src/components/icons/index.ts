@@ -28,6 +28,7 @@ export { SendIcon } from './send-icon';
 export { EditProfileIcon } from './edit-profile-icon';
 export { EmptyVendorIcon } from './empty-vendor-icon';
 export { ErrorIcon } from './error-icon';
+export { MarginCrisisIcon } from './margin-crisis-icon';
 
 // Brand and social icons
 export { GitHubIcon } from './github-icon';
