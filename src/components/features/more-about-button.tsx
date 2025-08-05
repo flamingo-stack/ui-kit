@@ -27,7 +27,7 @@ const MoreAboutButton: React.FC<MoreAboutButtonProps> = ({
     <Button
       size="lg"
       variant="ghost"
-      className={`text-[var(--ods-open-yellow-base)] ${className}`}
+      className={`text-[var(--ods-open-yellow-base)] flex-shrink-0 ${className}`}
       rightIcon={<ArrowRight className="w-6 h-6" />}
       onClick={handleClick}
     >
