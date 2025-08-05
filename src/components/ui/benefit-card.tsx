@@ -75,7 +75,8 @@ export const BenefitCardGrid: React.FC<BenefitCardGridProps> = ({
           : 'border-b md:border-b-0 md:border-r border-ods-border'
         
         return React.cloneElement(child as React.ReactElement, {
-          key: index,
+          key: index
+          ,
           className: borderClass
         })
       })}
