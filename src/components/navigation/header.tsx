@@ -156,23 +156,19 @@ export function Header({ config, platform }: HeaderProps) {
                     key={child.id}
                     variant="ghost" 
                     size="sm" 
+                    href={child.href} // Use href for navigation
                     leftIcon={child.icon} 
                     rightIcon={child.badge}
-                    onClick={() => {
-                      // Close dropdown when item is clicked
+                    onClick={child.href ? () => {
+                      // Close dropdown when navigation item is clicked
                       setOpenDropdowns(prev => ({ ...prev, [item.id]: false }))
-                      
-                      // Call the onClick handler
-                      if (child.onClick) {
-                        child.onClick()
-                      }
-                    }}
+                    } : child.onClick}
                     className={cn(
                       "flex justify-start w-full",
                       index < (item.children?.length ?? 0) - 1 && "mb-1",
                       child.isActive ? 'text-ods-text-primary' : 'text-ods-text-secondary'
                     )}
-                    {...(child.isExternal && { target: "_blank", rel: "noopener noreferrer" })}
+                    {...(child.isExternal && { isExternal: true })}
                   >
                     {child.label}
                   </Button>
@@ -192,13 +188,14 @@ export function Header({ config, platform }: HeaderProps) {
       )
     }
 
-    // Regular navigation item with onClick
+    // Regular navigation item
     if (item.href || item.onClick) {
       return (
         <Button
           key={item.id}
           variant="ghost"
-          onClick={item.onClick || (() => {})}
+          href={item.href} // Use href for navigation
+          onClick={item.onClick} // Only for non-navigation actions
           leftIcon={item.icon}
           rightIcon={item.badge}
           className={cn(
@@ -210,6 +207,7 @@ export function Header({ config, platform }: HeaderProps) {
             "whitespace-nowrap",
             platform !== 'flamingo' && (item.isActive ? 'text-ods-text-primary' : 'text-ods-text-secondary')
           )}
+          {...(item.isExternal && { isExternal: true })}
         >
           {item.label}
         </Button>

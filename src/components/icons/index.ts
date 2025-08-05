@@ -28,6 +28,7 @@ export { SendIcon } from './send-icon';
 export { EditProfileIcon } from './edit-profile-icon';
 export { EmptyVendorIcon } from './empty-vendor-icon';
 export { ErrorIcon } from './error-icon';
+export { MarginCrisisIcon } from './margin-crisis-icon';
 
 // Brand and social icons
 export { GitHubIcon } from './github-icon';
@@ -48,6 +49,15 @@ export { CustomForkIcon } from './custom-fork-icon';
 export { CustomLicenseIcon } from './custom-license-icon';
 export { CustomTimeIcon } from './custom-time-icon';
 export { CustomExternalLinkIcon } from './custom-external-link-icon';
+
+// Vendor Showcase Icons
+export { 
+  VendorShowcaseMainIcon,
+  TransparentTrustedIcon,
+  ModularHellIcon,
+  RapidInnovationIcon,
+  LowerTCOIcon
+} from './vendor-showcase-icons';
 
 // Utility exports
 export * from './icon-utils';
