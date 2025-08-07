@@ -59,5 +59,8 @@ export {
   LowerTCOIcon
 } from './vendor-showcase-icons';
 
+// AI and Feature Icons
+export { AiRobotIcon } from './ai-robot-icon';
+
 // Utility exports
 export * from './icon-utils';
