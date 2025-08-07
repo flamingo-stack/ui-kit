@@ -135,19 +135,24 @@ export function Header({ config, platform }: HeaderProps) {
               "hover:bg-ods-bg-hover focus:bg-ods-bg-hover",
               "whitespace-nowrap",
               item.isActive ? 'text-ods-text-primary' : 'text-ods-text-secondary',
-              isOpen && 'bg-ods-bg-hover'
+              isOpen && 'bg-ods-bg-hover',
+              item.className
             )}
           >
             {item.label}
           </Button>
           
-          {isOpen && (
+          {isOpen && (() => {
+            console.log('🎯 Rendering dropdown for:', item.id, 'with className:', item.dropdownClassName);
+            return (
             <div
               ref={(el) => { dropdownRefs.current[item.id] = el }}
               className={cn(
                 "absolute top-full left-0 mt-1",
-                "bg-ods-card border border-ods-border rounded-lg shadow-xl z-[9999]",
-                item.id === 'community' ? "min-w-[240px]" : "min-w-[220px]"
+                item.dropdownClassName ? "" : "bg-ods-card border border-ods-border",
+                "rounded-lg shadow-xl z-[9999]",
+                item.id === 'community' ? "min-w-[240px]" : "min-w-[220px]",
+                item.dropdownClassName || ''
               )}
             >
               <div className="p-2">
@@ -183,7 +188,8 @@ export function Header({ config, platform }: HeaderProps) {
                 </>
               )}
             </div>
-          )}
+            )
+          })()}
         </div>
       )
     }
@@ -201,11 +207,10 @@ export function Header({ config, platform }: HeaderProps) {
           className={cn(
             "h-10 px-3 py-2",
             "font-['DM_Sans'] font-bold text-[16px] leading-none tracking-[-0.32px]",
-            platform === 'flamingo' 
-              ? "hover:bg-transparent focus:bg-transparent text-[#FAFAFA] hover:opacity-80" 
-              : "hover:bg-ods-bg-hover focus:bg-ods-bg-hover",
+            "hover:bg-ods-bg-hover focus:bg-ods-bg-hover",
             "whitespace-nowrap",
-            platform !== 'flamingo' && (item.isActive ? 'text-ods-text-primary' : 'text-ods-text-secondary')
+            item.isActive ? 'text-ods-text-primary' : 'text-ods-text-secondary',
+            item.className
           )}
           {...(item.isExternal && { isExternal: true })}
         >
@@ -225,11 +230,10 @@ export function Header({ config, platform }: HeaderProps) {
         className={cn(
           "h-10 px-3 py-2",
           "font-['DM_Sans'] font-bold text-[16px] leading-none tracking-[-0.32px]",
-          platform === 'flamingo' 
-            ? "hover:bg-transparent focus:bg-transparent text-[#FAFAFA] hover:opacity-80" 
-            : "hover:bg-ods-bg-hover focus:bg-ods-bg-hover",
+          "hover:bg-ods-bg-hover focus:bg-ods-bg-hover",
           "whitespace-nowrap",
-          platform !== 'flamingo' && (item.isActive ? 'text-ods-text-primary' : 'text-ods-text-secondary')
+          item.isActive ? 'text-ods-text-primary' : 'text-ods-text-secondary',
+          item.className
         )}
       >
         {item.label}
