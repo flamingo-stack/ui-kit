@@ -126,17 +126,6 @@
   --color-link-visited: #b794f6;
 }
 
-/* Platform-Specific Color Mappings */
-[data-app-type="admin-hub"] {
-  --color-accent-primary: var(--ods-flamingo-pink-base);
-  --color-accent-hover: var(--ods-flamingo-pink-hover);
-  --color-accent-active: var(--ods-flamingo-pink-action);
-  --color-accent-focus: var(--ods-flamingo-pink-base);
-  --color-focus-ring: var(--ods-flamingo-pink-base);
-  --color-focus-visible: var(--ods-flamingo-pink-base);
-  --color-link: var(--ods-flamingo-pink-base);
-  --color-link-hover: var(--ods-flamingo-pink-hover);
-}
 
 [data-app-type="openframe"] {
   --color-accent-primary: var(--ods-flamingo-cyan-base);
