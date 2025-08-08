@@ -7,6 +7,7 @@ import { cn } from "../../utils";
 export interface StartWithOpenFrameButtonProps extends Omit<ButtonProps, 'variant' | 'size' | 'leftIcon'> {
   children?: React.ReactNode;
   mode?: 'outline' | 'yellow';
+  buttonSize?: 'sm' | 'md' | 'lg';
 }
 
 /**
@@ -18,13 +19,17 @@ export interface StartWithOpenFrameButtonProps extends Omit<ButtonProps, 'varian
 export const StartWithOpenFrameButton = React.forwardRef<
   HTMLButtonElement,
   StartWithOpenFrameButtonProps
->(({ children = 'Start Free Trial', mode = 'outline', className, ...props }, ref) => {
+>(({ children = 'Start Free Trial', mode = 'outline', className, buttonSize, ...props }, ref) => {
   const isYellow = mode === 'yellow';
+  
+  // Map buttonSize to Button component's size prop
+  const mappedSize = buttonSize === 'md' ? 'default' : buttonSize;
   
   return (
     <Button
       ref={ref}
       {...props}
+      size={mappedSize}
       variant={isYellow ? 'primary' : 'outline'}
       className={cn(
         isYellow && 'bg-[var(--ods-open-yellow-base)] hover:bg-[var(--ods-open-yellow-hover)] text-black border-[var(--ods-open-yellow-base)]',
