@@ -78,6 +78,10 @@ export interface ButtonProps
     VariantProps<typeof buttonVariants> {
   asChild?: boolean
   href?: string
+  /**
+   * Open the link in a new tab when href is provided
+   */
+  openInNewTab?: boolean
   leftIcon?: React.ReactNode
   rightIcon?: React.ReactNode
   /**
@@ -90,11 +94,8 @@ export interface ButtonProps
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, asChild = false, href, leftIcon, rightIcon, centerIcon, loading, children, disabled, ...props }, ref) => {
+  ({ className, variant, size, asChild = false, href, openInNewTab = false, leftIcon, rightIcon, centerIcon, loading, children, disabled, ...props }, ref) => {
     const isDisabled = disabled || loading
-    
-    // Extract props that shouldn't be passed to DOM elements
-    const { isExternal, ...domProps } = props as any
     
     const isCenterIconOnly = !!centerIcon && !children && !leftIcon && !rightIcon
     const isFooterLink = variant === "footer-link"
@@ -142,7 +143,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         <Slot
           className={composedClassName}
           ref={ref}
-          {...domProps}
+          {...props}
         >
           {children}
         </Slot>
@@ -157,9 +158,8 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
           className={composedClassName}
           aria-disabled={isDisabled}
           tabIndex={isDisabled ? -1 : undefined}
-          target={isExternal ? '_blank' : undefined}
-          rel={isExternal ? 'noopener noreferrer' : undefined}
-          {...domProps}
+          target={openInNewTab ? '_blank' : undefined}
+          rel={openInNewTab ? 'noopener noreferrer' : undefined}
         >
           {renderContent()}
         </Link>
@@ -172,7 +172,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         className={composedClassName}
         ref={ref}
         disabled={isDisabled}
-        {...domProps}
+        {...props}
       >
         {renderContent()}
       </button>

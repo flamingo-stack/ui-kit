@@ -26,7 +26,6 @@ export const StartWithOpenFrameButton = React.forwardRef<
       ref={ref}
       {...props}
       variant={isYellow ? 'primary' : 'outline'}
-      // size="lg"
       className={cn(
         isYellow && 'bg-[var(--ods-open-yellow-base)] hover:bg-[var(--ods-open-yellow-hover)] text-black border-[var(--ods-open-yellow-base)]',
         className
