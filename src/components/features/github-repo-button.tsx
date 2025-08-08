@@ -18,6 +18,7 @@ export function GithubRepoButton({
     <Button
       variant="outline"
       className={`w-full sm:w-auto ${className}`}
+      openInNewTab
       size={size}
       href={href}
       leftIcon={<GitHubIcon className="w-6 h-6" />}
