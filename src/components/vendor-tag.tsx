@@ -62,7 +62,7 @@ export function VendorTag({
         return {
           text: text || "Open Source",
           icon: (
-            <div className="w-4 h-4 bg-[#FFC008] rounded-sm flex items-center justify-center flex-shrink-0">
+            <div className="w-4 h-4 bg-ods-accent rounded-sm flex items-center justify-center flex-shrink-0">
               <OpenSourceIcon width={10} height={10} className="text-[#1A1A1A]" />
             </div>
           )
@@ -80,7 +80,7 @@ export function VendorTag({
         return {
           text: text || "Free",
           icon: (
-            <div className="w-4 h-4 bg-[#FFC008] rounded-sm flex items-center justify-center flex-shrink-0">
+            <div className="w-4 h-4 bg-ods-accent rounded-sm flex items-center justify-center flex-shrink-0">
               <span className="text-[#1A1A1A] text-[8px] font-bold">$</span>
             </div>
           )
@@ -89,7 +89,7 @@ export function VendorTag({
         return {
           text: text || "Freemium",
           icon: (
-            <div className="w-4 h-4 bg-[#FFC008] rounded-sm flex items-center justify-center flex-shrink-0">
+            <div className="w-4 h-4 bg-ods-accent rounded-sm flex items-center justify-center flex-shrink-0">
               <span className="text-[#1A1A1A] text-[8px] font-bold">$</span>
             </div>
           )
@@ -107,7 +107,7 @@ export function VendorTag({
         return {
           text: text || "Enterprise",
           icon: (
-            <div className="w-4 h-4 bg-[#FFC008] rounded-sm flex items-center justify-center flex-shrink-0">
+            <div className="w-4 h-4 bg-ods-accent rounded-sm flex items-center justify-center flex-shrink-0">
               <span className="text-[#1A1A1A] text-[8px] font-bold">E</span>
             </div>
           )
@@ -116,7 +116,7 @@ export function VendorTag({
         return {
           text: text || "Recommended",
           icon: (
-            <div className="w-4 h-4 bg-[#FFC008] rounded-sm flex items-center justify-center flex-shrink-0">
+            <div className="w-4 h-4 bg-ods-accent rounded-sm flex items-center justify-center flex-shrink-0">
               <span className="text-[#1A1A1A] text-[8px] font-bold">★</span>
             </div>
           )
@@ -129,7 +129,7 @@ export function VendorTag({
           return {
             text: "Open Source",
             icon: (
-              <div className="w-4 h-4 bg-[#FFC008] rounded-sm flex items-center justify-center flex-shrink-0">
+              <div className="w-4 h-4 bg-ods-accent rounded-sm flex items-center justify-center flex-shrink-0">
                 <OpenSourceIcon width={10} height={10} className="text-[#1A1A1A]" />
               </div>
             )
@@ -146,14 +146,14 @@ export function VendorTag({
         } else if (classificationType === 'openframe_selected') {
           return {
             text: "OpenFrame Selected",
-            icon: <OpenFrameLogo lowerPathColor="#FFC008" upperPathColor="#FFC008" className="h-4 w-4" />
+            icon: <OpenFrameLogo lowerPathColor="currentColor" upperPathColor="currentColor" className="h-4 w-4 text-ods-accent" />
           }
         } else {
           // Fallback for unknown classification types
           return {
             text: text || "Classification",
             icon: (
-              <div className="w-4 h-4 bg-[#FFC008] rounded-sm flex items-center justify-center flex-shrink-0">
+              <div className="w-4 h-4 bg-ods-accent rounded-sm flex items-center justify-center flex-shrink-0">
                 <span className="text-[#1A1A1A] text-[8px] font-bold">C</span>
               </div>
             )
@@ -162,7 +162,7 @@ export function VendorTag({
       case 'openframe_selected':
         return {
           text: text || "OpenFrame Selected",
-          icon: <OpenFrameLogo lowerPathColor="#FFC008" upperPathColor="#FFC008" className="h-4 w-4" />
+          icon: <OpenFrameLogo lowerPathColor="currentColor" upperPathColor="currentColor" className="h-4 w-4 text-ods-accent" />
         }
       default:
         return {
