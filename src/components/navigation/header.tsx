@@ -164,10 +164,14 @@ export function Header({ config, platform }: HeaderProps) {
                     href={child.href} // Use href for navigation
                     leftIcon={child.icon} 
                     rightIcon={child.badge}
-                    onClick={child.href ? () => {
-                      // Close dropdown when navigation item is clicked
+                    onClick={() => {
+                      // Always close dropdown when any item is clicked
                       setOpenDropdowns(prev => ({ ...prev, [item.id]: false }))
-                    } : child.onClick}
+                      // If there's a custom onClick, call it too
+                      if (child.onClick) {
+                        child.onClick()
+                      }
+                    }}
                     className={cn(
                       "flex justify-start w-full",
                       index < (item.children?.length ?? 0) - 1 && "mb-1",

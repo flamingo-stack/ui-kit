@@ -94,7 +94,7 @@ export interface ButtonProps
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, asChild = false, href, openInNewTab = false, leftIcon, rightIcon, centerIcon, loading, children, disabled, ...props }, ref) => {
+  ({ className, variant, size, asChild = false, href, openInNewTab = false, leftIcon, rightIcon, centerIcon, loading, children, disabled, onClick, ...props }, ref) => {
     const isDisabled = disabled || loading
     
     const isCenterIconOnly = !!centerIcon && !children && !leftIcon && !rightIcon
@@ -160,6 +160,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
           tabIndex={isDisabled ? -1 : undefined}
           target={openInNewTab ? '_blank' : undefined}
           rel={openInNewTab ? 'noopener noreferrer' : undefined}
+          onClick={onClick}
         >
           {renderContent()}
         </Link>
@@ -172,6 +173,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         className={composedClassName}
         ref={ref}
         disabled={isDisabled}
+        onClick={onClick}
         {...props}
       >
         {renderContent()}
