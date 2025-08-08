@@ -62,5 +62,17 @@ export {
 // AI and Feature Icons
 export { AiRobotIcon } from './ai-robot-icon';
 
+// OpenFrame AI Agent Icons
+export {
+  NaturalLanguageIcon,
+  AutomatedDiagnosticsIcon,
+  StatusUpdatesIcon,
+  SmartEscalationIcon,
+  ScriptGenerationIcon,
+  PatchPolicyIcon,
+  BulkOperationsIcon,
+  AuditLoggingIcon
+} from './openframe-ai-icons';
+
 // Utility exports
 export * from './icon-utils';
