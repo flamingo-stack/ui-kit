@@ -20,7 +20,7 @@ export const BenefitCard: React.FC<BenefitCardProps> = ({
   
   const variantStyles = {
     default: {
-      container: "bg-ods-bg p-6 md:p-10",
+      container: "bg-ods-bg p-2 md:p-4",
       title: "font-body font-bold text-body-md md:text-body-lg text-ods-text-primary",
       description: "font-body font-medium text-body-sm md:text-body-md text-ods-text-secondary"
     },
