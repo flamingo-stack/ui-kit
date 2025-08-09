@@ -12,7 +12,7 @@ export function SlackIcon({
   width = 24, 
   height = 24, 
   className = "text-current" ,
-  injectedColor = "#E01E5A"
+  injectedColor 
 }: SlackIconProps) {
 
   const redColor = injectedColor || "#E01E5A";
