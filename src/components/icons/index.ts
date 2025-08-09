@@ -15,6 +15,7 @@ export { AboutIcon } from './about-icon';
 export { UserIcon } from './user-icon';
 export { HamburgerIcon } from './hamburger-icon';
 export { MenuIcon } from './menu-icon';
+export { ExploreCategoriesIcon } from './explore-categories-icon';
 
 // UI state icons
 export { CheckCircleIcon } from './check-circle-icon';
