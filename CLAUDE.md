@@ -6,6 +6,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 @flamingo/ui-kit is a shared design system package for all Flamingo products (OpenMSP, OpenFrame, Admin Hub, Flamingo Website, and more). It's a source-only TypeScript package that provides components, hooks, styles, and utilities for consistent UI across platforms.
 
+### UI-Kit vs Application Components
+
+- **UI-Kit Components**: Reusable, platform-agnostic components (Button, Card, Modal, etc.)
+- **Application Components**: Platform-specific business components that use UI-Kit components
+  - Example: `openmsp-video-stats-section.tsx` in the main app uses UI-Kit's ODS tokens but isn't part of UI-Kit
+
 ## Recent Updates (✅ Configuration-Driven Architecture)
 
 The UI kit now supports configuration-driven rendering for platform-specific elements:

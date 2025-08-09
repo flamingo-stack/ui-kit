@@ -17,6 +17,10 @@ This is a **source-only** TypeScript package that provides:
 - 💬 **Tooltip System** - Radix-based tooltips with proper z-index management
 - 🎯 **Header Z-Index** - Fixed layering for headers, sidebars, and dropdowns
 
+### Scope Clarification
+
+UI-Kit provides **reusable, platform-agnostic components**. Platform-specific business components (like `openmsp-video-stats-section.tsx`) live in the main application and use UI-Kit components and design tokens.
+
 ## Installation
 
 ```bash
