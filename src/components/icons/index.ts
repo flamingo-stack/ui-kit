@@ -15,6 +15,7 @@ export { AboutIcon } from './about-icon';
 export { UserIcon } from './user-icon';
 export { HamburgerIcon } from './hamburger-icon';
 export { MenuIcon } from './menu-icon';
+export { ExploreCategoriesIcon } from './explore-categories-icon';
 
 // UI state icons
 export { CheckCircleIcon } from './check-circle-icon';
@@ -73,6 +74,9 @@ export {
   BulkOperationsIcon,
   AuditLoggingIcon
 } from './openframe-ai-icons';
+
+// Tool Directory Icons
+export * from './tool-directory-icons';
 
 // Utility exports
 export * from './icon-utils';

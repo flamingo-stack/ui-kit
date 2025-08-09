@@ -7,7 +7,8 @@ import { cn } from "../../utils/cn"
 
 const buttonVariants = cva(
   // Base styles following ButtonFull specifications with Figma-accurate typography
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-[6px] font-['DM_Sans'] font-bold text-lg leading-tight transition-colors duration-200 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0",
+  // Full width on mobile (default), auto width on sm and above
+  "w-full sm:w-auto inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-[6px] font-['DM_Sans'] font-bold text-lg leading-tight transition-colors duration-200 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0",
   {
     variants: {
       variant: { 
@@ -43,8 +44,11 @@ const buttonVariants = cva(
         "flamingo-primary": "bg-[var(--ods-flamingo-pink-base)] text-[var(--ods-system-greys-black)] hover:bg-[var(--ods-flamingo-pink-hover)] active:bg-[var(--ods-flamingo-pink-active)] focus-visible:ring-2 focus-visible:ring-ods-focus disabled:bg-ods-disabled disabled:text-ods-text-disabled",
         // Flamingo secondary variant - dark background with border
         "flamingo-secondary": "bg-[var(--ods-system-greys-black)] border border-[var(--ods-system-greys-soft-grey)] text-[var(--ods-system-greys-white)] hover:border-[var(--ods-system-greys-grey)] hover:bg-[var(--ods-system-greys-dark-grey)] active:bg-[var(--ods-system-greys-grey)] focus-visible:ring-2 focus-visible:ring-ods-focus disabled:bg-ods-disabled disabled:text-ods-text-disabled",
-        // Footer link variant - minimal spacing, left-aligned, no gap
-        "footer-link": "!gap-0 !p-0 !h-auto bg-transparent text-ods-text-primary hover:text-ods-accent-primary transition-colors justify-start font-body font-medium !text-md md:!text-md leading-[1.33] mb-1",
+        // Footer link variant - minimal spacing, left-aligned, no gap, not full width on mobile
+        "footer-link": "!w-auto !gap-0 !p-0 !h-auto bg-transparent text-ods-text-primary hover:text-ods-accent-primary transition-colors justify-start font-body font-medium !text-md md:!text-md leading-[1.33] mb-1",
+        // Filter variant - for category/filter buttons in sidebars
+        "filter": "w-full justify-start text-[16px] py-3 px-2 font-medium font-['DM_Sans'] rounded-lg h-12 transition-all duration-150 leading-[1.33em] bg-ods-card border border-ods-border hover:bg-[#2A2A2A] text-ods-text-primary text-left",
+        "filter-active": "w-full justify-start text-[16px] py-3 px-2 font-medium font-['DM_Sans'] rounded-lg h-12 transition-all duration-150 leading-[1.33em] bg-ods-border border border-ods-border text-ods-text-primary text-left relative",
       },
       size: {
         // Small size for secondary actions
@@ -53,17 +57,17 @@ const buttonVariants = cva(
         default: "h-12 px-8 py-3 text-base",
         // Large size for prominent CTAs (ButtonFull lg) - adjusted for better text/icon fit
         lg: "min-h-[48px] px-8 py-3 text-base",
-        // Icon-only buttons
-        icon: "h-10 w-10 p-0",
-        // Icon-only large buttons (like hamburger menu)
-        iconLg: "h-12 w-12 p-0",
+        // Icon-only buttons - override to not be full width on mobile
+        icon: "!w-10 h-10 p-0",
+        // Icon-only large buttons (like hamburger menu) - override to not be full width on mobile
+        iconLg: "!w-12 h-12 p-0",
         // Touch-friendly mobile sizing
         touch: "min-h-[44px] px-6 py-3 text-base",
         // Search button specific sizing
         searchMobile: "min-h-[56px] px-4 py-3 text-lg",
         searchDesktop: "min-h-[52px] px-4 py-3 text-lg",
-        // No size - used for footer links
-        none: "",
+        // No size - used for footer links, not full width on mobile
+        none: "!w-auto",
       },
     },
     defaultVariants: {
@@ -91,10 +95,15 @@ export interface ButtonProps
    */
   centerIcon?: React.ReactNode
   loading?: boolean
+  /**
+   * Control whether the button should be full width on mobile
+   * Default is true for most buttons, but icon-only and footer-link variants override this
+   */
+  fullWidthOnMobile?: boolean
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, asChild = false, href, openInNewTab = false, leftIcon, rightIcon, centerIcon, loading, children, disabled, onClick, ...props }, ref) => {
+  ({ className, variant, size, asChild = false, href, openInNewTab = false, leftIcon, rightIcon, centerIcon, loading, children, disabled, onClick, fullWidthOnMobile, ...props }, ref) => {
     const isDisabled = disabled || loading
     
     const isCenterIconOnly = !!centerIcon && !children && !leftIcon && !rightIcon
@@ -105,7 +114,9 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       // sits exactly in the middle.
       isCenterIconOnly && "gap-0",
       // Also remove gap for footer links
-      isFooterLink && "gap-0"
+      isFooterLink && "gap-0",
+      // Handle explicit fullWidthOnMobile prop override
+      fullWidthOnMobile === false && "!w-auto"
     )
     
     // Content to render inside the button/link
