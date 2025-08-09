@@ -9,6 +9,7 @@ export interface VendorTagProps {
   className?: string
   size?: 'sm' | 'md'
   hidden?: boolean
+  accentColor?: string
 }
 
 export function VendorTag({
@@ -16,7 +17,8 @@ export function VendorTag({
   text,
   className = "",
   hidden = false,
-  size = 'md'
+  size = 'md',
+  accentColor
 }: VendorTagProps) {
   // Base classes for the tag container
   const baseClasses = cn(
@@ -62,7 +64,10 @@ export function VendorTag({
         return {
           text: text || "Open Source",
           icon: (
-            <div className="w-4 h-4 bg-ods-accent rounded-sm flex items-center justify-center flex-shrink-0">
+            <div 
+              className="w-4 h-4 bg-ods-accent rounded-sm flex items-center justify-center flex-shrink-0"
+              style={accentColor ? { backgroundColor: accentColor } : undefined}
+            >
               <OpenSourceIcon width={10} height={10} className="text-[#1A1A1A]" />
             </div>
           )
