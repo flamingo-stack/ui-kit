@@ -55,7 +55,7 @@ export const StartWithOpenFrameButton = React.forwardRef<
         modeClassName,
         className
       )}
-      leftIcon={<OpenFrameLogo className="w-6 h-6" 
+      leftIcon={<OpenFrameLogo className="w-5 h-5" 
         lowerPathColor={iconLowerPath} 
         upperPathColor={iconUpperPath} />}
     >
