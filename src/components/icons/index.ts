@@ -75,5 +75,8 @@ export {
   AuditLoggingIcon
 } from './openframe-ai-icons';
 
+// Tool Directory Icons
+export * from './tool-directory-icons';
+
 // Utility exports
 export * from './icon-utils';
