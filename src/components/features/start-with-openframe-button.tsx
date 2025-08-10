@@ -51,10 +51,14 @@ export const StartWithOpenFrameButton = React.forwardRef<
   } else if (isCyan) {
     // Cyan mode: similar to JoinWaitlistButton with custom colors
     buttonVariant = 'primary';
-    customStyle = { 
-      backgroundColor: buttonBackgroundColor || '#00D9D9', 
-      color: buttonTextColor || '#000000' 
-    };
+    modeClassName = 'bg-[var(--ods-flamingo-cyan-base)] hover:bg-[var(--ods-flamingo-cyan-hover)] text-[var(--ods-system-greys-black)] border-[var(--ods-flamingo-cyan-base)]';
+    // Allow override with custom colors if provided
+    if (buttonBackgroundColor || buttonTextColor) {
+      customStyle = { 
+        backgroundColor: buttonBackgroundColor, 
+        color: buttonTextColor
+      };
+    }
     // For cyan mode with black text, use white/black icon for contrast
     iconLowerPath = "#ffffff";
     iconUpperPath = "#1A1A1A";
