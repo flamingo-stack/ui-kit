@@ -16,6 +16,9 @@ This is a **source-only** TypeScript package that provides:
 - 🔘 **Button System** - Complete button variants with proper text visibility
 - 💬 **Tooltip System** - Radix-based tooltips with proper z-index management
 - 🎯 **Header Z-Index** - Fixed layering for headers, sidebars, and dropdowns
+- 🔄 **Configuration-Driven** - Platform-specific UI via configuration objects
+- 📊 **Loading Standards** - Consistent skeleton screens and loading states
+- 🎨 **BenefitCard Component** - Reusable feature/benefit display cards
 
 ### Scope Clarification
 
@@ -257,3 +260,23 @@ When adding new components or utilities:
 ## License
 
 Private package for Flamingo CX projects.
+
+## Version History
+
+### v1.5.0 (Latest)
+- Added BenefitCard component with light/dark variants
+- Improved loading skeleton standards
+- Enhanced filter UI components
+- Updated documentation with best practices
+
+### v1.4.0 
+- Configuration-driven Header and Footer components
+- Fixed z-index hierarchy across all components
+- Added tooltip system with Radix UI
+- Improved button variants and accessibility
+
+### v1.3.0
+- Zero TypeScript errors achieved
+- Complete toast system overhaul
+- Modal system implementation
+- Authentication component integration
