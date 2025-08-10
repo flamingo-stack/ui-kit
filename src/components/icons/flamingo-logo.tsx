@@ -5,7 +5,7 @@ interface FlamingoLogoProps extends React.SVGProps<SVGSVGElement> {
   fill?: string;
 }
 
-export function FlamingoLogo({ className = '', fill = '#FF7A59', ...props }: FlamingoLogoProps) {
+export function FlamingoLogo({ className = '', fill = 'var(--ods-flamingo-pink-base)', ...props }: FlamingoLogoProps) {
   const uniqueId = React.useId();
   
   return (
