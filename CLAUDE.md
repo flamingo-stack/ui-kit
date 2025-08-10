@@ -883,3 +883,33 @@ export function AdminDashboard() {
 ```
 
 These loading standards ensure consistent, predictable behavior across all admin interfaces and provide clear visual feedback during data fetching operations.
+
+## Recent Component Additions
+
+### BenefitCard Component
+- **Purpose**: Reusable card for displaying benefits, features, or value propositions
+- **Location**: `src/components/ui/benefit-card.tsx`
+- **Variants**: `default` (light) and `dark` (dark sections)
+- **Features**: Optional icon support, responsive typography, ODS theming
+
+### AllItemsButton Component  
+- **Purpose**: Unified "All Posts" and "All Vendors" selection button
+- **Location**: Main app `components/ui/all-items-button.tsx` (not in UI Kit)
+- **Features**: Yellow accent ribbon on right side when active, consistent height/padding
+
+### Filter Components
+- **FilterChip**: Tag-based filter UI with selected/unselected states
+- **Search Inputs**: Autocomplete search for tags, filters, pricing models
+- **Category Selection**: Toggle behavior with chevron icons and expanded states
+
+## Best Practices
+
+### Component Development
+1. **Platform Agnostic**: UI Kit components should work across all platforms
+2. **ODS Compliance**: Always use design tokens, never hardcoded colors
+3. **TypeScript First**: Full type safety with zero errors policy
+4. **Accessibility**: ARIA labels, keyboard navigation, focus management
+5. **Responsive Design**: Mobile-first with proper breakpoints
+6. **Loading States**: Skeleton screens with proper query configuration
+7. **Error Handling**: Toast notifications for user feedback
+8. **Z-Index Management**: Follow established hierarchy (tooltips: 2147483647, modals: 1300, header: 50)
