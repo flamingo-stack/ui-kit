@@ -6,22 +6,27 @@ import { cn } from "../../utils";
 
 export interface StartWithOpenFrameButtonProps extends Omit<ButtonProps, 'variant' | 'size' | 'leftIcon'> {
   children?: React.ReactNode;
-  mode?: 'outline' | 'yellow' | 'pink' | 'purple';
+  mode?: 'outline' | 'yellow' | 'pink' | 'purple' | 'cyan';
   buttonSize?: 'sm' | 'md' | 'lg';
+  loading?: boolean;
+  buttonBackgroundColor?: string;
+  buttonTextColor?: string;
 }
 
 /**
  * "Start with OpenFrame" button for Flamingo header
- * – Four modes: 'outline' (default), 'yellow', 'pink', and 'purple'
+ * – Five modes: 'outline' (default), 'yellow', 'pink', 'purple', and 'cyan'
  * – Shows OpenFrame icon on the left
  * – Same pattern as OpenFrame Github button in hero section
+ * – Cyan mode uses custom background/text colors like JoinWaitlistButton
  */
 export const StartWithOpenFrameButton = React.forwardRef<
   HTMLButtonElement,
   StartWithOpenFrameButtonProps
->(({ children = 'Start Free Trial', mode = 'outline', className, buttonSize, ...props }, ref) => {
+>(({ children = 'Start Free Trial', mode = 'outline', className, buttonSize, loading = false, buttonBackgroundColor, buttonTextColor, ...props }, ref) => {
   const isYellow = mode === 'yellow';
   const isPink = mode === 'pink' || mode === 'purple';
+  const isCyan = mode === 'cyan';
   
   // Map buttonSize to Button component's size prop
   const mappedSize = buttonSize === 'md' ? 'default' : buttonSize;
@@ -31,18 +36,28 @@ export const StartWithOpenFrameButton = React.forwardRef<
   let modeClassName = '';
   let iconLowerPath = "var(--ods-open-yellow-base)";
   let iconUpperPath = "var(--ods-system-greys-white)";
+  let customStyle: React.CSSProperties = {};
   
   if (isYellow) {
     buttonVariant = 'primary';
     modeClassName = 'bg-[var(--ods-open-yellow-base)] hover:bg-[var(--ods-open-yellow-hover)] text-ods-text-on-accent border-[var(--ods-open-yellow-base)]';
     iconLowerPath = "var(--ods-system-greys-white)";
     iconUpperPath = "var(--ods-system-greys-black)";
-  } 
-  if (isPink) {
+  } else if (isPink) {
     buttonVariant = 'primary';
     modeClassName = 'bg-[var(--ods-flamingo-pink-base)] hover:bg-[var(--ods-flamingo-pink-hover)] text-ods-text-primary border-[var(--ods-flamingo-pink-base)]';
     iconLowerPath = "var(--ods-system-greys-black)";
     iconUpperPath = "var(--ods-system-greys-white)";
+  } else if (isCyan) {
+    // Cyan mode: similar to JoinWaitlistButton with custom colors
+    buttonVariant = 'primary';
+    customStyle = { 
+      backgroundColor: buttonBackgroundColor || '#00D9D9', 
+      color: buttonTextColor || '#000000' 
+    };
+    // For cyan mode with black text, use white/black icon for contrast
+    iconLowerPath = "#ffffff";
+    iconUpperPath = "#1A1A1A";
   }
   
   return (
@@ -51,13 +66,15 @@ export const StartWithOpenFrameButton = React.forwardRef<
       {...props}
       size={mappedSize}
       variant={buttonVariant}
+      loading={loading}
       className={cn(
         modeClassName,
         className
       )}
-      leftIcon={<OpenFrameLogo className="w-5 h-5" 
+      style={customStyle}
+      leftIcon={!loading ? <OpenFrameLogo className="w-5 h-5" 
         lowerPathColor={iconLowerPath} 
-        upperPathColor={iconUpperPath} />}
+        upperPathColor={iconUpperPath} /> : undefined}
     >
       {children}
     </Button>
