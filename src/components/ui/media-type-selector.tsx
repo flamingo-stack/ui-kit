@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { Video, Image, Music, FileText } from "lucide-react"
+import { Video, Image, FileText, Archive, CheckSquare, BookOpen, FileType } from "lucide-react"
 import {
   Select,
   SelectContent,
@@ -10,7 +10,7 @@ import {
   SelectValue,
 } from "./select"
 
-export type MediaType = 'video' | 'image' | 'audio' | 'document'
+export type MediaType = 'video' | 'png' | 'jpg' | 'svg' | 'document' | 'pdf' | 'zip' | 'guide' | 'checklist'
 
 interface MediaTypeOption {
   value: MediaType
@@ -19,10 +19,15 @@ interface MediaTypeOption {
 }
 
 const mediaTypeOptions: MediaTypeOption[] = [
-  { value: 'image', label: 'Image', icon: <Image className="h-4 w-4" /> },
   { value: 'video', label: 'Video', icon: <Video className="h-4 w-4" /> },
-  { value: 'audio', label: 'Audio', icon: <Music className="h-4 w-4" /> },
+  { value: 'png', label: 'PNG Image', icon: <Image className="h-4 w-4" /> },
+  { value: 'jpg', label: 'JPG Image', icon: <Image className="h-4 w-4" /> },
+  { value: 'svg', label: 'SVG Image', icon: <Image className="h-4 w-4" /> },
+  { value: 'pdf', label: 'PDF', icon: <FileType className="h-4 w-4" /> },
   { value: 'document', label: 'Document', icon: <FileText className="h-4 w-4" /> },
+  { value: 'zip', label: 'ZIP Archive', icon: <Archive className="h-4 w-4" /> },
+  { value: 'guide', label: 'Guide', icon: <BookOpen className="h-4 w-4" /> },
+  { value: 'checklist', label: 'Checklist', icon: <CheckSquare className="h-4 w-4" /> },
 ]
 
 interface MediaTypeSelectorProps {
@@ -40,17 +45,24 @@ export function MediaTypeSelector({
   className,
   disabled
 }: MediaTypeSelectorProps) {
+  // Force re-render with key to ensure Select updates
+  const [key, setKey] = React.useState(0);
+  
+  React.useEffect(() => {
+    // Force re-render when value changes
+    setKey(prev => prev + 1);
+  }, [value]);
+  
   return (
-    <Select value={value} onValueChange={onValueChange} disabled={disabled}>
+    <Select 
+      key={key}
+      value={value || undefined} 
+      onValueChange={onValueChange} 
+      disabled={disabled}
+      defaultValue={value}
+    >
       <SelectTrigger className={className}>
-        <SelectValue placeholder={placeholder}>
-          {value && (
-            <div className="flex items-center gap-2">
-              {mediaTypeOptions.find(opt => opt.value === value)?.icon}
-              <span>{mediaTypeOptions.find(opt => opt.value === value)?.label}</span>
-            </div>
-          )}
-        </SelectValue>
+        <SelectValue placeholder={placeholder} />
       </SelectTrigger>
       <SelectContent>
         {mediaTypeOptions.map((option) => (
