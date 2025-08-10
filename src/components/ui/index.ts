@@ -9,6 +9,7 @@ export * from './checkbox'
 export * from './switch'
 export * from './radio-group'
 export * from './media-type-selector'
+export * from './tags-input'
 // Layout components
 export * from './dialog'
 export * from './alert-dialog'
