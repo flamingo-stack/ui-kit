@@ -892,6 +892,15 @@ These loading standards ensure consistent, predictable behavior across all admin
 - **Variants**: `default` (light) and `dark` (dark sections)
 - **Features**: Optional icon support, responsive typography, ODS theming
 
+### OGLinkPreview Component
+- **Purpose**: Smart article preview component with fallback image support
+- **Location**: Main app `components/shared/og-link-preview.tsx` (not in UI Kit)
+- **Features**: 
+  - Priority-based image rendering: OG scraped → uploaded fallback → placeholder
+  - Publication logo support in preview cards
+  - Automatic OG data fetching with error handling
+  - Reliable preview rendering even when OG scraping fails
+
 ### AllItemsButton Component  
 - **Purpose**: Unified "All Posts" and "All Vendors" selection button
 - **Location**: Main app `components/ui/all-items-button.tsx` (not in UI Kit)

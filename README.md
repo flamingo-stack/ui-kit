@@ -19,6 +19,7 @@ This is a **source-only** TypeScript package that provides:
 - 🔄 **Configuration-Driven** - Platform-specific UI via configuration objects
 - 📊 **Loading Standards** - Consistent skeleton screens and loading states
 - 🎨 **BenefitCard Component** - Reusable feature/benefit display cards
+- 🖼️ **OG Link Preview** - Smart fallback system for article previews with priority rendering
 
 ### Scope Clarification
 
