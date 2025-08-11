@@ -20,6 +20,7 @@ This is a **source-only** TypeScript package that provides:
 - 📊 **Loading Standards** - Consistent skeleton screens and loading states
 - 🎨 **BenefitCard Component** - Reusable feature/benefit display cards
 - 🖼️ **OG Link Preview** - Smart fallback system for article previews with priority rendering
+- 🧭 **Sticky Navigation** - Smooth scrolling section navigation with native browser APIs
 
 ### Scope Clarification
 
@@ -80,6 +81,49 @@ function MyComponent() {
   )
 }
 ```
+
+### Sticky Navigation
+
+```tsx
+import { StickySectionNav, useSectionNavigation } from '@flamingo/ui-kit/components/navigation'
+
+function DocumentationPage() {
+  const sections = [
+    { id: 'introduction', title: 'Introduction', ref: useRef<HTMLElement>(null) },
+    { id: 'installation', title: 'Installation', ref: useRef<HTMLElement>(null) },
+    { id: 'configuration', title: 'Configuration', ref: useRef<HTMLElement>(null) }
+  ]
+  
+  const { activeSection, handleSectionClick } = useSectionNavigation(sections, {
+    offset: 100 // Offset from top when scrolling
+  })
+  
+  return (
+    <div className="flex">
+      <main>
+        {sections.map(section => (
+          <section key={section.id} id={section.id} ref={section.ref}>
+            {/* Section content */}
+          </section>
+        ))}
+      </main>
+      
+      <StickySectionNav
+        sections={sections}
+        activeSection={activeSection}
+        onSectionClick={handleSectionClick}
+      />
+    </div>
+  )
+}
+```
+
+**Features**:
+- Native browser scroll API for smooth, reliable scrolling
+- Flag-based system prevents scroll detection conflicts
+- Customizable scroll offset for fixed headers
+- Automatic active section highlighting
+- Mobile-responsive with proper breakpoints
 
 ### Hooks
 
