@@ -163,6 +163,13 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     
     // When href is provided, render as Next.js Link for client-side navigation
     if (href) {
+      // Handle onClick type conversion for Link component
+      const handleLinkClick = onClick 
+        ? (e: React.MouseEvent<HTMLAnchorElement>) => {
+            onClick(e as unknown as React.MouseEvent<HTMLButtonElement>)
+          }
+        : undefined
+      
       return (
         <Link
           href={href}
@@ -171,7 +178,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
           tabIndex={isDisabled ? -1 : undefined}
           target={openInNewTab ? '_blank' : undefined}
           rel={openInNewTab ? 'noopener noreferrer' : undefined}
-          onClick={onClick}
+          onClick={handleLinkClick}
         >
           {renderContent()}
         </Link>
