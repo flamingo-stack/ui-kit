@@ -313,6 +313,56 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@flami
 - Accessibility support with ARIA attributes
 - Works seamlessly with all platforms
 
+### Sticky Navigation Component
+
+The StickySectionNav component provides smooth scrolling navigation for documentation and long-form content:
+
+#### Usage Pattern
+```typescript
+import { StickySectionNav, useSectionNavigation } from '@flamingo/ui-kit/components/navigation'
+
+// Define sections with refs
+const sections = [
+  { id: 'intro', title: 'Introduction', ref: useRef<HTMLElement>(null) },
+  { id: 'setup', title: 'Setup', ref: useRef<HTMLElement>(null) },
+  { id: 'usage', title: 'Usage', ref: useRef<HTMLElement>(null) }
+]
+
+// Use the navigation hook
+const { activeSection, handleSectionClick } = useSectionNavigation(sections, {
+  offset: 100 // Scroll offset for fixed headers
+})
+
+// Render sections and navigation
+<main>
+  {sections.map(s => (
+    <section key={s.id} id={s.id} ref={s.ref}>
+      {/* Content */}
+    </section>
+  ))}
+</main>
+
+<StickySectionNav
+  sections={sections}
+  activeSection={activeSection}
+  onSectionClick={handleSectionClick}
+/>
+```
+
+#### Implementation Details
+- **Native Browser APIs**: Uses `getElementById` and `offsetTop` for reliable scrolling
+- **Flag-Based Conflict Prevention**: `isScrollingFromClick` flag prevents scroll detection during programmatic scrolling
+- **Smooth Scrolling**: `window.scrollTo({ behavior: 'smooth' })` for native performance
+- **Active Section Detection**: Compares scroll position with section offsets
+- **Mobile Responsive**: Hides on mobile, shows on desktop with proper breakpoints
+
+#### Key Features
+- ✅ Smooth scrolling without jumping or lag
+- ✅ Accurate active section highlighting
+- ✅ Customizable scroll offset for headers
+- ✅ Mobile-optimized visibility
+- ✅ Zero external dependencies (pure native APIs)
+
 ### Header Component Configuration
 
 The Header component supports platform-specific auto-hide behavior through the `HeaderConfig` interface:
@@ -368,7 +418,7 @@ interface HeaderConfig {
 - **features/**: Complex components (AnnouncementBar, SSOModal) with platform logic
 - **icons/**: Centralized icon components exported through `icons/index.ts`
 - **Individual icon files**: Legacy icon components being migrated to `icons/` directory
-- **navigation/**: Navigation components including Header with configurable behaviors
+- **navigation/**: Navigation components including Header with configurable behaviors and StickySectionNav
 
 #### `/src/hooks/`
 - **api/**: Data fetching hooks (useAnnouncements)
