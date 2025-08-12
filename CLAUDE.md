@@ -98,6 +98,45 @@ Unified authentication system supporting both page-based (OpenFrame) and modal-b
 - **ProviderButton**: Individual SSO provider buttons
 - **AuthModal**: Modal wrapper (used by AuthTrigger)
 
+### Loading Skeleton Components
+Comprehensive skeleton system for preventing double-loading issues:
+
+#### Base Skeleton Components
+- **Skeleton**: Base component with ODS theming (`bg-ods-bg-secondary`)
+- **SkeletonText**: Multi-line text skeleton with configurable lines
+- **SkeletonCard**: Card layout skeleton for content cards
+- **SkeletonGrid**: Grid layout with configurable columns
+- **SkeletonButton**: Button skeleton with size variants (sm, default, lg)
+- **SkeletonHeading**: Heading skeleton with h1-h6 levels
+- **SkeletonList**: List skeleton with configurable items
+- **SkeletonNavigation**: Navigation bar skeleton
+
+#### Usage Example
+```typescript
+import { 
+  Skeleton, 
+  SkeletonText, 
+  SkeletonHeading,
+  SkeletonCard,
+  SkeletonGrid,
+  SkeletonButton,
+  SkeletonList,
+  SkeletonNavigation
+} from '@flamingo/ui-kit/components/ui'
+
+// Text skeleton with 3 lines
+<SkeletonText lines={3} className="mb-4" />
+
+// Heading skeleton
+<SkeletonHeading level={1} className="mb-6" />
+
+// Grid of skeleton cards
+<SkeletonGrid columns={3} items={6} />
+
+// Button skeleton
+<SkeletonButton size="lg" />
+```
+
 #### SSO Provider Configuration
 ```typescript
 interface SSOConfigStatus {

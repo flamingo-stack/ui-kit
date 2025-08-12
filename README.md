@@ -21,6 +21,7 @@ This is a **source-only** TypeScript package that provides:
 - 🎨 **BenefitCard Component** - Reusable feature/benefit display cards
 - 🖼️ **OG Link Preview** - Smart fallback system for article previews with priority rendering
 - 🧭 **Sticky Navigation** - Smooth scrolling section navigation with native browser APIs
+- 💀 **Loading Skeletons** - Comprehensive skeleton components preventing double-loading issues
 
 ### Scope Clarification
 
@@ -78,6 +79,42 @@ function MyComponent() {
         </Modal>
       </Card>
     </TooltipProvider>
+  )
+}
+```
+
+### Loading Skeletons
+
+```tsx
+import { 
+  Skeleton, 
+  SkeletonText, 
+  SkeletonHeading,
+  SkeletonCard,
+  SkeletonGrid,
+  SkeletonButton,
+  SkeletonList,
+  SkeletonNavigation
+} from '@flamingo/ui-kit/components/ui'
+
+function LoadingPage() {
+  return (
+    <div className="p-6">
+      {/* Heading skeleton */}
+      <SkeletonHeading level={1} className="mb-6" />
+      
+      {/* Text skeleton with 3 lines */}
+      <SkeletonText lines={3} className="mb-8" />
+      
+      {/* Grid of 6 skeleton cards in 3 columns */}
+      <SkeletonGrid columns={3} items={6} className="mb-8" />
+      
+      {/* Button skeleton */}
+      <SkeletonButton size="lg" />
+      
+      {/* List with 5 items */}
+      <SkeletonList items={5} />
+    </div>
   )
 }
 ```
@@ -276,6 +313,7 @@ npm run lint
 - **Vendor Display**: VendorIcon and VendorTag with full media processing
 - **Input/Form Elements**: Full form component suite with API integration
 - **Theme System**: Platform-aware ODS design tokens with full state variations
+- **Skeleton Components**: Comprehensive loading skeletons (Text, Card, Grid, Button, Heading, List, Navigation)
 
 ### Client-Side Only
 This package contains **only client-side code**:
