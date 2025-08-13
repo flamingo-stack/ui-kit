@@ -86,7 +86,7 @@ export interface ButtonProps
    * Open the link in a new tab when href is provided
    */
   openInNewTab?: boolean
-  leftIcon?: React.ReactNode
+  leftIcon?: React.ReactNode 
   rightIcon?: React.ReactNode
   /**
    * Render an icon perfectly centered inside the button. Useful for icon-only
