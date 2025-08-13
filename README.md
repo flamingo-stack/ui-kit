@@ -23,6 +23,7 @@ This is a **source-only** TypeScript package that provides:
 - 🧭 **Sticky Navigation** - Smooth scrolling section navigation with native browser APIs
 - 💀 **Loading Skeletons** - Comprehensive skeleton components preventing double-loading issues
 - 🔗 **Button onClick Fix** - Proper onClick support with href for dropdown menu closing
+- 💰 **Investors System** - Complete CRUD with modal-based admin and Supabase integration
 
 ### Scope Clarification
 
@@ -30,6 +31,11 @@ UI-Kit provides **reusable, platform-agnostic components**. Platform-specific bu
 
 ### Recent Updates (2025-08-13)
 
+- **Investors Management Feature**: Complete investor management system with admin interface
+  - Modal-based admin following blog-posts pattern with InvestorFormModal component
+  - File upload integration for logo management with Supabase storage
+  - Funding rounds selector component with visual icons
+  - Public display section with Figma-compliant design
 - **Button Component Enhancement**: Fixed onClick prop support when href is provided
 - **Header Dropdown Fix**: Dropdown menus now close properly on navigation
 - **Component Cleanup**: Removed unified button components (TryOpenFrameButton, StartWithOpenFrameButton, GithubRepoButton)

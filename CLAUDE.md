@@ -14,6 +14,14 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Recent Updates (2025-08-13)
 
+### Investors Management Feature
+- **Complete CRUD System**: Database-backed investor management with Supabase
+- **Modal-Based Admin**: Following blog-posts pattern with InvestorFormModal component
+- **File Upload**: Logo upload functionality with Supabase storage integration
+- **Funding Rounds Selector**: Visual selection component with icons (Pre-Seed, Seed, Series A-E, Growth)
+- **Public Display**: Figma-compliant section with gradient background and badges
+- **Hooks**: `useInvestors` for data fetching, `useInvestorsAdmin` for operations
+
 ### Button Component Fix
 - **onClick with href Support**: Button component now properly supports onClick when href is provided
 - **Link Component Integration**: onClick prop is now passed to Next.js Link component
