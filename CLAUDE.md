@@ -12,6 +12,17 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **Application Components**: Platform-specific business components that use UI-Kit components
   - Example: `openmsp-video-stats-section.tsx` in the main app uses UI-Kit's ODS tokens but isn't part of UI-Kit
 
+## Recent Updates (2025-08-13)
+
+### Button Component Fix
+- **onClick with href Support**: Button component now properly supports onClick when href is provided
+- **Link Component Integration**: onClick prop is now passed to Next.js Link component
+- **Dropdown Menu Fix**: Header dropdown menus now close properly on navigation
+
+### Component Cleanup
+- **Removed Unified Buttons**: TryOpenFrameButton, StartWithOpenFrameButton, and GithubRepoButton removed
+- **Use Standard Button**: Replace with Button component and appropriate icons
+
 ## Recent Updates (✅ Configuration-Driven Architecture)
 
 The UI kit now supports configuration-driven rendering for platform-specific elements:

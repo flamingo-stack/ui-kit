@@ -22,10 +22,17 @@ This is a **source-only** TypeScript package that provides:
 - 🖼️ **OG Link Preview** - Smart fallback system for article previews with priority rendering
 - 🧭 **Sticky Navigation** - Smooth scrolling section navigation with native browser APIs
 - 💀 **Loading Skeletons** - Comprehensive skeleton components preventing double-loading issues
+- 🔗 **Button onClick Fix** - Proper onClick support with href for dropdown menu closing
 
 ### Scope Clarification
 
 UI-Kit provides **reusable, platform-agnostic components**. Platform-specific business components (like `openmsp-video-stats-section.tsx`) live in the main application and use UI-Kit components and design tokens.
+
+### Recent Updates (2025-08-13)
+
+- **Button Component Enhancement**: Fixed onClick prop support when href is provided
+- **Header Dropdown Fix**: Dropdown menus now close properly on navigation
+- **Component Cleanup**: Removed unified button components (TryOpenFrameButton, StartWithOpenFrameButton, GithubRepoButton)
 
 ## Installation
 
