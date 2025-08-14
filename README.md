@@ -29,6 +29,21 @@ This is a **source-only** TypeScript package that provides:
 
 UI-Kit provides **reusable, platform-agnostic components**. Platform-specific business components (like `openmsp-video-stats-section.tsx`) live in the main application and use UI-Kit components and design tokens.
 
+### Recent Updates (2025-08-14)
+
+- **ODS Design System Compliance**: 
+  - Replaced all hardcoded colors with ODS design tokens
+  - Fixed hover states and accent colors throughout
+  - Improved error displays with proper containment
+- **Navigation Component Enhancements**:
+  - Removed .md extensions from display names
+  - Fixed README sorting in multi-level navigation
+  - Added yellow accent ribbon for selected items
+- **Jobs Dashboard Integration**:
+  - Centralized job configuration with metadata
+  - Dynamic job name display from metadata
+  - OpenFrame Docs job properly named and positioned
+
 ### Recent Updates (2025-08-13)
 
 - **Investors Management Feature**: Complete investor management system with admin interface

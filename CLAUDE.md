@@ -1030,3 +1030,24 @@ These loading standards ensure consistent, predictable behavior across all admin
 6. **Loading States**: Skeleton screens with proper query configuration
 7. **Error Handling**: Toast notifications for user feedback
 8. **Z-Index Management**: Follow established hierarchy (tooltips: 2147483647, modals: 1300, header: 50)
+
+## Recent Updates (2025-08-14)
+
+### ODS Design System Compliance
+- **Replaced all hardcoded colors** with ODS design tokens throughout UI Kit
+- **Fixed hover states** to use `bg-ods-bg-secondary` instead of hardcoded values
+- **Updated accent colors** to use `text-ods-accent` and `bg-ods-accent`
+- **Improved error displays** with proper ODS error colors and containment
+
+### Navigation Component Enhancements
+- **MultiLevelNavigation** improvements:
+  - Removed .md extensions from display names
+  - Fixed README sorting to appear right after parent folders
+  - Added yellow accent ribbon for selected items using `bg-ods-accent`
+  - Fixed hover states with ODS design tokens
+
+### Jobs Dashboard Integration
+- **Centralized job configuration** using `JOB_TYPE_METADATA`
+- **Dynamic job name display** from metadata instead of hardcoded values
+- **Icon consistency** with proper icon assignments for all job types
+- **OpenFrame Docs Job** properly renamed and positioned
