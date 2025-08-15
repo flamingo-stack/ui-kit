@@ -994,6 +994,20 @@ These loading standards ensure consistent, predictable behavior across all admin
 
 ## Recent Component Additions
 
+### ParallaxImageShowcase Component
+- **Purpose**: Interactive image showcase with parallax effects for hero sections
+- **Location**: `src/components/features/parallax-image-showcase.tsx`
+- **Dependencies**: Framer Motion for animations
+- **Features**:
+  - Global mouse tracking using window event listeners
+  - Scroll-based animations using useScroll hook
+  - Combined transforms for unified animation behavior
+  - Three-layer depth with configurable z-indexing
+  - Responsive sizing for mobile and desktop (lg: breakpoint)
+  - Configurable animation intensity via INTENSITY variable
+  - Performance optimized with spring animations
+- **Usage**: Perfect for hero sections with overlapping dashboard screenshots or product images
+
 ### BenefitCard Component
 - **Purpose**: Reusable card for displaying benefits, features, or value propositions
 - **Location**: `src/components/ui/benefit-card.tsx`
@@ -1030,6 +1044,17 @@ These loading standards ensure consistent, predictable behavior across all admin
 6. **Loading States**: Skeleton screens with proper query configuration
 7. **Error Handling**: Toast notifications for user feedback
 8. **Z-Index Management**: Follow established hierarchy (tooltips: 2147483647, modals: 1300, header: 50)
+
+## Recent Updates (2025-08-15)
+
+### ParallaxImageShowcase Component
+- **Advanced parallax effects** with Framer Motion for hero sections
+- **Global mouse tracking** that works across entire page, not just on hover
+- **Scroll-based animations** that work everywhere on the page
+- **Responsive layout** with mobile-first approach (lg: breakpoint for desktop)
+- **Configurable animation intensity** via INTENSITY variable for testing
+- **Three-layer depth perception** with proper z-indexing (left: z-3, center: z-2, right: z-1)
+- **Performance optimized** with spring animations and proper event cleanup
 
 ## Recent Updates (2025-08-14)
 
