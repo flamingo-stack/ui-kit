@@ -24,6 +24,7 @@ This is a **source-only** TypeScript package that provides:
 - 💀 **Loading Skeletons** - Comprehensive skeleton components preventing double-loading issues
 - 🔗 **Button onClick Fix** - Proper onClick support with href for dropdown menu closing
 - 💰 **Investors System** - Complete CRUD with modal-based admin and Supabase integration
+- 🎬 **ParallaxImageShowcase** - Advanced parallax effects with global mouse tracking and scroll animations
 
 ### Scope Clarification
 
@@ -146,6 +147,47 @@ function LoadingPage() {
   )
 }
 ```
+
+### ParallaxImageShowcase
+
+```tsx
+import { ParallaxImageShowcase } from '@flamingo/ui-kit/components/features'
+
+function HeroSection() {
+  return (
+    <section className="overflow-x-hidden">
+      <ParallaxImageShowcase
+        images={[
+          {
+            src: '/assets/dashboard-1.png',
+            alt: 'Dashboard Screenshot 1',
+            position: 'left'  // z-index 3 (on top)
+          },
+          {
+            src: '/assets/dashboard-2.png', 
+            alt: 'Dashboard Screenshot 2',
+            position: 'center'  // z-index 2 (middle)
+          },
+          {
+            src: '/assets/dashboard-3.png',
+            alt: 'Dashboard Screenshot 3',
+            position: 'right'  // z-index 1 (behind)
+          }
+        ]}
+        className="lg:ml-10"
+      />
+    </section>
+  )
+}
+```
+
+**Features**:
+- Global mouse tracking that works across entire page
+- Scroll-based animations that work everywhere
+- Responsive layout for mobile and desktop (lg: breakpoint)
+- Configurable animation intensity via INTENSITY variable
+- Framer Motion-powered smooth animations
+- Three-layer depth perception with proper z-indexing
 
 ### Sticky Navigation
 
@@ -342,6 +384,7 @@ npm run lint
 - **Input/Form Elements**: Full form component suite with API integration
 - **Theme System**: Platform-aware ODS design tokens with full state variations
 - **Skeleton Components**: Comprehensive loading skeletons (Text, Card, Grid, Button, Heading, List, Navigation)
+- **ParallaxImageShowcase**: Interactive image showcase with parallax effects for hero sections
 
 ### Client-Side Only
 This package contains **only client-side code**:
