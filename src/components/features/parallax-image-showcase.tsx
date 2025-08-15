@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { motion, useScroll, useTransform, useMotionValue, useSpring } from 'framer-motion'
 
 interface ParallaxImageShowcaseProps {
@@ -13,10 +13,14 @@ interface ParallaxImageShowcaseProps {
 }
 
 export const ParallaxImageShowcase: React.FC<ParallaxImageShowcaseProps> = ({ images, className = '' }) => {
+  // ANIMATION INTENSITY CONTROL
+  // 0.1 = very gentle, 1 = normal, 5 = aggressive, 10 = super aggressive
+  const INTENSITY = 1 // Super aggressive for testing
+  
   // Scroll animation - works everywhere on the page
   const { scrollY } = useScroll()
   
-  // Mouse animation - only works on hover
+  // Mouse animation - works globally
   const mouseX = useMotionValue(0)
   const mouseY = useMotionValue(0)
   
@@ -25,94 +29,74 @@ export const ParallaxImageShowcase: React.FC<ParallaxImageShowcaseProps> = ({ im
   const mouseXSpring = useSpring(mouseX, springConfig)
   const mouseYSpring = useSpring(mouseY, springConfig)
   
-  // Handle mouse move on the component
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    const rect = e.currentTarget.getBoundingClientRect()
-    const centerX = rect.left + rect.width / 2
-    const centerY = rect.top + rect.height / 2
-    const x = (e.clientX - centerX) / rect.width
-    const y = (e.clientY - centerY) / rect.height
-    mouseX.set(x * 20)
-    mouseY.set(y * 20)
-  }
+  // Track component position for global mouse calculations
+  const [componentRect, setComponentRect] = useState<DOMRect | null>(null)
+  const componentRef = useRef<HTMLDivElement>(null)
   
-  const handleMouseLeave = () => {
-    mouseX.set(0)
-    mouseY.set(0)
-  }
+  // Update component position on mount and resize
+  useEffect(() => {
+    const updateRect = () => {
+      if (componentRef.current) {
+        setComponentRect(componentRef.current.getBoundingClientRect())
+      }
+    }
+    
+    updateRect()
+    window.addEventListener('resize', updateRect)
+    window.addEventListener('scroll', updateRect)
+    
+    return () => {
+      window.removeEventListener('resize', updateRect)
+      window.removeEventListener('scroll', updateRect)
+    }
+  }, [])
   
-  // SCROLL TRANSFORMS - These work all the time, regardless of mouse position
-  // Image 3 (back) - slowest
-  const scrollX3 = useTransform(scrollY, [0, 1000], [0, 10])
-  const scrollY3 = useTransform(scrollY, [0, 1000], [0, -15])
-  const scrollRotate3 = useTransform(scrollY, [0, 1000], [0, 1])
+  // Global mouse tracking
+  useEffect(() => {
+    const handleGlobalMouseMove = (e: MouseEvent) => {
+      if (!componentRect) return
+      
+      const centerX = componentRect.left + componentRect.width / 2
+      const centerY = componentRect.top + componentRect.height / 2
+      const x = (e.clientX - centerX) / componentRect.width
+      const y = (e.clientY - centerY) / componentRect.height
+      
+      // Clamp values to reasonable range
+      const clampedX = Math.max(-1, Math.min(1, x))
+      const clampedY = Math.max(-1, Math.min(1, y))
+      
+      mouseX.set(clampedX * 20)
+      mouseY.set(clampedY * 20)
+    }
+    
+    window.addEventListener('mousemove', handleGlobalMouseMove)
+    
+    return () => {
+      window.removeEventListener('mousemove', handleGlobalMouseMove)
+    }
+  }, [componentRect, mouseX, mouseY])
   
-  // Image 2 (middle) - medium
-  const scrollX2 = useTransform(scrollY, [0, 1000], [0, -15])
-  const scrollY2 = useTransform(scrollY, [0, 1000], [0, -25])
-  const scrollRotate2 = useTransform(scrollY, [0, 1000], [0, -1.5])
+  // SCROLL TRANSFORMS - Values multiplied by intensity
+  const scrollX = useTransform(scrollY, [0, 1000], [0, 5 * INTENSITY])
+  const scrollY_ = useTransform(scrollY, [0, 1000], [0, -10 * INTENSITY])
+  const scrollRotate = useTransform(scrollY, [0, 1000], [0, 0.5 * INTENSITY])
   
-  // Image 1 (front) - fastest
-  const scrollX1 = useTransform(scrollY, [0, 1000], [0, 20])
-  const scrollY1 = useTransform(scrollY, [0, 1000], [0, -40])
-  const scrollRotate1 = useTransform(scrollY, [0, 1000], [0, 2])
+  // MOUSE TRANSFORMS - Values multiplied by intensity
+  const mouseTransformX = useTransform(mouseXSpring, [-20, 20], [-2 * INTENSITY, 2 * INTENSITY])
+  const mouseTransformY = useTransform(mouseYSpring, [-20, 20], [-2 * INTENSITY, 2 * INTENSITY])
+  const mouseRotate = useTransform(mouseXSpring, [-20, 20], [-0.3 * INTENSITY, 0.3 * INTENSITY])
   
-  // MOUSE TRANSFORMS - These only apply when hovering
-  // Image 3 (back)
-  const mouseTransformX3 = useTransform(mouseXSpring, [-20, 20], [-2, 2])
-  const mouseTransformY3 = useTransform(mouseYSpring, [-20, 20], [-2, 2])
-  const mouseRotate3 = useTransform(mouseXSpring, [-20, 20], [-0.5, 0.5])
-  
-  // Image 2 (middle)
-  const mouseTransformX2 = useTransform(mouseXSpring, [-20, 20], [-3, 3])
-  const mouseTransformY2 = useTransform(mouseYSpring, [-20, 20], [-3, 3])
-  const mouseRotate2 = useTransform(mouseXSpring, [-20, 20], [-0.8, 0.8])
-  
-  // Image 1 (front)
-  const mouseTransformX1 = useTransform(mouseXSpring, [-20, 20], [-5, 5])
-  const mouseTransformY1 = useTransform(mouseYSpring, [-20, 20], [-5, 5])
-  const mouseRotate1 = useTransform(mouseXSpring, [-20, 20], [-1, 1])
-  
-  // COMBINE scroll and mouse - scroll always works, mouse adds on top when hovering
-  // Image 3
-  const x3 = useTransform(
-    [scrollX3, mouseTransformX3],
+  // COMBINE scroll and mouse - same for all images
+  const x = useTransform(
+    [scrollX, mouseTransformX],
     ([s, m]) => (s as number) + (m as number)
   )
-  const y3 = useTransform(
-    [scrollY3, mouseTransformY3],
+  const y = useTransform(
+    [scrollY_, mouseTransformY],
     ([s, m]) => (s as number) + (m as number)
   )
-  const rotate3 = useTransform(
-    [scrollRotate3, mouseRotate3],
-    ([s, m]) => (s as number) + (m as number)
-  )
-  
-  // Image 2
-  const x2 = useTransform(
-    [scrollX2, mouseTransformX2],
-    ([s, m]) => (s as number) + (m as number)
-  )
-  const y2 = useTransform(
-    [scrollY2, mouseTransformY2],
-    ([s, m]) => (s as number) + (m as number)
-  )
-  const rotate2 = useTransform(
-    [scrollRotate2, mouseRotate2],
-    ([s, m]) => (s as number) + (m as number)
-  )
-  
-  // Image 1
-  const x1 = useTransform(
-    [scrollX1, mouseTransformX1],
-    ([s, m]) => (s as number) + (m as number)
-  )
-  const y1 = useTransform(
-    [scrollY1, mouseTransformY1],
-    ([s, m]) => (s as number) + (m as number)
-  )
-  const rotate1 = useTransform(
-    [scrollRotate1, mouseRotate1],
+  const rotate = useTransform(
+    [scrollRotate, mouseRotate],
     ([s, m]) => (s as number) + (m as number)
   )
   
@@ -123,9 +107,8 @@ export const ParallaxImageShowcase: React.FC<ParallaxImageShowcaseProps> = ({ im
   
   return (
     <div 
+      ref={componentRef}
       className={`relative w-full h-full ${className}`}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
     >
       {/* Image #3 - Behind all - z-index 1 */}
       {rightImage && (
@@ -136,9 +119,9 @@ export const ParallaxImageShowcase: React.FC<ParallaxImageShowcaseProps> = ({ im
             right: '-15%',
             width: '120%',
             height: '85%',
-            x: x3,
-            y: y3,
-            rotate: rotate3,
+            x: x,
+            y: y,
+            rotate: rotate,
           }}
         >
           <img
@@ -158,9 +141,9 @@ export const ParallaxImageShowcase: React.FC<ParallaxImageShowcaseProps> = ({ im
             right: '-20%',
             width: '100%',
             height: '80%',
-            x: x2,
-            y: y2,
-            rotate: rotate2,
+            x: x,
+            y: y,
+            rotate: rotate,
           }}
         >
           <img
@@ -180,9 +163,9 @@ export const ParallaxImageShowcase: React.FC<ParallaxImageShowcaseProps> = ({ im
             left: '-25%',
             width: '110%',
             height: '90%',
-            x: x1,
-            y: y1,
-            rotate: rotate1,
+            x: x,
+            y: y,
+            rotate: rotate,
           }}
         >
           <img
