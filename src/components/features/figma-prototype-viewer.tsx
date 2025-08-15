@@ -69,14 +69,19 @@ export const FigmaPrototypeViewer: React.FC<FigmaPrototypeViewerProps> = ({ conf
     // Use the correct embed.figma.com domain with proto path
     // This is the format that Figma's official embed code uses
     const params = new URLSearchParams({
-      'content-scaling': contentScaling,
+      'content-scaling': 'responsive', // Changed back to responsive for better fit
       'kind': 'proto',
       'node-id': startingNodeId.replace(':', '-'), // Convert colon to dash format
       'page-id': pageId,
-      'scaling': scaling,
+      'scaling': 'width', // Changed to width to fill the entire width
       'starting-point-node-id': startingNodeId,
-      'show-proto-sidebar': '0', // Hide sidebar for cleaner look
-      'embed-host': 'share'
+      'show-proto-sidebar': '0', // Hide sidebar
+      'embed-host': 'share',
+      'hide-ui': '1', // Hide all Figma UI controls
+      'hotspot-hints': '0', // Hide hotspot hints
+      'toolbar-hidden': '1', // Hide toolbar
+      'faux-device-disabled': '1', // Disable any faux device frame
+      'minimal-ui': '1' // Enable minimal UI mode
     })
     
     return `https://embed.figma.com/proto/${fileKey}/Flamingo-Website?${params.toString()}`
@@ -102,6 +107,45 @@ export const FigmaPrototypeViewer: React.FC<FigmaPrototypeViewerProps> = ({ conf
   const handleIframeLoad = () => {
     setIsLoading(false)
     setHasError(false)
+    
+    // Try to inject CSS to hide Figma controls and background (may be blocked by CORS)
+    try {
+      const iframe = iframeRef.current
+      if (iframe?.contentWindow) {
+        const style = document.createElement('style')
+        style.textContent = `
+          /* Hide Figma UI elements and remove background */
+          [class*="toolbar"], 
+          [class*="bottom_bar"],
+          [class*="fullscreen"],
+          [class*="navigation"],
+          [class*="prototype_controls"],
+          [class*="device_frame"],
+          [class*="background_color"] {
+            display: none !important;
+          }
+          
+          /* Remove black background */
+          body, html {
+            background: transparent !important;
+            background-color: transparent !important;
+          }
+          
+          /* Remove padding and margins */
+          [class*="prototype_container"],
+          [class*="canvas"],
+          [class*="prototype_wrapper"] {
+            padding: 0 !important;
+            margin: 0 !important;
+            background: transparent !important;
+          }
+        `
+        iframe.contentDocument?.head?.appendChild(style)
+      }
+    } catch (e) {
+      // Cross-origin restrictions will prevent this, but we try anyway
+      console.log('Cannot inject styles into Figma iframe due to cross-origin restrictions')
+    }
   }
 
   // Handle iframe error
@@ -119,10 +163,10 @@ export const FigmaPrototypeViewer: React.FC<FigmaPrototypeViewerProps> = ({ conf
   }, []) // Only run on mount
 
 
-  // Calculate container styles
+  // Calculate container styles - make it more flexible
   const containerStyles: React.CSSProperties = height
-    ? { height }
-    : { aspectRatio, width: '100%' }
+    ? { height, width: '100%' }
+    : { minHeight: '600px', width: '100%' }
 
   return (
     <div className={cn('grid grid-cols-1 lg:grid-cols-[296px_1fr] gap-10', className)}>
@@ -162,13 +206,21 @@ export const FigmaPrototypeViewer: React.FC<FigmaPrototypeViewerProps> = ({ conf
         ))}
       </div>
 
-      {/* Right Column - Figma Embed Container (no background/border) */}
+      {/* Right Column - Figma Embed Container (seamless integration) */}
       <div 
         className={cn(
-          'relative overflow-hidden',
+          'relative bg-transparent',
+          // Add smooth scrolling for mobile
+          'overflow-y-auto overflow-x-hidden',
+          // iOS smooth scrolling
+          'scrolling-touch',
           iframeClassName
         )}
-        style={containerStyles}
+        style={{
+          ...containerStyles,
+          WebkitOverflowScrolling: 'touch', // iOS smooth scrolling
+          overscrollBehavior: 'contain', // Prevent scroll chaining
+        }}
       >
         {/* Loading State */}
         {isLoading && !hasError && (
@@ -211,16 +263,37 @@ export const FigmaPrototypeViewer: React.FC<FigmaPrototypeViewerProps> = ({ conf
           </div>
         )}
 
-        {/* Figma iframe */}
-        <iframe
-          ref={iframeRef}
-          className="absolute inset-0 w-full h-full border-0"
-          style={{ display: hasError ? 'none' : 'block' }}
-          onLoad={handleIframeLoad}
-          onError={handleIframeError}
-          allowFullScreen
-          title={`${title} - ${activeSectionData?.title || 'Prototype'}`}
-        />
+        {/* Figma iframe - no crop to show all content, with mobile scroll support */}
+        <div 
+          className="relative w-full bg-transparent" 
+          style={{ 
+            height: height || '100vh', 
+            minHeight: '600px',
+            overflow: 'visible', // Let parent handle scrolling
+            position: 'relative'
+          }}
+        >
+          <iframe
+            ref={iframeRef}
+            className="border-0 bg-transparent"
+            style={{ 
+              display: hasError ? 'none' : 'block',
+              width: '100%',
+              height: '100%',
+              backgroundColor: 'transparent',
+              colorScheme: 'normal',
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              pointerEvents: 'auto'
+            }}
+            onLoad={handleIframeLoad}
+            onError={handleIframeError}
+            allowFullScreen
+            scrolling="no" // Disable iframe's own scrolling
+            title={`${title} - ${activeSectionData?.title || 'Prototype'}`}
+          />
+        </div>
       </div>
     </div>
   )
