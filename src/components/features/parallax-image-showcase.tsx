@@ -15,7 +15,7 @@ interface ParallaxImageShowcaseProps {
 export const ParallaxImageShowcase: React.FC<ParallaxImageShowcaseProps> = ({ images, className = '' }) => {
   // ANIMATION INTENSITY CONTROL
   // 0.1 = very gentle, 1 = normal, 5 = aggressive, 10 = super aggressive
-  const INTENSITY = 10 // Super aggressive for testing
+  const INTENSITY = 1 // Super aggressive for testing
   
   // Scroll animation - works everywhere on the page
   const { scrollY } = useScroll()
