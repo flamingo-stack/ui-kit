@@ -113,12 +113,10 @@ export const ParallaxImageShowcase: React.FC<ParallaxImageShowcaseProps> = ({ im
       {/* Image #3 - Behind all - z-index 1 */}
       {rightImage && (
         <motion.div
-          className="absolute z-[1]"
+          className="absolute z-[1] 
+            w-[80%] h-[60%] top-[5%] right-[5%]
+            lg:w-[120%] lg:h-[85%] lg:top-[-10%] lg:right-[-15%]"
           style={{
-            top: '-10%',
-            right: '-15%',
-            width: '120%',
-            height: '85%',
             x: x,
             y: y,
             rotate: rotate,
@@ -135,12 +133,10 @@ export const ParallaxImageShowcase: React.FC<ParallaxImageShowcaseProps> = ({ im
       {/* Image #2 - Middle layer - z-index 2 */}
       {centerImage && (
         <motion.div
-          className="absolute z-[2]"
+          className="absolute z-[2] 
+            w-[75%] h-[55%] bottom-[10%] right-[0%]
+            lg:w-[100%] lg:h-[80%] lg:bottom-[-15%] lg:right-[-20%]"
           style={{
-            bottom: '-15%',
-            right: '-20%',
-            width: '100%',
-            height: '80%',
             x: x,
             y: y,
             rotate: rotate,
@@ -157,12 +153,10 @@ export const ParallaxImageShowcase: React.FC<ParallaxImageShowcaseProps> = ({ im
       {/* Image #1 - On top - z-index 3 */}
       {leftImage && (
         <motion.div
-          className="absolute z-[3]"
+          className="absolute z-[3] 
+            w-[85%] h-[65%] top-[10%] left-[-5%]
+            lg:w-[110%] lg:h-[90%] lg:top-[0%] lg:left-[-25%]"
           style={{
-            top: '-0%',
-            left: '-25%',
-            width: '110%',
-            height: '90%',
             x: x,
             y: y,
             rotate: rotate,
