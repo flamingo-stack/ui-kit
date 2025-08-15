@@ -1047,6 +1047,15 @@ These loading standards ensure consistent, predictable behavior across all admin
 
 ## Recent Updates (2025-08-15)
 
+### FigmaPrototypeViewer Component
+- **Interactive Figma embeds** with navigation controls for prototype demonstrations
+- **Multi-section support** with direct jumping to different prototype flows
+- **Responsive design** with separate mobile and desktop configurations
+- **PostMessage API integration** for next/previous/restart controls
+- **Loading states** with spinner while prototype loads
+- **Configurable styling** via className props for all elements
+- **Automatic iframe management** with proper URL construction
+
 ### ParallaxImageShowcase Component
 - **Advanced parallax effects** with Framer Motion for hero sections
 - **Global mouse tracking** that works across entire page, not just on hover
