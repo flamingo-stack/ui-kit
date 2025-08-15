@@ -29,9 +29,14 @@ export const ParallaxImageShowcase: React.FC<ParallaxImageShowcaseProps> = ({ im
       setIsInView(inView)
       
       if (inView) {
-        // Calculate scroll position relative to viewport
-        const scrollProgress = window.scrollY * 0.02 // Gentle scroll effect
-        setScrollY(scrollProgress)
+        // Calculate scroll position relative to element position in viewport
+        // This creates a parallax effect that responds to actual scrolling
+        const elementCenter = rect.top + rect.height / 2
+        const viewportCenter = windowHeight / 2
+        const offset = (viewportCenter - elementCenter) / windowHeight
+        
+        // Use offset for more dynamic scroll-based animation
+        setScrollY(offset * 20) // Amplify for visible effect
       }
     }
 
@@ -49,30 +54,31 @@ export const ParallaxImageShowcase: React.FC<ParallaxImageShowcaseProps> = ({ im
   return (
     <div 
       ref={containerRef}
-      className={`relative w-full h-full overflow-visible ${className}`}
+      className={`relative w-full h-full ${className}`}
     >
-      {/* Image #1 - Bottom Left - z-index 1 */}
-      {leftImage && (
+      {/* Image #3 - Behind all - z-index 1 - Subtle but visible */}
+      {rightImage && (
         <Tilt
           className="absolute z-[1]"
           style={{
-            bottom: '-20%',
-            left: '-25%',
-            width: '110%',
-            height: '90%',
-            transform: `translateY(${-scrollY * 0.3}px) translateX(${scrollY * 0.1}px)`,
+            top: '-10%',
+            right: '-15%',
+            width: '120%',
+            height: '85%',
+            transform: `translateY(${scrollY * 0.5}px) translateX(${scrollY * 0.3}px) rotateX(${scrollY * 0.08}deg) rotateY(${scrollY * 0.05}deg)`,
             transition: 'transform 0.1s ease-out',
           }}
-          tiltMaxAngleX={4}
-          tiltMaxAngleY={4}
+          tiltMaxAngleX={2.5}
+          tiltMaxAngleY={3}
           scale={1}
-          transitionSpeed={2500}
-          gyroscope={true}
+          transitionSpeed={2800}
+          gyroscope={false}
           trackOnWindow={true}
+          perspective={1300}
         >
           <img
-            src={leftImage.src}
-            alt={leftImage.alt}
+            src={rightImage.src}
+            alt={rightImage.alt}
             className="w-full h-full object-contain"
             style={{
               maxWidth: '100%',
@@ -82,7 +88,7 @@ export const ParallaxImageShowcase: React.FC<ParallaxImageShowcaseProps> = ({ im
         </Tilt>
       )}
 
-      {/* Image #2 - Bottom Right - z-index 2 */}
+      {/* Image #2 - Middle layer - z-index 2 - Medium gentle rotation */}
       {centerImage && (
         <Tilt
           className="absolute z-[2]"
@@ -91,15 +97,16 @@ export const ParallaxImageShowcase: React.FC<ParallaxImageShowcaseProps> = ({ im
             right: '-20%',
             width: '100%',
             height: '80%',
-            transform: `translateY(${-scrollY * 0.5}px) translateX(${-scrollY * 0.15}px)`,
+            transform: `translateY(${scrollY * 0.8}px) translateX(${scrollY * -0.4}px) rotateX(${scrollY * 0.12}deg) rotateY(${scrollY * -0.08}deg)`,
             transition: 'transform 0.1s ease-out',
           }}
-          tiltMaxAngleX={5}
-          tiltMaxAngleY={5}
+          tiltMaxAngleX={2}
+          tiltMaxAngleY={2.5}
           scale={1}
-          transitionSpeed={2000}
-          gyroscope={true}
+          transitionSpeed={2500}
+          gyroscope={false}
           trackOnWindow={true}
+          perspective={1200}
         >
           <img
             src={centerImage.src}
@@ -113,28 +120,29 @@ export const ParallaxImageShowcase: React.FC<ParallaxImageShowcaseProps> = ({ im
         </Tilt>
       )}
 
-      {/* Image #3 - Top Right - z-index 3 */}
-      {rightImage && (
+      {/* Image #1 - On top - z-index 3 - Slightly more movement but still gentle */}
+      {leftImage && (
         <Tilt
           className="absolute z-[3]"
           style={{
-            top: '-10%',
-            right: '-15%',
-            width: '120%',
-            height: '85%',
-            transform: `translateY(${-scrollY * 0.2}px) translateX(${-scrollY * 0.05}px)`,
+            top: '-0%',
+            left: '-25%',
+            width: '110%',
+            height: '90%',
+            transform: `translateY(${scrollY * 1.2}px) translateX(${scrollY * 0.6}px) rotateX(${scrollY * -0.15}deg) rotateY(${scrollY * 0.12}deg)`,
             transition: 'transform 0.1s ease-out',
           }}
           tiltMaxAngleX={3}
-          tiltMaxAngleY={3}
+          tiltMaxAngleY={3.5}
           scale={1}
-          transitionSpeed={3000}
-          gyroscope={true}
+          transitionSpeed={2000}
+          gyroscope={false}
           trackOnWindow={true}
+          perspective={1000}
         >
           <img
-            src={rightImage.src}
-            alt={rightImage.alt}
+            src={leftImage.src}
+            alt={leftImage.alt}
             className="w-full h-full object-contain"
             style={{
               maxWidth: '100%',
