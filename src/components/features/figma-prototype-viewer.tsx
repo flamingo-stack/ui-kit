@@ -15,6 +15,7 @@ export interface FigmaPrototypeViewerConfig {
   fileKey: string
   title: string
   sections: FigmaPrototypeSection[]
+  pageId?: string // Add page-id configuration
   hideUI?: boolean
   scaling?: 'min' | 'width' | 'contain'
   contentScaling?: 'fixed' | 'responsive'
@@ -38,6 +39,7 @@ export const FigmaPrototypeViewer: React.FC<FigmaPrototypeViewerProps> = ({ conf
     fileKey,
     title,
     sections,
+    pageId = '345:10087', // Default page-id from your embed code
     hideUI = true,
     scaling = 'contain',
     contentScaling = 'responsive',
@@ -64,14 +66,20 @@ export const FigmaPrototypeViewer: React.FC<FigmaPrototypeViewerProps> = ({ conf
 
   // Build the Figma embed URL
   const buildEmbedUrl = (startingNodeId: string) => {
-    // Use Figma's public embed format that bypasses authentication
-    // Format: https://www.figma.com/embed?embed_host=share&url=<encoded_prototype_url>
-    const prototypeUrl = `https://www.figma.com/proto/${fileKey}?node-id=${startingNodeId}&scaling=${scaling}&page-id=0%3A1&starting-point-node-id=${startingNodeId}&mode=design`
+    // Use the correct embed.figma.com domain with proto path
+    // This is the format that Figma's official embed code uses
+    const params = new URLSearchParams({
+      'content-scaling': contentScaling,
+      'kind': 'proto',
+      'node-id': startingNodeId.replace(':', '-'), // Convert colon to dash format
+      'page-id': pageId,
+      'scaling': scaling,
+      'starting-point-node-id': startingNodeId,
+      'show-proto-sidebar': '0', // Hide sidebar for cleaner look
+      'embed-host': 'share'
+    })
     
-    // Properly encode the URL
-    const encodedUrl = encodeURIComponent(prototypeUrl)
-    
-    return `https://www.figma.com/embed?embed_host=share&url=${encodedUrl}`
+    return `https://embed.figma.com/proto/${fileKey}/Flamingo-Website?${params.toString()}`
   }
 
   // Handle section change
