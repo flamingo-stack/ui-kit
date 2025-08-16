@@ -104,7 +104,7 @@ export const FigmaPrototypeViewer: React.FC<FigmaPrototypeViewerProps> = ({ conf
       'mode': 'prototype',
       'enable-prototype-interactions': '1',
       'chrome': 'DOCUMENTATION',
-      'view_only': '1'
+      'allow-fullscreen': '1'
     })
     
     return `https://embed.figma.com/proto/${fileKey}?${params.toString()}`
@@ -298,7 +298,7 @@ export const FigmaPrototypeViewer: React.FC<FigmaPrototypeViewerProps> = ({ conf
 
         {/* Figma Prototype Container - NO BACKGROUND STYLING */}
         <div 
-          className={cn('relative w-full overflow-hidden rounded-lg', iframeClassName)}
+          className={cn('relative w-full overflow-hidden rounded-lg bg-white', iframeClassName)}
           style={{ height }}
         >
           {/* Loading overlay */}
@@ -313,7 +313,7 @@ export const FigmaPrototypeViewer: React.FC<FigmaPrototypeViewerProps> = ({ conf
             </div>
           )}
 
-          {/* Figma iframe - NO BACKGROUND STYLING WHATSOEVER */}
+          {/* Figma iframe - High quality display */}
           {embedUrl && (
             <iframe
               ref={iframeRef}
@@ -321,6 +321,10 @@ export const FigmaPrototypeViewer: React.FC<FigmaPrototypeViewerProps> = ({ conf
               className="w-full h-full border-0"
               style={{ 
                 minHeight: height,
+                width: 'calc(100% + 40px)',
+                height: 'calc(100% + 40px)',
+                marginLeft: '-20px',
+                marginTop: '-20px',
                 background: 'transparent'
               }}
               allowFullScreen
