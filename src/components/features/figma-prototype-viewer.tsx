@@ -322,7 +322,7 @@ export const FigmaPrototypeViewer: React.FC<FigmaPrototypeViewerProps> = ({ conf
             <button
               key={section.id}
               onClick={() => handleSectionClick(section.id)}
-              disabled={isNavigating}
+              disabled={!showIframe || isNavigating}
               className={cn(
                 'bg-ods-card border rounded-md p-6 flex gap-2 items-start',
                 'shadow-ods-card transition-all duration-200',
