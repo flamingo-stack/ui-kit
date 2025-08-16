@@ -303,7 +303,7 @@ export const FigmaPrototypeViewer: React.FC<FigmaPrototypeViewerProps> = ({ conf
 
         {/* Figma Prototype Container - NO BACKGROUND STYLING */}
         <div 
-          className={cn('relative w-full overflow-hidden rounded-lg', iframeClassName)}
+          className={cn('relative w-full overflow-hidden rounded-lg border border-ods-border', iframeClassName)}
           style={{ height }}
         >
           {/* Layer 2: Full colored background (ODS colors) */}
