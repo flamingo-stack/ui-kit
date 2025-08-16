@@ -15,17 +15,11 @@ export interface FigmaPrototypeViewerConfig {
   fileKey: string
   title: string
   sections: FigmaPrototypeSection[]
-  pageId?: string
-  hideUI?: boolean
-  scaling?: 'min' | 'width' | 'contain'
-  contentScaling?: 'fixed' | 'responsive'
-  embedHost?: string
   className?: string
   iframeClassName?: string
   controlsClassName?: string
   activeControlClassName?: string
   defaultSectionId?: string
-  aspectRatio?: string
   height?: string
   onSectionChange?: (sectionId: string) => void
   showDebugPanel?: boolean
@@ -35,7 +29,7 @@ interface FigmaPrototypeViewerProps {
   config: FigmaPrototypeViewerConfig
 }
 
-// Figma Embed Kit 2.0 Event Types (based on the official example)
+// Figma Embed Kit 2.0 Event Types
 type FigmaEventType = 
   | 'MOUSE_PRESS_OR_RELEASE'
   | 'PRESENTED_NODE_CHANGED' 
@@ -54,73 +48,93 @@ interface FigmaEvent {
 export const FigmaPrototypeViewer: React.FC<FigmaPrototypeViewerProps> = ({ config }) => {
   const {
     fileKey,
-    title,
     sections,
-    pageId = '345:10087',
     className,
     iframeClassName,
     controlsClassName,
     activeControlClassName,
     defaultSectionId,
-    height,
+    height = '800px',
     onSectionChange,
     showDebugPanel = false
   } = config
 
-  const [activeSection, setActiveSection] = useState<string>(
-    defaultSectionId || sections[0]?.id || ''
-  )
-  const iframeRef = useRef<HTMLIFrameElement>(null)
-  const [hasError, setHasError] = useState(false)
-  const [showSkeleton, setShowSkeleton] = useState(true)
-  const [isReady, setIsReady] = useState(false)
+  // Initialize state with the first section, not the last
+  const initialSectionId = defaultSectionId || sections[0]?.id || ''
+  const [activeSection, setActiveSection] = useState<string>(initialSectionId)
+  const [isLoading, setIsLoading] = useState(true)
   const [currentNodeId, setCurrentNodeId] = useState<string | null>(null)
-  const [canNavigateBack, setCanNavigateBack] = useState(false)
-  const [canNavigateForward, setCanNavigateForward] = useState(true)
-  const [eventHistory, setEventHistory] = useState<Array<{ time: number; type: string; data?: any }>>([])
+  
+  // Refs
+  const iframeRef = useRef<HTMLIFrameElement>(null)
+  const isManualNavigationRef = useRef(false)
+  const hasLoadedOnceRef = useRef(false)
+  const expectedNodeRef = useRef<string | null>(null)
+  const nodeChangeCountRef = useRef(0)
+  
+  // Debug state
+  const [eventHistory, setEventHistory] = useState<Array<{ 
+    time: number
+    type: string
+    data?: any 
+  }>>([])
 
-  // Find the active section data
-  const activeSectionData = sections.find(s => s.id === activeSection)
-
-  // Build the Figma embed URL with client-id for event support
-  const buildEmbedUrl = useCallback((startingNodeId: string) => {
+  // Build embed URL
+  const buildEmbedUrl = useCallback((nodeId: string) => {
     const params = new URLSearchParams({
-      'node-id': startingNodeId.replace(':', '-'),
+      'node-id': nodeId.replace(':', '-'),
       'embed-host': 'flamingo',
-      'client-id': 'UTQPwZHR9OZp68TTGPFFi5' // Registered Figma app client ID
+      'client-id': 'UTQPwZHR9OZp68TTGPFFi5',
+      'hide-ui': '1',
+      'hotspot-hints': '0',
+      'scaling': 'scale-down'
     })
     
     return `https://embed.figma.com/proto/${fileKey}?${params.toString()}`
   }, [fileKey])
 
-  // Send commands to Figma prototype (Embed Kit 2.0 format)
-  const sendCommand = useCallback((type: 'NAVIGATE_FORWARD' | 'NAVIGATE_BACKWARD' | 'RESTART') => {
-    if (iframeRef.current?.contentWindow) {
-      iframeRef.current.contentWindow.postMessage(
-        { type },
-        'https://www.figma.com'
-      )
-      
-      // Log command for debugging
-      if (showDebugPanel) {
-        setEventHistory(prev => [...prev, {
-          time: Date.now(),
-          type: 'COMMAND_SENT',
-          data: { command: type }
-        }])
-      }
+  // Store the iframe src separately to prevent reloading
+  const [iframeSrc, setIframeSrc] = useState<string>('')
+  
+  // Initialize iframe src on mount
+  useEffect(() => {
+    const section = sections.find(s => s.id === activeSection)
+    if (section && !iframeSrc) {
+      setIframeSrc(buildEmbedUrl(section.startingNodeId))
     }
-  }, [showDebugPanel])
+  }, [activeSection, sections, buildEmbedUrl, iframeSrc])
 
-  // Handle messages from Figma (Embed Kit 2.0 events - works with registered client-id)
+  // Handle section button click
+  const handleSectionClick = useCallback((sectionId: string) => {
+    if (sectionId === activeSection) return
+
+    const section = sections.find(s => s.id === sectionId)
+    if (!section) return
+
+    if (showDebugPanel) {
+      console.log('[Manual] Switching to:', sectionId, 'node:', section.startingNodeId)
+    }
+
+    // Set manual navigation flag
+    isManualNavigationRef.current = true
+    nodeChangeCountRef.current = 0
+    expectedNodeRef.current = section.startingNodeId
+    
+    // Update iframe src to navigate to new section
+    setIframeSrc(buildEmbedUrl(section.startingNodeId))
+    
+    // Update state
+    setActiveSection(sectionId)
+    setIsLoading(true)
+    onSectionChange?.(sectionId)
+  }, [sections, activeSection, onSectionChange, showDebugPanel, buildEmbedUrl])
+
+  // Handle Figma events
   useEffect(() => {
     const handleMessage = (event: MessageEvent) => {
-      // Only process messages from Figma
-      if (event.origin !== 'https://www.figma.com') {
-        return
-      }
+      if (event.origin !== 'https://www.figma.com') return
 
-      const prototypeEvents: FigmaEventType[] = [
+      const validEvents: FigmaEventType[] = [
         'MOUSE_PRESS_OR_RELEASE',
         'PRESENTED_NODE_CHANGED',
         'INITIAL_LOAD',
@@ -128,83 +142,89 @@ export const FigmaPrototypeViewer: React.FC<FigmaPrototypeViewerProps> = ({ conf
         'REQUEST_CLOSE'
       ]
 
-      // Check if this is a valid Figma event
-      if (event.data?.type && prototypeEvents.includes(event.data.type)) {
+      if (event.data?.type && validEvents.includes(event.data.type)) {
         const figmaEvent = event.data as FigmaEvent
         
-        // Always log events when debug panel is shown
+        // Debug logging
         if (showDebugPanel) {
-          console.log('[FIGMA EVENT]', figmaEvent.type, figmaEvent.data)
-          setEventHistory(prev => [...prev.slice(-19), {
+          console.log('[Event]', figmaEvent.type, figmaEvent.data)
+          setEventHistory(prev => [...prev.slice(-9), {
             time: Date.now(),
             type: figmaEvent.type,
             data: figmaEvent.data
           }])
         }
 
-        // Handle specific event types
         switch (figmaEvent.type) {
           case 'INITIAL_LOAD':
-            // Prototype is ready - enable controls
-            setIsReady(true)
-            setShowSkeleton(false)
-            setCanNavigateForward(true)
-            setCanNavigateBack(false) // Can't go back at start
-            
+            setIsLoading(false)
+            hasLoadedOnceRef.current = true
             if (showDebugPanel) {
-              console.log('✅ Figma Embed API Ready! Events are working!')
+              console.log('[Loaded] Prototype ready, sending restart command')
+            }
+            // Send restart command to ensure we start at the beginning
+            if (iframeRef.current?.contentWindow) {
+              iframeRef.current.contentWindow.postMessage(
+                { type: 'restart' },
+                'https://www.figma.com'
+              )
             }
             break
 
           case 'PRESENTED_NODE_CHANGED':
-            // Node/screen changed in the prototype
             if (figmaEvent.data?.presentedNodeId) {
               const nodeId = figmaEvent.data.presentedNodeId
               setCurrentNodeId(nodeId)
               
-              // Check if this is a starting node for any section
-              const matchingSection = sections.find(s => {
-                const normalizedStartNode = s.startingNodeId.replace(':', '-')
-                return s.startingNodeId === nodeId || normalizedStartNode === nodeId
-              })
+              // Count node changes
+              nodeChangeCountRef.current++
               
-              // Update active section if we navigated to a section start
-              if (matchingSection && matchingSection.id !== activeSection) {
-                setActiveSection(matchingSection.id)
-                onSectionChange?.(matchingSection.id)
+              // On first node change after load, check if it's the expected node
+              // If not, it's likely Figma auto-navigating, so ignore it
+              if (nodeChangeCountRef.current === 1 && expectedNodeRef.current) {
+                if (nodeId !== expectedNodeRef.current) {
+                  if (showDebugPanel) {
+                    console.log('[Ignored] Auto-navigation away from expected node:', nodeId, 'expected:', expectedNodeRef.current)
+                  }
+                  setIsLoading(false)
+                  return
+                }
               }
               
-              // Update navigation buttons based on node
-              const isFirstNode = sections.some(s => {
-                const normalizedStartNode = s.startingNodeId.replace(':', '-')
-                return s.startingNodeId === nodeId || normalizedStartNode === nodeId
-              })
-              setCanNavigateBack(!isFirstNode)
-              
-              // For now, always allow forward navigation unless we know it's the last node
-              // You can add specific logic here based on your prototype structure
-              setCanNavigateForward(true)
+              // After a few node changes, allow syncing with sections
+              // This gives time for Figma's auto-navigation to finish
+              if (nodeChangeCountRef.current > 3) {
+                // Only auto-sync if:
+                // 1. We've loaded at least once
+                // 2. User isn't manually navigating
+                // 3. Node matches a different section
+                if (hasLoadedOnceRef.current && !isManualNavigationRef.current) {
+                  const matchingSection = sections.find(s => {
+                    const normalized = s.startingNodeId.replace(':', '-')
+                    return normalized === nodeId || s.startingNodeId === nodeId
+                  })
+                  
+                  if (matchingSection && matchingSection.id !== activeSection) {
+                    if (showDebugPanel) {
+                      console.log('[Auto-sync] Detected section:', matchingSection.id)
+                    }
+                    setActiveSection(matchingSection.id)
+                    onSectionChange?.(matchingSection.id)
+                  }
+                }
+              }
             }
-            setShowSkeleton(false) // Hide skeleton when content changes
+            
+            // Clear manual navigation flag after any node change
+            if (isManualNavigationRef.current) {
+              isManualNavigationRef.current = false
+            }
+            
+            setIsLoading(false)
             break
 
           case 'NEW_STATE':
-            // Prototype state changed
-            setShowSkeleton(false)
-            setIsReady(true) // Ensure ready state
-            break
-
-          case 'MOUSE_PRESS_OR_RELEASE':
-            // User interaction detected
-            // This event doesn't provide much useful data, but we log it
-            break
-
-          case 'REQUEST_CLOSE':
-            // Prototype requested to be closed
-            // You could handle this by showing a confirmation or navigating away
-            if (showDebugPanel) {
-              console.log('Prototype requested close')
-            }
+            setIsLoading(false)
             break
         }
       }
@@ -212,65 +232,51 @@ export const FigmaPrototypeViewer: React.FC<FigmaPrototypeViewerProps> = ({ conf
 
     window.addEventListener('message', handleMessage)
     return () => window.removeEventListener('message', handleMessage)
-  }, [sections, showDebugPanel, activeSection, onSectionChange])
+  }, [sections, activeSection, onSectionChange, showDebugPanel])
 
-  // Handle section change
-  const handleSectionChange = useCallback((sectionId: string) => {
-    const section = sections.find(s => s.id === sectionId)
-    if (!section) return
+  // Handle iframe load
+  const handleIframeLoad = useCallback(() => {
+    if (showDebugPanel) {
+      console.log('[Iframe] Loaded')
+    }
+  }, [showDebugPanel])
 
-    // Show skeleton briefly when changing sections
-    if (activeSection !== sectionId) {
-      setShowSkeleton(true)
-      setIsReady(false)
-      setCurrentNodeId(null)
-      
-      // Update iframe src
-      if (iframeRef.current) {
-        const newUrl = buildEmbedUrl(section.startingNodeId)
-        iframeRef.current.src = newUrl
+  // Navigation commands for debug panel
+  const sendCommand = useCallback((command: string) => {
+    if (!iframeRef.current?.contentWindow) return
+
+    const commandMap: Record<string, string> = {
+      'NAVIGATE_FORWARD': 'next-page',
+      'NAVIGATE_BACKWARD': 'previous-page',
+      'RESTART': 'restart'
+    }
+
+    const figmaCommand = commandMap[command]
+    if (figmaCommand) {
+      iframeRef.current.contentWindow.postMessage(
+        { type: figmaCommand },
+        'https://www.figma.com'
+      )
+
+      if (showDebugPanel) {
+        setEventHistory(prev => [...prev.slice(-9), {
+          time: Date.now(),
+          type: 'COMMAND',
+          data: { command: figmaCommand }
+        }])
       }
     }
-    
-    setActiveSection(sectionId)
-    onSectionChange?.(sectionId)
-  }, [sections, buildEmbedUrl, onSectionChange, activeSection])
-
-  // Handle iframe load event
-  const handleIframeLoad = useCallback(() => {
-    // Iframe loaded successfully
-    setHasError(false)
-    // Hide skeleton after a short delay since Figma doesn't send INITIAL_LOAD for prototypes
-    setTimeout(() => {
-      setShowSkeleton(false)
-      setIsReady(true)
-    }, 1500)
-  }, [])
-
-  // Handle iframe error
-  const handleIframeError = useCallback(() => {
-    console.error('[FIGMA] Failed to load prototype')
-    setShowSkeleton(false)
-    setHasError(true)
-  }, [])
-
-  // Initial src
-  const initialSrc = activeSectionData ? buildEmbedUrl(activeSectionData.startingNodeId) : ''
-
-  // Calculate container styles
-  const containerStyles: React.CSSProperties = height
-    ? { height, width: '100%' }
-    : { minHeight: '600px', width: '100%' }
+  }, [showDebugPanel])
 
   return (
     <>
       <div className={cn('grid grid-cols-1 lg:grid-cols-[296px_1fr] gap-10', className)}>
-        {/* Left Column - Controls */}
+        {/* Section Controls */}
         <div className={cn('flex flex-col gap-2', controlsClassName)}>
           {sections.map((section) => (
             <button
               key={section.id}
-              onClick={() => handleSectionChange(section.id)}
+              onClick={() => handleSectionClick(section.id)}
               className={cn(
                 'bg-ods-card border rounded-md p-6 flex gap-2 items-start',
                 'shadow-ods-card transition-all duration-200',
@@ -298,236 +304,110 @@ export const FigmaPrototypeViewer: React.FC<FigmaPrototypeViewerProps> = ({ conf
           ))}
         </div>
 
-        {/* Right Column - Figma Embed */}
+        {/* Figma Prototype - WHITE BACKGROUND */}
         <div 
-          className={cn(
-            'relative bg-transparent overflow-y-auto overflow-x-hidden scrolling-touch',
-            iframeClassName
-          )}
-          style={{
-            ...containerStyles,
-            WebkitOverflowScrolling: 'touch',
-            overscrollBehavior: 'contain',
-          }}
+          className={cn('relative w-full bg-white', iframeClassName)}
+          style={{ height }}
         >
-          {/* Error State */}
-          {hasError && (
-            <div className="absolute inset-0 flex items-center justify-center bg-ods-bg z-40">
-              <div className="flex flex-col items-center gap-4 max-w-md text-center px-4">
-                <div className="w-16 h-16 rounded-full bg-ods-error/10 flex items-center justify-center">
-                  <svg className="w-8 h-8 text-ods-error" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M12 8V12M12 16H12.01M22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
-                </div>
-                <div>
-                  <h3 className="font-['DM_Sans'] font-semibold text-ods-text-primary text-lg mb-2">
-                    Unable to Load Prototype
-                  </h3>
-                  <p className="font-['DM_Sans'] text-ods-text-secondary text-sm">
-                    Please ensure the Figma prototype is publicly shared.
-                  </p>
-                </div>
+          {/* Loading overlay */}
+          {isLoading && (
+            <div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none">
+              <div className="flex flex-col items-center gap-2 p-4 bg-ods-bg rounded-lg shadow-lg">
+                <div className="w-8 h-8 border-2 border-ods-text-secondary border-t-transparent rounded-full animate-spin" />
+                <span className="text-ods-text-secondary text-sm">Loading...</span>
               </div>
             </div>
           )}
 
-          {/* Figma iframe container */}
-          <div 
-            className="relative w-full bg-ods-bg rounded-lg overflow-hidden" 
-            style={{ 
-              height: height || '100vh', 
-              minHeight: '600px',
-              position: 'relative'
-            }}
-          >
-            {/* Skeleton - show while loading */}
-            {showSkeleton && !hasError && (
-              <div className="absolute inset-0 bg-ods-bg z-30 pointer-events-none">
-                <div className="w-full h-full flex flex-col bg-ods-bg">
-                  {/* Top bar skeleton */}
-                  <div className="h-16 bg-ods-card border-b border-ods-border flex items-center px-6">
-                    <div className="h-8 w-32 bg-ods-bg-secondary rounded animate-pulse" />
-                  </div>
-                  
-                  {/* Main content area skeleton */}
-                  <div className="flex-1 p-6 bg-ods-bg">
-                    <div className="max-w-3xl mx-auto space-y-6">
-                      <div className="h-10 w-3/4 bg-ods-bg-secondary rounded animate-pulse" />
-                      <div className="h-6 w-full bg-ods-bg-secondary rounded animate-pulse" />
-                      <div className="h-12 w-full bg-ods-card border border-ods-border rounded-md animate-pulse" />
-                      
-                      <div className="flex gap-3 flex-wrap">
-                        <div className="h-10 w-32 bg-ods-card border border-ods-border rounded-md animate-pulse" />
-                        <div className="h-10 w-40 bg-ods-card border border-ods-border rounded-md animate-pulse" />
-                        <div className="h-10 w-36 bg-ods-card border border-ods-border rounded-md animate-pulse" />
-                      </div>
-                      
-                      <div className="flex justify-end mt-8">
-                        <div className="h-12 w-12 bg-[var(--ods-open-yellow-base)] rounded animate-pulse opacity-50" />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* Figma iframe */}
+          {/* Figma iframe - WHITE BACKGROUND */}
+          {iframeSrc && (
             <iframe
               ref={iframeRef}
-              src={initialSrc}
-              className="border-0"
-              style={{ 
-                width: '100%',
-                height: '100%',
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                zIndex: 20,
-                display: hasError ? 'none' : 'block'
-              }}
+              src={iframeSrc}
+              className="w-full h-full border-0 bg-white"
+              style={{ background: 'white' }}
               onLoad={handleIframeLoad}
-              onError={handleIframeError}
               allowFullScreen
-              scrolling="no"
-              title={`${title} - ${activeSectionData?.title || 'Prototype'}`}
+              title={config.title}
             />
-          </div>
+          )}
         </div>
       </div>
       
-      {/* Debug Panel for Event Tracking */}
+      {/* Debug Panel */}
       {showDebugPanel && (
         <div className="mt-6 p-4 bg-ods-card border border-ods-border rounded-md">
-          <h3 className="font-['DM_Sans'] font-semibold text-ods-text-primary text-lg mb-3">
-            🔍 Figma Embed Kit 2.0 Event Tracker
+          <h3 className="font-semibold text-ods-text-primary mb-3">
+            🔍 Debug Panel
           </h3>
           
-          {/* Current State */}
-          <div className="mb-4 p-3 bg-ods-bg-secondary rounded">
-            <p className="font-['DM_Sans'] text-sm text-ods-text-secondary mb-1">Current State:</p>
-            <div className="grid grid-cols-2 gap-2 text-sm">
-              <div>
-                <span className="text-ods-text-secondary">Active Section:</span>{' '}
-                <span className="text-ods-text-primary font-medium">
-                  {sections.find(s => s.id === activeSection)?.title || activeSection}
-                </span>
-              </div>
-              <div>
-                <span className="text-ods-text-secondary">Current Node ID:</span>{' '}
-                <span className="text-ods-text-primary font-medium">{currentNodeId || 'unknown'}</span>
-              </div>
-              <div>
-                <span className="text-ods-text-secondary">Prototype Ready:</span>{' '}
-                <span className={cn("font-medium", isReady ? "text-green-500" : "text-yellow-500")}>
-                  {isReady ? 'Yes' : 'No'}
-                </span>
-              </div>
-              <div>
-                <span className="text-ods-text-secondary">Loading:</span>{' '}
-                <span className={cn("font-medium", showSkeleton ? "text-yellow-500" : "text-green-500")}>
-                  {showSkeleton ? 'Yes' : 'No'}
-                </span>
-              </div>
+          {/* Status */}
+          <div className="mb-3 grid grid-cols-3 gap-4 text-sm">
+            <div>
+              <span className="text-ods-text-secondary">Loading:</span>{' '}
+              <span className={isLoading ? "text-yellow-500" : "text-green-500"}>
+                {isLoading ? 'Yes' : 'No'}
+              </span>
+            </div>
+            <div>
+              <span className="text-ods-text-secondary">Section:</span>{' '}
+              <span className="text-ods-text-primary">{activeSection}</span>
+            </div>
+            <div>
+              <span className="text-ods-text-secondary">Node:</span>{' '}
+              <span className="text-ods-text-primary text-xs">{currentNodeId || 'unknown'}</span>
             </div>
           </div>
           
-          {/* Control Buttons (for testing) */}
-          <div className="mb-4 flex gap-2">
+          {/* Navigation */}
+          <div className="mb-3 flex gap-2">
             <button
               onClick={() => sendCommand('NAVIGATE_BACKWARD')}
-              disabled={!isReady || !canNavigateBack}
-              className={cn(
-                "px-3 py-1 rounded text-sm font-medium",
-                isReady && canNavigateBack 
-                  ? "bg-blue-500 text-white hover:bg-blue-600" 
-                  : "bg-gray-300 text-gray-500 cursor-not-allowed"
-              )}
+              className="px-3 py-1 rounded text-sm bg-blue-500 text-white hover:bg-blue-600"
             >
-              ← Previous
+              ← Back
             </button>
             <button
               onClick={() => sendCommand('RESTART')}
-              disabled={!isReady}
-              className={cn(
-                "px-3 py-1 rounded text-sm font-medium",
-                isReady 
-                  ? "bg-purple-500 text-white hover:bg-purple-600" 
-                  : "bg-gray-300 text-gray-500 cursor-not-allowed"
-              )}
+              className="px-3 py-1 rounded text-sm bg-purple-500 text-white hover:bg-purple-600"
             >
               Restart
             </button>
             <button
               onClick={() => sendCommand('NAVIGATE_FORWARD')}
-              disabled={!isReady || !canNavigateForward}
-              className={cn(
-                "px-3 py-1 rounded text-sm font-medium",
-                isReady && canNavigateForward 
-                  ? "bg-blue-500 text-white hover:bg-blue-600" 
-                  : "bg-gray-300 text-gray-500 cursor-not-allowed"
-              )}
+              className="px-3 py-1 rounded text-sm bg-blue-500 text-white hover:bg-blue-600"
             >
               Next →
             </button>
           </div>
           
-          {/* Event History */}
-          <div>
-            <p className="font-['DM_Sans'] text-sm text-ods-text-secondary mb-2">
-              Event History (last 20):
-            </p>
-            <div className="max-h-40 overflow-y-auto p-2 bg-ods-bg rounded border border-ods-border">
-              {eventHistory.length === 0 ? (
-                <p className="text-xs text-ods-text-secondary">No events captured yet. Interact with the prototype!</p>
-              ) : (
-                <div className="space-y-1">
-                  {eventHistory.slice(-20).reverse().map((event, index) => (
-                    <div key={eventHistory.length - index} className="flex items-start gap-2 text-xs">
-                      <span className="text-ods-text-secondary whitespace-nowrap">
-                        {new Date(event.time).toLocaleTimeString()}
-                      </span>
-                      <span className={cn(
-                        "px-2 py-0.5 rounded font-medium whitespace-nowrap",
-                        event.type === 'INITIAL_LOAD' && "bg-green-500/20 text-green-400",
-                        event.type === 'PRESENTED_NODE_CHANGED' && "bg-blue-500/20 text-blue-400",
-                        event.type === 'NEW_STATE' && "bg-purple-500/20 text-purple-400",
-                        event.type === 'MOUSE_PRESS_OR_RELEASE' && "bg-orange-500/20 text-orange-400",
-                        event.type === 'REQUEST_CLOSE' && "bg-red-500/20 text-red-400",
-                        event.type === 'COMMAND_SENT' && "bg-cyan-500/20 text-cyan-400",
-                        !['INITIAL_LOAD', 'PRESENTED_NODE_CHANGED', 'NEW_STATE', 'MOUSE_PRESS_OR_RELEASE', 'REQUEST_CLOSE', 'COMMAND_SENT'].includes(event.type) && "bg-gray-500/20 text-gray-400"
-                      )}>
-                        {event.type}
-                      </span>
-                      {event.data && (
-                        <span className="text-ods-text-primary text-xs truncate flex-1">
-                          {JSON.stringify(event.data)}
-                        </span>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          </div>
-          
-          {/* Event Types Legend */}
-          <div className="mt-3 p-2 bg-blue-500/10 border border-blue-500/20 rounded">
-            <p className="text-xs text-blue-400 font-medium mb-1">Available Figma Events:</p>
-            <ul className="text-xs text-blue-400 space-y-0.5">
-              <li>• <strong>INITIAL_LOAD</strong>: Prototype finished loading</li>
-              <li>• <strong>PRESENTED_NODE_CHANGED</strong>: User navigated to different screen (includes node ID)</li>
-              <li>• <strong>NEW_STATE</strong>: Prototype state changed</li>
-              <li>• <strong>MOUSE_PRESS_OR_RELEASE</strong>: User clicked (no position data)</li>
-              <li>• <strong>REQUEST_CLOSE</strong>: User wants to close prototype</li>
-            </ul>
-            {isReady ? (
-              <p className="text-xs text-green-400 mt-2">
-                ✅ Figma Embed API is connected and working! Client ID: UTQPwZHR9OZp68TTGPFFi5
-              </p>
+          {/* Events */}
+          <div className="max-h-24 overflow-y-auto p-2 bg-ods-bg rounded text-xs space-y-1">
+            {eventHistory.length === 0 ? (
+              <div className="text-ods-text-secondary">No events yet...</div>
             ) : (
-              <p className="text-xs text-orange-400 mt-2">
-                ⚠️ Waiting for Figma Embed API connection... Make sure http://localhost:3000 is in allowed origins.
-              </p>
+              eventHistory.slice().reverse().map((event, i) => (
+                <div key={`${event.time}-${i}`} className="flex gap-2">
+                  <span className="text-ods-text-secondary">
+                    {new Date(event.time).toLocaleTimeString()}
+                  </span>
+                  <span className={cn(
+                    "font-medium",
+                    event.type === 'INITIAL_LOAD' && "text-green-400",
+                    event.type === 'PRESENTED_NODE_CHANGED' && "text-blue-400",
+                    event.type === 'NEW_STATE' && "text-purple-400",
+                    event.type === 'COMMAND' && "text-cyan-400",
+                    !['INITIAL_LOAD', 'PRESENTED_NODE_CHANGED', 'NEW_STATE', 'COMMAND'].includes(event.type) && "text-gray-400"
+                  )}>
+                    {event.type}
+                  </span>
+                  {event.data && (
+                    <span className="text-ods-text-secondary truncate flex-1">
+                      {JSON.stringify(event.data)}
+                    </span>
+                  )}
+                </div>
+              ))
             )}
           </div>
         </div>

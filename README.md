@@ -25,7 +25,7 @@ This is a **source-only** TypeScript package that provides:
 - 🔗 **Button onClick Fix** - Proper onClick support with href for dropdown menu closing
 - 💰 **Investors System** - Complete CRUD with modal-based admin and Supabase integration
 - 🎬 **ParallaxImageShowcase** - Advanced parallax effects with global mouse tracking and scroll animations
-- ⚠️ **FigmaPrototypeViewer** - Embedded Figma prototypes with critical event tracking limitations
+- 🔧 **FigmaPrototypeViewer** - ISSUES IN PROGRESS: Jumps to step #4, black background persists, reloads on section clicks
 
 ### Scope Clarification
 
