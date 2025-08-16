@@ -12,6 +12,19 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **Application Components**: Platform-specific business components that use UI-Kit components
   - Example: `openmsp-video-stats-section.tsx` in the main app uses UI-Kit's ODS tokens but isn't part of UI-Kit
 
+## Important Component Limitations (2025-08-16)
+
+### FigmaPrototypeViewer Component
+- **Location**: `src/components/features/figma-prototype-viewer.tsx`
+- **Critical Limitation**: Cannot track any events within embedded Figma prototypes
+- **Technical Reason**: Cross-origin iframe security prevents access to prototype internals
+- **Attempted Solutions**:
+  - PostMessage event listeners - No events emitted by Figma
+  - Figma Embed Kit 2.0 - Only provides NEXT/PREV/RESTART commands
+  - MutationObserver/IntersectionObserver - Cannot access iframe content
+- **Impact**: No analytics, no navigation tracking, no user interaction data
+- **Recommendation**: Use Figma's paid analytics or implement native UI instead
+
 ## Recent Updates (2025-08-13)
 
 ### Investors Management Feature

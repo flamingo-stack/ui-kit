@@ -25,6 +25,7 @@ This is a **source-only** TypeScript package that provides:
 - 🔗 **Button onClick Fix** - Proper onClick support with href for dropdown menu closing
 - 💰 **Investors System** - Complete CRUD with modal-based admin and Supabase integration
 - 🎬 **ParallaxImageShowcase** - Advanced parallax effects with global mouse tracking and scroll animations
+- ⚠️ **FigmaPrototypeViewer** - Embedded Figma prototypes with critical event tracking limitations
 
 ### Scope Clarification
 
@@ -394,6 +395,34 @@ This package contains **only client-side code**:
 - ❌ No server-side code
 - ❌ No API routes or server utilities
 - ❌ No database connections
+
+## Component Limitations
+
+### FigmaPrototypeViewer
+
+The `FigmaPrototypeViewer` component (`src/components/features/figma-prototype-viewer.tsx`) has critical limitations due to Figma's security architecture:
+
+**What It Can Do:**
+- Embed and display Figma prototypes in an iframe
+- Show loading skeletons while prototype loads
+- Handle responsive sizing for desktop/mobile
+- Display multiple prototypes in a section
+
+**What It CANNOT Do (Security Limitations):**
+- Track user clicks or interactions within the prototype
+- Detect navigation between prototype screens
+- Access the current page/node being viewed
+- Capture any analytics or user behavior data
+- Receive postMessage events from Figma
+
+**Technical Explanation:**
+Figma prototypes run in cross-origin iframes with strict sandboxing. The browser's security model prevents any JavaScript from accessing the iframe's content. Figma does not emit postMessage events for internal navigation, and their Embed Kit 2.0 only provides basic playback controls (NEXT/PREV/RESTART) without event notifications.
+
+**Alternatives:**
+1. Use Figma's paid analytics features
+2. Export prototypes as HTML for full control
+3. Implement the UI natively in React
+4. Use session recording tools externally
 
 ## Contributing
 
