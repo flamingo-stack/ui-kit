@@ -26,10 +26,13 @@ export interface FigmaPrototypeViewerConfig {
   showDebugPanel?: boolean
   mobileStartingPoint?: string  // Optional mobile-specific starting point for embed URL
   desktopStartingPoint?: string // Optional desktop-specific starting point for embed URL
+  hideControls?: boolean // Hide built-in controls when using external SectionSelector
 }
 
 interface FigmaPrototypeViewerProps {
   config: FigmaPrototypeViewerConfig
+  activeSection?: string // Allow external control of active section
+  onSectionClick?: (sectionId: string) => void // External section click handler
 }
 
 // Figma Embed Kit 2.0 Event Types
@@ -56,7 +59,11 @@ interface FigmaNavigationCommand {
   }
 }
 
-export const FigmaPrototypeViewer: React.FC<FigmaPrototypeViewerProps> = ({ config }) => {
+export const FigmaPrototypeViewer: React.FC<FigmaPrototypeViewerProps> = ({ 
+  config,
+  activeSection: externalActiveSection,
+  onSectionClick: externalOnSectionClick 
+}) => {
   const {
     fileKey,
     sections,
@@ -69,7 +76,8 @@ export const FigmaPrototypeViewer: React.FC<FigmaPrototypeViewerProps> = ({ conf
     onSectionChange,
     showDebugPanel = false,
     mobileStartingPoint,
-    desktopStartingPoint
+    desktopStartingPoint,
+    hideControls = false
   } = config
 
   // Detect if we're on mobile
@@ -86,8 +94,11 @@ export const FigmaPrototypeViewer: React.FC<FigmaPrototypeViewerProps> = ({ conf
     return () => window.removeEventListener('resize', checkMobile)
   }, [])
 
-  // State
-  const [activeSection, setActiveSection] = useState<string>(sections[0]?.id || '')
+  // State - use external active section if provided
+  const [internalActiveSection, setInternalActiveSection] = useState<string>(sections[0]?.id || '')
+  const activeSection = externalActiveSection || internalActiveSection
+  const setActiveSection = externalActiveSection ? () => {} : setInternalActiveSection
+  
   const [isLoading, setIsLoading] = useState(true)
   const [isNavigating, setIsNavigating] = useState(false)
   const [currentNodeId, setCurrentNodeId] = useState<string | null>(null)
@@ -183,7 +194,13 @@ export const FigmaPrototypeViewer: React.FC<FigmaPrototypeViewerProps> = ({ conf
   // Handle section button click
   const handleSectionClick = useCallback((sectionId: string) => {
     if (sectionId === activeSection || isNavigating) return
-    navigateToSection(sectionId)
+    
+    // If external handler provided, use it
+    if (externalOnSectionClick) {
+      externalOnSectionClick(sectionId)
+    } else {
+      navigateToSection(sectionId)
+    }
     
     // On mobile, scroll to the Figma viewer when manually clicking sections
     if (isMobile && iframeRef.current) {
@@ -195,7 +212,14 @@ export const FigmaPrototypeViewer: React.FC<FigmaPrototypeViewerProps> = ({ conf
         })
       }, 100)
     }
-  }, [activeSection, isNavigating, navigateToSection, isMobile])
+  }, [activeSection, isNavigating, navigateToSection, isMobile, externalOnSectionClick])
+
+  // Navigate when external active section changes
+  useEffect(() => {
+    if (externalActiveSection && externalActiveSection !== activeSection) {
+      navigateToSection(externalActiveSection)
+    }
+  }, [externalActiveSection])
 
   // Handle Figma events
   useEffect(() => {
@@ -315,41 +339,43 @@ export const FigmaPrototypeViewer: React.FC<FigmaPrototypeViewerProps> = ({ conf
 
   return (
     <>
-      <div className={cn('grid grid-cols-1 lg:grid-cols-[296px_1fr] gap-10', className)}>
-        {/* Section Controls */}
-        <div className={cn('flex flex-col gap-2', controlsClassName)}>
-          {sections.map((section) => (
-            <button
-              key={section.id}
-              onClick={() => handleSectionClick(section.id)}
-              disabled={!showIframe || isNavigating}
-              className={cn(
-                'bg-ods-card border rounded-md p-6 flex gap-2 items-start',
-                'shadow-ods-card transition-all duration-200',
-                'hover:bg-ods-card-hover cursor-pointer text-left',
-                'min-h-[96px]',
-                'disabled:opacity-50 disabled:cursor-not-allowed',
-                activeSection === section.id
-                  ? cn('border-[var(--ods-open-yellow-base)]', activeControlClassName)
-                  : 'border-ods-border'
-              )}
-            >
-              <span className="font-['DM_Sans'] font-bold text-[var(--ods-open-yellow-base)] text-lg tracking-[-0.36px] leading-[24px] shrink-0">
-                {section.number}
-              </span>
-              <div className="flex-1">
-                <p className="font-['DM_Sans'] font-medium text-ods-text-primary text-lg leading-[24px]">
-                  {section.title}
-                </p>
-                {section.description && (
-                  <p className="font-['DM_Sans'] text-ods-text-secondary text-sm mt-1 hidden xl:block">
-                    {section.description}
-                  </p>
+      <div className={cn(hideControls ? '' : 'grid grid-cols-1 lg:grid-cols-[296px_1fr] gap-10', className)}>
+        {/* Section Controls - only show if not hidden */}
+        {!hideControls && (
+          <div className={cn('flex flex-col gap-2', controlsClassName)}>
+            {sections.map((section) => (
+              <button
+                key={section.id}
+                onClick={() => handleSectionClick(section.id)}
+                disabled={!showIframe || isNavigating}
+                className={cn(
+                  'bg-ods-card border rounded-md p-6 flex gap-2 items-start',
+                  'shadow-ods-card transition-all duration-200',
+                  'hover:bg-ods-card-hover cursor-pointer text-left',
+                  'min-h-[96px]',
+                  'disabled:opacity-50 disabled:cursor-not-allowed',
+                  activeSection === section.id
+                    ? cn('border-[var(--ods-open-yellow-base)]', activeControlClassName)
+                    : 'border-ods-border'
                 )}
-              </div>
-            </button>
-          ))}
-        </div>
+              >
+                <span className="font-['DM_Sans'] font-bold text-[var(--ods-open-yellow-base)] text-lg tracking-[-0.36px] leading-[24px] shrink-0">
+                  {section.number}
+                </span>
+                <div className="flex-1">
+                  <p className="font-['DM_Sans'] font-medium text-ods-text-primary text-lg leading-[24px]">
+                    {section.title}
+                  </p>
+                  {section.description && (
+                    <p className="font-['DM_Sans'] text-ods-text-secondary text-sm mt-1 hidden xl:block">
+                      {section.description}
+                    </p>
+                  )}
+                </div>
+              </button>
+            ))}
+          </div>
+        )}
 
         {/* Figma Prototype Container - NO BACKGROUND STYLING */}
         <div 
