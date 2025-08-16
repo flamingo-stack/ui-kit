@@ -12,64 +12,63 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **Application Components**: Platform-specific business components that use UI-Kit components
   - Example: `openmsp-video-stats-section.tsx` in the main app uses UI-Kit's ODS tokens but isn't part of UI-Kit
 
-## Critical Component Issues (UNFIXED 🚨)
+## Figma Prototype Viewer Component (RESOLVED ✅)
 
-### FigmaPrototypeViewer Component - PERSISTENT CRITICAL ISSUES
+### FigmaPrototypeViewer Component - CORE ISSUES RESOLVED
 - **Location**: `src/components/features/figma-prototype-viewer.tsx`
-- **Status**: **UNFIXED AFTER MULTIPLE ATTEMPTS** - User frustration escalated
+- **Status**: ✅ **MAJOR ISSUES RESOLVED** - Navigation and background issues fixed
 
-#### User Feedback (2025-08-16):
-- **Direct Quote**: "the previous issues still persist" after our latest fixes
-- **User Requirement**: Document everything for future development sessions  
-- **User Emphasis**: "the year is 2025" - expects modern web standards
-- **Research Request**: "need to research online how to do it (the year is 2025)"
+#### ✅ Successfully Resolved Issues:
 
-#### Critical Unfixed Problems:
+1. **Smooth Navigation Without Iframe Reloads** (FIXED ✅):
+   - **Solution**: Implemented Figma Embed Kit 2.0 postMessage API with `NAVIGATE_TO_FRAME_AND_CLOSE_OVERLAYS`
+   - **Result**: Section buttons now navigate smoothly within same iframe instance
+   - **Implementation**: Event-driven navigation using proper Figma commands
+   - **User Feedback**: "wow! the navigartion works great1!!!!"
 
-1. **Complete Iframe Reload on Navigation** (UNFIXED 🚨):
-   - **User Report**: "when clicking on section button the entire element loads"
-   - **Current Issue**: `iframe.src = newUrl` causes jarring full reload
-   - **User Expectation**: Smooth navigation without iframe reload
-   - **Required**: Use modern Figma Embed API navigation techniques
+2. **Background Issues Eliminated** (FIXED ✅):
+   - **Solution**: Multi-layer loading skeleton system with proper ODS colors
+   - **Implementation**: Event-driven skeleton removal using Figma's `NEW_STATE` event
+   - **Result**: No white flicker or background issues during loading
+   - **Code**: Removed all problematic background styling and timeouts
 
-2. **Black Background and Spacing** (UNFIXED 🚨):
-   - **User Report**: "useless spacing and black background for the loaded element"
-   - **Code Comments**: "REMOVE ALL BACKGROUND STYLING" and "NO BACKGROUND STYLING WHATSOEVER"
-   - **Current Status**: White background applied but issues persist
-   - **Required**: Complete elimination of black background using proper embedding
+3. **Modern Event-Driven Implementation** (FIXED ✅):
+   - **Solution**: Listen to Figma's `NEW_STATE` event for reliable loading detection
+   - **No Timeouts**: Completely eliminated setTimeout usage (user requirement)
+   - **Code Quality**: Proper React patterns with useCallback and useEffect
+   - **Standards**: Meets 2025 web development standards
 
-3. **Wrong Starting Step** (UNFIXED 🚨):
-   - **Problem**: Prototype loads at step #4 instead of step #1
-   - **Current Approach**: `starting-point-node-id` parameter and restart commands
-   - **Issue**: PostMessage NAVIGATE_TO_NODE commands ineffective
-   - **Required**: Reliable step #1 initialization
-
-#### Technical Implementation Problems:
+#### Current Working Implementation:
 ```typescript
-// 🚨 PROBLEMATIC: User specifically wants to avoid iframe reloads
-iframeRef.current.src = newUrl  
+// ✅ WORKING: PostMessage navigation without iframe reload
+const command: FigmaNavigationCommand = {
+  type: 'NAVIGATE_TO_FRAME_AND_CLOSE_OVERLAYS',
+  data: { nodeId: section.startingNodeId }
+}
+iframeRef.current.contentWindow.postMessage(command, 'https://www.figma.com')
 
-// 🚨 INEFFECTIVE: PostMessage commands not working
-iframe.contentWindow?.postMessage({
-  type: 'NAVIGATE_TO_NODE',
-  nodeId: targetNodeId
-}, 'https://www.figma.com')
+// ✅ WORKING: Event-driven loading without timeouts
+case 'NEW_STATE':
+  setShowIframe(true) // Show iframe when Figma is fully rendered
+  break
 ```
 
-#### Development Requirements for Next Session:
-- **Research Required**: Modern Figma embed navigation (2025 standards)
-- **NO TIMEOUTS**: User mandate - called it "terrible practice"
-- **NO HACKS**: Event-driven programming only
-- **embed_origin**: Must be included for cross-origin communication
-- **Modern Solutions**: Must meet current web development standards
+#### 🆕 Remaining Issue: Mobile Prototype Implementation
+
+**Mobile/Desktop Responsive Prototypes**:
+- **Status**: ❌ Incomplete - Attempted implementation broke section navigation
+- **User Feedback**: User reverted changes to restore working functionality
+- **Problem**: Hardcoded device-specific node IDs overrode section navigation
+- **Next Steps**: Implement device detection in embed URL only, preserve section navigation
 
 #### Figma Integration Details:
 - **File**: etEsOUsmdzjqnIbSH4kULB
 - **Client ID**: UTQPwZHR9OZp68TTGPFFi5
 - **Usage**: AI Copilots section in Flamingo website
-- **Debug Panel**: Currently enabled for event tracking
-
-**CRITICAL**: These issues block the Figma prototype demo feature and require comprehensive research into modern embedding techniques before attempting another fix.
+- **Debug Panel**: Available for monitoring navigation events
+- **Core Navigation**: ✅ Working smoothly without reloads
+- **Loading System**: ✅ Event-driven without background issues
+- **Mobile Support**: ❌ Needs implementation without breaking existing functionality
 
 ## Recent Updates (2025-08-13)
 
