@@ -45,10 +45,12 @@ interface FigmaEvent {
   }
 }
 
-// Figma Navigation Commands
+// Figma Embed Kit 2.0 Navigation Commands
 interface FigmaNavigationCommand {
-  type: 'navigate'
-  destination: string
+  type: 'NAVIGATE_TO_FRAME_AND_CLOSE_OVERLAYS'
+  data: {
+    nodeId: string
+  }
 }
 
 export const FigmaPrototypeViewer: React.FC<FigmaPrototypeViewerProps> = ({ config }) => {
@@ -106,10 +108,10 @@ export const FigmaPrototypeViewer: React.FC<FigmaPrototypeViewerProps> = ({ conf
     return `https://embed.figma.com/proto/${fileKey}?${params.toString()}`
   }, [fileKey, clientId, sections])
 
-  // Navigate by updating iframe URL to target node
+  // Navigate using Figma Embed Kit 2.0 postMessage API (no iframe reload)
   const navigateToSection = useCallback((sectionId: string) => {
     const section = sections.find(s => s.id === sectionId)
-    if (!section || !iframeRef.current) return
+    if (!section || !iframeRef.current?.contentWindow || !isInitialized) return
 
     if (showDebugPanel) {
       console.log('[Navigate] To section:', sectionId, 'node:', section.startingNodeId)
@@ -119,36 +121,28 @@ export const FigmaPrototypeViewer: React.FC<FigmaPrototypeViewerProps> = ({ conf
     setActiveSection(sectionId)
     onSectionChange?.(sectionId)
 
-    // Build new URL with target node
-    const params = new URLSearchParams({
-      'node-id': section.startingNodeId.replace(':', '-'),
-      'embed-host': 'flamingo',
-      'embed_origin': typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3000',
-      'client-id': clientId,
-      'hide-ui': '1',
-      'hotspot-hints': '0',
-      'scaling': 'scale-down-width',
-      'starting-point-node-id': section.startingNodeId.replace(':', '-'),
-      'mode': 'design',
-      'enable-prototype-interactions': '1'
-    })
+    // Use Figma Embed Kit 2.0 postMessage API for smooth navigation
+    const command: FigmaNavigationCommand = {
+      type: 'NAVIGATE_TO_FRAME_AND_CLOSE_OVERLAYS',
+      data: {
+        nodeId: section.startingNodeId
+      }
+    }
     
-    const newUrl = `https://embed.figma.com/proto/${fileKey}?${params.toString()}`
-    
-    // Update iframe src to navigate to target node
-    iframeRef.current.src = newUrl
+    // Send navigation command to Figma iframe
+    iframeRef.current.contentWindow.postMessage(command, 'https://www.figma.com')
     
     if (showDebugPanel) {
       setEventHistory(prev => [...prev.slice(-9), {
         time: Date.now(),
-        type: 'URL_NAVIGATE',
-        data: { sectionId, nodeId: section.startingNodeId, url: newUrl }
+        type: 'POSTMESSAGE_NAVIGATE',
+        data: { sectionId, nodeId: section.startingNodeId, command }
       }])
     }
 
-    // Clear navigation flag when iframe loads
+    // Clear navigation flag immediately (no iframe reload)
     setIsNavigating(false)
-  }, [sections, onSectionChange, showDebugPanel, fileKey, clientId])
+  }, [sections, onSectionChange, showDebugPanel, isInitialized])
 
   // Handle section button click
   const handleSectionClick = useCallback((sectionId: string) => {
@@ -300,9 +294,9 @@ export const FigmaPrototypeViewer: React.FC<FigmaPrototypeViewerProps> = ({ conf
           ))}
         </div>
 
-        {/* Figma Prototype - REMOVE ALL BACKGROUND STYLING */}
+        {/* Figma Prototype Container - NO BACKGROUND STYLING */}
         <div 
-          className={cn('relative w-full overflow-hidden', iframeClassName)}
+          className={cn('relative w-full', iframeClassName)}
           style={{ height }}
         >
           {/* Loading overlay */}
@@ -323,7 +317,10 @@ export const FigmaPrototypeViewer: React.FC<FigmaPrototypeViewerProps> = ({ conf
               ref={iframeRef}
               src={embedUrl}
               className="w-full h-full border-0"
-              style={{ minHeight: height }}
+              style={{ 
+                minHeight: height,
+                background: 'transparent'
+              }}
               allowFullScreen
               title={config.title}
               loading="lazy"
@@ -400,9 +397,9 @@ export const FigmaPrototypeViewer: React.FC<FigmaPrototypeViewerProps> = ({ conf
                     event.type === 'INITIAL_LOAD' && "text-green-400",
                     event.type === 'PRESENTED_NODE_CHANGED' && "text-blue-400",
                     event.type === 'NEW_STATE' && "text-purple-400",
-                    event.type === 'URL_NAVIGATE' && "text-cyan-400",
+                    event.type === 'POSTMESSAGE_NAVIGATE' && "text-cyan-400",
                     event.type === 'COMMAND' && "text-orange-400",
-                    !['INITIAL_LOAD', 'PRESENTED_NODE_CHANGED', 'NEW_STATE', 'URL_NAVIGATE', 'COMMAND'].includes(event.type) && "text-gray-400"
+                    !['INITIAL_LOAD', 'PRESENTED_NODE_CHANGED', 'NEW_STATE', 'POSTMESSAGE_NAVIGATE', 'COMMAND'].includes(event.type) && "text-gray-400"
                   )}>
                     {event.type}
                   </span>
