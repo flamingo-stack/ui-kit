@@ -356,14 +356,9 @@ export const FigmaPrototypeViewer: React.FC<FigmaPrototypeViewerProps> = ({ conf
           className={cn('relative w-full overflow-hidden rounded-lg border border-ods-border', iframeClassName)}
           style={{ height }}
         >
-          {/* Layer 2: Full colored background (ODS colors) */}
+          {/* Loading skeleton with pulse animation */}
           {!showIframe && (
-            <div className="absolute inset-0 w-full h-full bg-ods-bg z-10" />
-          )}
-
-          {/* Layer 1: Loading skeleton with border (ODS colors, highest z-index) */}
-          {!showIframe && (
-            <div className="absolute inset-0 w-full h-full border-2 border-ods-border rounded-lg bg-ods-bg-secondary animate-pulse z-20" />
+            <div className="absolute inset-0 w-full h-full bg-ods-skeleton animate-pulse rounded-lg" />
           )}
 
           {/* Figma iframe - Always render but visually hide until ready */}
