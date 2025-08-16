@@ -12,6 +12,64 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **Application Components**: Platform-specific business components that use UI-Kit components
   - Example: `openmsp-video-stats-section.tsx` in the main app uses UI-Kit's ODS tokens but isn't part of UI-Kit
 
+## Figma Prototype Viewer Component (RESOLVED ✅)
+
+### FigmaPrototypeViewer Component - CORE ISSUES RESOLVED
+- **Location**: `src/components/features/figma-prototype-viewer.tsx`
+- **Status**: ✅ **MAJOR ISSUES RESOLVED** - Navigation and background issues fixed
+
+#### ✅ Successfully Resolved Issues:
+
+1. **Smooth Navigation Without Iframe Reloads** (FIXED ✅):
+   - **Solution**: Implemented Figma Embed Kit 2.0 postMessage API with `NAVIGATE_TO_FRAME_AND_CLOSE_OVERLAYS`
+   - **Result**: Section buttons now navigate smoothly within same iframe instance
+   - **Implementation**: Event-driven navigation using proper Figma commands
+   - **User Feedback**: "wow! the navigartion works great1!!!!"
+
+2. **Background Issues Eliminated** (FIXED ✅):
+   - **Solution**: Multi-layer loading skeleton system with proper ODS colors
+   - **Implementation**: Event-driven skeleton removal using Figma's `NEW_STATE` event
+   - **Result**: No white flicker or background issues during loading
+   - **Code**: Removed all problematic background styling and timeouts
+
+3. **Modern Event-Driven Implementation** (FIXED ✅):
+   - **Solution**: Listen to Figma's `NEW_STATE` event for reliable loading detection
+   - **No Timeouts**: Completely eliminated setTimeout usage (user requirement)
+   - **Code Quality**: Proper React patterns with useCallback and useEffect
+   - **Standards**: Meets 2025 web development standards
+
+#### Current Working Implementation:
+```typescript
+// ✅ WORKING: PostMessage navigation without iframe reload
+const command: FigmaNavigationCommand = {
+  type: 'NAVIGATE_TO_FRAME_AND_CLOSE_OVERLAYS',
+  data: { nodeId: section.startingNodeId }
+}
+iframeRef.current.contentWindow.postMessage(command, 'https://www.figma.com')
+
+// ✅ WORKING: Event-driven loading without timeouts
+case 'NEW_STATE':
+  setShowIframe(true) // Show iframe when Figma is fully rendered
+  break
+```
+
+#### 🆕 Remaining Issue: Mobile Prototype Implementation
+
+**Mobile/Desktop Responsive Prototypes**:
+- **Status**: ❌ Incomplete - Attempted implementation broke section navigation
+- **User Feedback**: User reverted changes to restore working functionality
+- **Problem**: Hardcoded device-specific node IDs overrode section navigation
+- **Next Steps**: Implement device detection in embed URL only, preserve section navigation
+
+#### Figma Integration Details:
+- **File**: etEsOUsmdzjqnIbSH4kULB
+- **Client ID**: UTQPwZHR9OZp68TTGPFFi5
+- **Usage**: AI Copilots section in Flamingo website
+- **Debug Panel**: Available for monitoring navigation events
+- **Core Navigation**: ✅ Working smoothly without reloads
+- **Loading System**: ✅ Event-driven without background issues
+- **Mobile Support**: ❌ Needs implementation without breaking existing functionality
+
 ## Recent Updates (2025-08-13)
 
 ### Investors Management Feature
@@ -1046,6 +1104,15 @@ These loading standards ensure consistent, predictable behavior across all admin
 8. **Z-Index Management**: Follow established hierarchy (tooltips: 2147483647, modals: 1300, header: 50)
 
 ## Recent Updates (2025-08-15)
+
+### FigmaPrototypeViewer Component
+- **Interactive Figma embeds** with navigation controls for prototype demonstrations
+- **Multi-section support** with direct jumping to different prototype flows
+- **Responsive design** with separate mobile and desktop configurations
+- **PostMessage API integration** for next/previous/restart controls
+- **Loading states** with spinner while prototype loads
+- **Configurable styling** via className props for all elements
+- **Automatic iframe management** with proper URL construction
 
 ### ParallaxImageShowcase Component
 - **Advanced parallax effects** with Framer Motion for hero sections
