@@ -9,6 +9,7 @@ export interface FigmaPrototypeSection {
   title: string
   description?: string
   startingNodeId: string
+  mobileStartingNodeId?: string  // Optional mobile-specific node ID
 }
 
 export interface FigmaPrototypeViewerConfig {
@@ -23,6 +24,8 @@ export interface FigmaPrototypeViewerConfig {
   height?: string
   onSectionChange?: (sectionId: string) => void
   showDebugPanel?: boolean
+  mobileStartingPoint?: string  // Optional mobile-specific starting point for embed URL
+  desktopStartingPoint?: string // Optional desktop-specific starting point for embed URL
 }
 
 interface FigmaPrototypeViewerProps {
@@ -64,8 +67,24 @@ export const FigmaPrototypeViewer: React.FC<FigmaPrototypeViewerProps> = ({ conf
     defaultSectionId,
     height = '800px',
     onSectionChange,
-    showDebugPanel = false
+    showDebugPanel = false,
+    mobileStartingPoint,
+    desktopStartingPoint
   } = config
+
+  // Detect if we're on mobile
+  const [isMobile, setIsMobile] = useState(false)
+  
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768)
+    }
+    
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
 
   // State
   const [activeSection, setActiveSection] = useState<string>(sections[0]?.id || '')
@@ -93,15 +112,26 @@ export const FigmaPrototypeViewer: React.FC<FigmaPrototypeViewerProps> = ({ conf
     const firstSection = sections[0]
     if (!firstSection) return ''
     
+    // Use device-specific starting point if provided
+    let startingNodeId = firstSection.startingNodeId
+    
+    if (isMobile) {
+      // Use mobile starting point if provided, or mobile node ID from first section
+      startingNodeId = mobileStartingPoint || firstSection.mobileStartingNodeId || firstSection.startingNodeId
+    } else {
+      // Use desktop starting point if provided
+      startingNodeId = desktopStartingPoint || firstSection.startingNodeId
+    }
+    
     const params = new URLSearchParams({
-      'node-id': firstSection.startingNodeId.replace(':', '-'),
+      'node-id': startingNodeId.replace(':', '-'),
       'embed-host': 'flamingo',
       'embed_origin': typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3000',
       'client-id': clientId,
       'hide-ui': '1',
       'hotspot-hints': '0',
       'scaling': 'scale-down-width',
-      'starting-point-node-id': firstSection.startingNodeId.replace(':', '-'),
+      'starting-point-node-id': startingNodeId.replace(':', '-'),
       'mode': 'prototype',
       'enable-prototype-interactions': '1',
       'chrome': 'DOCUMENTATION',
@@ -109,15 +139,18 @@ export const FigmaPrototypeViewer: React.FC<FigmaPrototypeViewerProps> = ({ conf
     })
     
     return `https://embed.figma.com/proto/${fileKey}?${params.toString()}`
-  }, [fileKey, clientId, sections])
+  }, [fileKey, clientId, sections, isMobile, mobileStartingPoint, desktopStartingPoint])
 
   // Navigate using Figma Embed Kit 2.0 postMessage API (no iframe reload)
   const navigateToSection = useCallback((sectionId: string) => {
     const section = sections.find(s => s.id === sectionId)
     if (!section || !iframeRef.current?.contentWindow || !isInitialized) return
 
+    // Use mobile node ID if on mobile and available, otherwise use desktop node ID
+    const nodeId = isMobile && section.mobileStartingNodeId ? section.mobileStartingNodeId : section.startingNodeId
+
     if (showDebugPanel) {
-      console.log('[Navigate] To section:', sectionId, 'node:', section.startingNodeId)
+      console.log('[Navigate] To section:', sectionId, 'node:', nodeId, 'mobile:', isMobile)
     }
 
     setIsNavigating(true)
@@ -128,7 +161,7 @@ export const FigmaPrototypeViewer: React.FC<FigmaPrototypeViewerProps> = ({ conf
     const command: FigmaNavigationCommand = {
       type: 'NAVIGATE_TO_FRAME_AND_CLOSE_OVERLAYS',
       data: {
-        nodeId: section.startingNodeId
+        nodeId: nodeId
       }
     }
     
@@ -139,19 +172,30 @@ export const FigmaPrototypeViewer: React.FC<FigmaPrototypeViewerProps> = ({ conf
       setEventHistory(prev => [...prev.slice(-9), {
         time: Date.now(),
         type: 'POSTMESSAGE_NAVIGATE',
-        data: { sectionId, nodeId: section.startingNodeId, command }
+        data: { sectionId, nodeId, command, mobile: isMobile }
       }])
     }
 
     // Clear navigation flag immediately (no iframe reload)
     setIsNavigating(false)
-  }, [sections, onSectionChange, showDebugPanel, isInitialized])
+  }, [sections, onSectionChange, showDebugPanel, isInitialized, isMobile])
 
   // Handle section button click
   const handleSectionClick = useCallback((sectionId: string) => {
     if (sectionId === activeSection || isNavigating) return
     navigateToSection(sectionId)
-  }, [activeSection, isNavigating, navigateToSection])
+    
+    // On mobile, scroll to the Figma viewer when manually clicking sections
+    if (isMobile && iframeRef.current) {
+      // Small delay to ensure navigation starts before scrolling
+      setTimeout(() => {
+        iframeRef.current?.scrollIntoView({ 
+          behavior: 'smooth', 
+          block: 'start'
+        })
+      }, 100)
+    }
+  }, [activeSection, isNavigating, navigateToSection, isMobile])
 
   // Handle Figma events
   useEffect(() => {
@@ -204,13 +248,19 @@ export const FigmaPrototypeViewer: React.FC<FigmaPrototypeViewerProps> = ({ conf
               // Auto-sync sections if not manually navigating
               if (!isNavigating) {
                 const matchingSection = sections.find(s => {
-                  const normalized = s.startingNodeId.replace(':', '-')
-                  return normalized === nodeId || s.startingNodeId === nodeId
+                  // Check both desktop and mobile node IDs
+                  const desktopNormalized = s.startingNodeId.replace(':', '-')
+                  const mobileNormalized = s.mobileStartingNodeId?.replace(':', '-')
+                  
+                  return desktopNormalized === nodeId || 
+                         s.startingNodeId === nodeId ||
+                         mobileNormalized === nodeId ||
+                         s.mobileStartingNodeId === nodeId
                 })
                 
                 if (matchingSection && matchingSection.id !== activeSection) {
                   if (showDebugPanel) {
-                    console.log('[Auto-sync] Section:', matchingSection.id)
+                    console.log('[Auto-sync] Section:', matchingSection.id, 'from node:', nodeId)
                   }
                   setActiveSection(matchingSection.id)
                   onSectionChange?.(matchingSection.id)
@@ -346,6 +396,18 @@ export const FigmaPrototypeViewer: React.FC<FigmaPrototypeViewerProps> = ({ conf
           <h3 className="font-semibold text-ods-text-primary mb-3">
             🔍 Debug Panel
           </h3>
+          
+          {/* Device Mode */}
+          <div className="mb-3 p-2 bg-ods-bg rounded text-sm">
+            <span className="text-ods-text-secondary">Device Mode:</span>{' '}
+            <span className={isMobile ? "text-blue-500 font-semibold" : "text-green-500 font-semibold"}>
+              {isMobile ? '📱 Mobile' : '🖥️ Desktop'}
+            </span>
+            {' '}
+            <span className="text-ods-text-secondary text-xs">
+              (viewport: {typeof window !== 'undefined' ? window.innerWidth : 0}px)
+            </span>
+          </div>
           
           {/* Status */}
           <div className="mb-3 grid grid-cols-4 gap-4 text-sm">
