@@ -101,8 +101,10 @@ export const FigmaPrototypeViewer: React.FC<FigmaPrototypeViewerProps> = ({ conf
       'hotspot-hints': '0',
       'scaling': 'scale-down-width',
       'starting-point-node-id': firstSection.startingNodeId.replace(':', '-'),
-      'mode': 'design',
-      'enable-prototype-interactions': '1'
+      'mode': 'prototype',
+      'enable-prototype-interactions': '1',
+      'chrome': 'DOCUMENTATION',
+      'view_only': '1'
     })
     
     return `https://embed.figma.com/proto/${fileKey}?${params.toString()}`
@@ -296,7 +298,7 @@ export const FigmaPrototypeViewer: React.FC<FigmaPrototypeViewerProps> = ({ conf
 
         {/* Figma Prototype Container - NO BACKGROUND STYLING */}
         <div 
-          className={cn('relative w-full', iframeClassName)}
+          className={cn('relative w-full overflow-hidden rounded-lg', iframeClassName)}
           style={{ height }}
         >
           {/* Loading overlay */}
