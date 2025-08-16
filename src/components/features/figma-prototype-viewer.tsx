@@ -11,10 +11,21 @@ export interface FigmaPrototypeSection {
   startingNodeId: string
 }
 
+export interface FigmaDeviceConfig {
+  prototypeNodeId: string  // The node-id parameter in iframe URL
+  startingNodeId: string   // The starting-point-node-id parameter
+  sections: FigmaPrototypeSection[]
+  height?: string
+}
+
 export interface FigmaPrototypeViewerConfig {
   fileKey: string
   title: string
-  sections: FigmaPrototypeSection[]
+  // Single device mode (backward compatibility)
+  sections?: FigmaPrototypeSection[]
+  // Multi-device mode
+  desktopConfig?: FigmaDeviceConfig
+  mobileConfig?: FigmaDeviceConfig
   className?: string
   iframeClassName?: string
   controlsClassName?: string
@@ -56,16 +67,37 @@ interface FigmaNavigationCommand {
 export const FigmaPrototypeViewer: React.FC<FigmaPrototypeViewerProps> = ({ config }) => {
   const {
     fileKey,
-    sections,
     className,
     iframeClassName,
     controlsClassName,
     activeControlClassName,
     defaultSectionId,
-    height = '800px',
     onSectionChange,
     showDebugPanel = false
   } = config
+
+  // Device detection state
+  const [isMobile, setIsMobile] = useState(false)
+
+  // Determine which config to use
+  const deviceConfig = useMemo(() => {
+    // If using multi-device mode
+    if (config.desktopConfig || config.mobileConfig) {
+      const activeConfig = isMobile ? config.mobileConfig : config.desktopConfig
+      // Fallback to opposite device if one is missing
+      return activeConfig || config.desktopConfig || config.mobileConfig
+    }
+    // Backward compatibility: single config mode
+    return {
+      sections: config.sections || [],
+      height: config.height,
+      prototypeNodeId: config.sections?.[0]?.startingNodeId,
+      startingNodeId: config.sections?.[0]?.startingNodeId
+    }
+  }, [config, isMobile])
+
+  const sections = deviceConfig?.sections || []
+  const height = deviceConfig?.height || config.height || '800px'
 
   // State
   const [activeSection, setActiveSection] = useState<string>(sections[0]?.id || '')
@@ -85,31 +117,51 @@ export const FigmaPrototypeViewer: React.FC<FigmaPrototypeViewerProps> = ({ conf
     data?: any 
   }>>([])
 
+  // Device detection effect
+  useEffect(() => {
+    const checkDevice = () => {
+      setIsMobile(window.innerWidth < 768)
+    }
+    
+    checkDevice()
+    window.addEventListener('resize', checkDevice)
+    
+    return () => window.removeEventListener('resize', checkDevice)
+  }, [])
+
+  // Reset state when device changes
+  useEffect(() => {
+    if (sections.length > 0) {
+      setActiveSection(sections[0].id)
+      setShowIframe(false)
+      setIsInitialized(false)
+      setIsLoading(true)
+    }
+  }, [isMobile])
+
   // Get client ID from environment
   const clientId = process.env.NEXT_PUBLIC_FIGMA_CLIENT_ID || 'UTQPwZHR9OZp68TTGPFFi5'
 
   // Build embed URL with embed_origin for postMessage communication
   const embedUrl = useMemo(() => {
-    const firstSection = sections[0]
-    if (!firstSection) return ''
+    if (!deviceConfig || sections.length === 0) return ''
+    
+    const prototypeNodeId = deviceConfig.prototypeNodeId || sections[0].startingNodeId
+    const startingNodeId = deviceConfig.startingNodeId || sections[0].startingNodeId
     
     const params = new URLSearchParams({
-      'node-id': firstSection.startingNodeId.replace(':', '-'),
-      'embed-host': 'flamingo',
-      'embed_origin': typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3000',
-      'client-id': clientId,
-      'hide-ui': '1',
-      'hotspot-hints': '0',
-      'scaling': 'scale-down-width',
-      'starting-point-node-id': firstSection.startingNodeId.replace(':', '-'),
-      'mode': 'prototype',
-      'enable-prototype-interactions': '1',
-      'chrome': 'DOCUMENTATION',
-      'allow-fullscreen': '1'
+      'node-id': prototypeNodeId.replace(':', '-'),
+      'p': 'f',
+      'm': 'dev',
+      'scaling': 'min-zoom',
+      'content-scaling': 'fixed',
+      'starting-point-node-id': startingNodeId.replace(':', '%3A'),
+      'show-proto-sidebar': '1',
+      'embed-host': 'share'
     })
     
     return `https://embed.figma.com/proto/${fileKey}?${params.toString()}`
-  }, [fileKey, clientId, sections])
+  }, [fileKey, deviceConfig, sections])
 
   // Navigate using Figma Embed Kit 2.0 postMessage API (no iframe reload)
   const navigateToSection = useCallback((sectionId: string) => {
