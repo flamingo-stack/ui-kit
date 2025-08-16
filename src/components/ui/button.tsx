@@ -49,6 +49,9 @@ const buttonVariants = cva(
         // Filter variant - for category/filter buttons in sidebars
         "filter": "w-full justify-start text-[16px] py-3 px-2 font-medium font-['DM_Sans'] rounded-lg h-12 transition-all duration-150 leading-[1.33em] bg-ods-card border border-ods-border hover:bg-[#2A2A2A] text-ods-text-primary text-left",
         "filter-active": "w-full justify-start text-[16px] py-3 px-2 font-medium font-['DM_Sans'] rounded-lg h-12 transition-all duration-150 leading-[1.33em] bg-ods-border border border-ods-border text-ods-text-primary text-left relative",
+        // Section selector variant - for feature/section selection buttons
+        "section": "bg-ods-card border border-ods-border shadow-ods-card !text-left !justify-start transition-all duration-200 hover:bg-ods-card-hover disabled:opacity-50 disabled:cursor-not-allowed",
+        "section-active": "bg-ods-card border border-[var(--ods-open-yellow-base)] shadow-ods-card !text-left !justify-start transition-all duration-200 hover:bg-ods-card-hover disabled:opacity-50 disabled:cursor-not-allowed",
       },
       size: {
         // Small size for secondary actions
@@ -68,6 +71,10 @@ const buttonVariants = cva(
         searchDesktop: "min-h-[52px] px-4 py-3 text-lg",
         // No size - used for footer links
         none: "",
+        // Section size - custom padding for section selector buttons
+        section: "p-6 min-h-[96px]",
+        // Section wrap size - for wrapped layout
+        sectionWrap: "pl-4 pr-4 lg:pr-10 py-4 h-[76px]",
       },
     },
     defaultVariants: {

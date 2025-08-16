@@ -2,6 +2,7 @@
 
 import React from 'react'
 import { cn } from '../../utils/cn'
+import { Button } from '../ui/button'
 
 export interface SectionItem {
   id: string
@@ -49,38 +50,33 @@ const SectionButton: React.FC<{
   minHeight = layout === 'vertical' ? '96px' : '76px',
   showDescription = true
 }) => {
-  const baseButtonClasses = cn(
-    'bg-ods-card border rounded-md shadow-ods-card',
-    'transition-all duration-200 cursor-pointer text-left',
-    'hover:bg-ods-card-hover',
-    'disabled:opacity-50 disabled:cursor-not-allowed',
-    widthClasses,
-    isActive
-      ? cn('border-[var(--ods-open-yellow-base)]', activeButtonClassName)
-      : 'border-ods-border',
-    buttonClassName
-  )
-
   const titleClasses = "font-['DM_Sans'] text-ods-text-primary"
   const subtitleClasses = "font-['DM_Sans'] text-ods-text-secondary"
   const numberClasses = "font-['DM_Sans'] font-bold text-[var(--ods-open-yellow-base)]"
 
   return (
-    <button
+    <Button
       onClick={onClick}
       disabled={disabled}
-      className={baseButtonClasses}
+      variant={isActive ? "section-active" : "section"}
+      size={layout === 'vertical' ? "section" : "sectionWrap"}
+      className={cn(
+        widthClasses,
+        buttonClassName,
+        isActive && activeButtonClassName,
+        layout === 'vertical' ? '' : 'overflow-hidden'
+      )}
       style={{ minHeight }}
     >
       {layout === 'vertical' ? (
         // Vertical layout with optional number prefix
-        <div className="p-6 flex gap-2 items-start">
+        <div className="flex gap-2 items-start w-full">
           {section.number && (
             <span className={cn(numberClasses, 'text-lg tracking-[-0.36px] leading-[24px] shrink-0')}>
               {section.number}
             </span>
           )}
-          <div className="flex-1">
+          <div className="flex-1 text-left">
             <p className={cn(titleClasses, 'font-medium text-lg leading-[24px]')}>
               {section.title}
             </p>
@@ -93,18 +89,18 @@ const SectionButton: React.FC<{
         </div>
       ) : (
         // Wrap layout with title and subtitle
-        <div className="pl-4 pr-4 lg:pr-10 py-4 flex flex-col items-start justify-start h-full overflow-hidden">
-          <div className={cn(titleClasses, 'font-bold text-[18px] leading-[24px] tracking-[-0.36px] truncate lg:whitespace-nowrap')}>
+        <div className="flex flex-col items-start justify-start w-full h-full overflow-hidden text-left">
+          <div className={cn(titleClasses, 'font-bold text-[18px] leading-[24px] tracking-[-0.36px] truncate lg:whitespace-nowrap text-left')}>
             {section.title}
           </div>
           {section.subtitle && (
-            <div className={cn(subtitleClasses, 'font-medium text-[14px] leading-[20px] truncate lg:whitespace-nowrap')}>
+            <div className={cn(subtitleClasses, 'font-medium text-[14px] leading-[20px] truncate lg:whitespace-nowrap text-left')}>
               {section.subtitle}
             </div>
           )}
         </div>
       )}
-    </button>
+    </Button>
   )
 }
 
@@ -122,7 +118,7 @@ export const SectionSelector: React.FC<SectionSelectorProps> = ({
   showDescription = true
 }) => {
   const containerClasses = cn(
-    layout === 'wrap' ? 'flex flex-wrap gap-6' : 'flex flex-col gap-2',
+    layout === 'wrap' ? 'flex flex-wrap gap-2 sm:gap-4 lg:gap-6' : 'flex flex-col gap-2',
     className
   )
 
@@ -131,7 +127,7 @@ export const SectionSelector: React.FC<SectionSelectorProps> = ({
       case 'full':
         return 'w-full'
       case 'responsive':
-        return 'w-full sm:w-[calc(50%-12px)] lg:w-auto'
+        return 'w-full sm:w-[calc(50%-8px)] lg:w-auto'
       default:
         return ''
     }
