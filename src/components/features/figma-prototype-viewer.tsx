@@ -184,7 +184,18 @@ export const FigmaPrototypeViewer: React.FC<FigmaPrototypeViewerProps> = ({ conf
   const handleSectionClick = useCallback((sectionId: string) => {
     if (sectionId === activeSection || isNavigating) return
     navigateToSection(sectionId)
-  }, [activeSection, isNavigating, navigateToSection])
+    
+    // On mobile, scroll to the Figma viewer when manually clicking sections
+    if (isMobile && iframeRef.current) {
+      // Small delay to ensure navigation starts before scrolling
+      setTimeout(() => {
+        iframeRef.current?.scrollIntoView({ 
+          behavior: 'smooth', 
+          block: 'start'
+        })
+      }, 100)
+    }
+  }, [activeSection, isNavigating, navigateToSection, isMobile])
 
   // Handle Figma events
   useEffect(() => {
