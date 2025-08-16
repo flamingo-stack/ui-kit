@@ -73,6 +73,7 @@ export const FigmaPrototypeViewer: React.FC<FigmaPrototypeViewerProps> = ({ conf
   const [isNavigating, setIsNavigating] = useState(false)
   const [currentNodeId, setCurrentNodeId] = useState<string | null>(null)
   const [isInitialized, setIsInitialized] = useState(false)
+  const [showIframe, setShowIframe] = useState(false)
   
   // Refs
   const iframeRef = useRef<HTMLIFrameElement>(null)
@@ -182,6 +183,10 @@ export const FigmaPrototypeViewer: React.FC<FigmaPrototypeViewerProps> = ({ conf
           case 'INITIAL_LOAD':
             setIsLoading(false)
             setIsInitialized(true)
+            // 50ms delay before hiding skeleton to prevent white flicker
+            setTimeout(() => {
+              setShowSkeleton(false)
+            }, 50)
             if (showDebugPanel) {
               console.log('[Initial Load] Prototype ready for navigation')
             }
@@ -298,22 +303,10 @@ export const FigmaPrototypeViewer: React.FC<FigmaPrototypeViewerProps> = ({ conf
 
         {/* Figma Prototype Container - NO BACKGROUND STYLING */}
         <div 
-          className={cn('relative w-full overflow-hidden rounded-lg bg-white', iframeClassName)}
+          className={cn('relative w-full overflow-hidden rounded-lg', iframeClassName)}
           style={{ height }}
         >
-          {/* Loading overlay */}
-          {(isLoading || isNavigating) && (
-            <div className="absolute inset-0 flex items-center justify-center z-10 bg-ods-bg/80 backdrop-blur-sm">
-              <div className="flex flex-col items-center gap-3 p-6 bg-ods-card rounded-lg shadow-lg border border-ods-border">
-                <div className="w-8 h-8 border-2 border-ods-accent border-t-transparent rounded-full animate-spin" />
-                <span className="text-ods-text-secondary text-sm font-medium">
-                  {isNavigating ? 'Navigating...' : 'Loading prototype...'}
-                </span>
-              </div>
-            </div>
-          )}
-
-          {/* Figma iframe - High quality display */}
+          {/* Figma iframe - Hidden behind background during loading */}
           {embedUrl && (
             <iframe
               ref={iframeRef}
@@ -325,12 +318,37 @@ export const FigmaPrototypeViewer: React.FC<FigmaPrototypeViewerProps> = ({ conf
                 height: 'calc(100% + 40px)',
                 marginLeft: '-20px',
                 marginTop: '-20px',
-                background: 'transparent'
+                background: 'transparent',
+                zIndex: showSkeleton ? -1 : 10
               }}
               allowFullScreen
               title={config.title}
               loading="lazy"
             />
+          )}
+
+          {/* Blocking layer to hide Figma white background */}
+          {showSkeleton && (
+            <div 
+              className="absolute z-10" 
+              style={{ 
+                top: '-50px',
+                left: '-50px', 
+                right: '-50px',
+                bottom: '-50px',
+                backgroundColor: 'rgb(33, 33, 33)',
+                width: 'calc(100% + 100px)',
+                height: 'calc(100% + 100px)'
+              }} 
+            />
+          )}
+
+          {/* Full coverage loading skeleton - ONE BIG SKELETON */}
+          {showSkeleton && (
+            <div className="absolute inset-0 z-50" style={{ width: '100%', height: '100%', background: 'transparent' }}>
+              {/* Single big skeleton block with proper animation */}
+              <div className="w-full h-full bg-gray-300 rounded-lg animate-pulse" />
+            </div>
           )}
         </div>
       </div>
