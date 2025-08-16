@@ -25,7 +25,13 @@ This is a **source-only** TypeScript package that provides:
 - 🔗 **Button onClick Fix** - Proper onClick support with href for dropdown menu closing
 - 💰 **Investors System** - Complete CRUD with modal-based admin and Supabase integration
 - 🎬 **ParallaxImageShowcase** - Advanced parallax effects with global mouse tracking and scroll animations
-- 🔧 **FigmaPrototypeViewer** - ISSUES IN PROGRESS: Jumps to step #4, black background persists, reloads on section clicks
+- 🚨 **FigmaPrototypeViewer** - CRITICAL UNFIXED ISSUES:
+  - **USER FRUSTRATED**: "previous issues still persist" after multiple fix attempts
+  - **UNFIXED**: Complete iframe reload on section navigation (jarring UX)
+  - **UNFIXED**: Black background and spacing ("useless spacing and black background")
+  - **UNFIXED**: Prototype starts at step #4 instead of step #1
+  - **USER REQUEST**: Research 2025 modern Figma embed techniques
+  - **USER MANDATE**: NO TIMEOUTS ("terrible practice")
 
 ### Scope Clarification
 

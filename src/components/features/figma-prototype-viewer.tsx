@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState, useRef, useEffect, useCallback } from 'react'
+import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react'
 import { cn } from '../../utils/cn'
 
 export interface FigmaPrototypeSection {
@@ -45,6 +45,12 @@ interface FigmaEvent {
   }
 }
 
+// Figma Navigation Commands
+interface FigmaNavigationCommand {
+  type: 'navigate'
+  destination: string
+}
+
 export const FigmaPrototypeViewer: React.FC<FigmaPrototypeViewerProps> = ({ config }) => {
   const {
     fileKey,
@@ -59,18 +65,15 @@ export const FigmaPrototypeViewer: React.FC<FigmaPrototypeViewerProps> = ({ conf
     showDebugPanel = false
   } = config
 
-  // Initialize state with the first section, not the last
-  const initialSectionId = defaultSectionId || sections[0]?.id || ''
-  const [activeSection, setActiveSection] = useState<string>(initialSectionId)
+  // State
+  const [activeSection, setActiveSection] = useState<string>(sections[0]?.id || '')
   const [isLoading, setIsLoading] = useState(true)
+  const [isNavigating, setIsNavigating] = useState(false)
   const [currentNodeId, setCurrentNodeId] = useState<string | null>(null)
+  const [isInitialized, setIsInitialized] = useState(false)
   
   // Refs
   const iframeRef = useRef<HTMLIFrameElement>(null)
-  const isManualNavigationRef = useRef(false)
-  const hasLoadedOnceRef = useRef(false)
-  const expectedNodeRef = useRef<string | null>(null)
-  const nodeChangeCountRef = useRef(0)
   
   // Debug state
   const [eventHistory, setEventHistory] = useState<Array<{ 
@@ -79,55 +82,79 @@ export const FigmaPrototypeViewer: React.FC<FigmaPrototypeViewerProps> = ({ conf
     data?: any 
   }>>([])
 
-  // Build embed URL
-  const buildEmbedUrl = useCallback((nodeId: string) => {
+  // Get client ID from environment
+  const clientId = process.env.NEXT_PUBLIC_FIGMA_CLIENT_ID || 'UTQPwZHR9OZp68TTGPFFi5'
+
+  // Build embed URL with embed_origin for postMessage communication
+  const embedUrl = useMemo(() => {
+    const firstSection = sections[0]
+    if (!firstSection) return ''
+    
     const params = new URLSearchParams({
-      'node-id': nodeId.replace(':', '-'),
+      'node-id': firstSection.startingNodeId.replace(':', '-'),
       'embed-host': 'flamingo',
-      'client-id': 'UTQPwZHR9OZp68TTGPFFi5',
+      'embed_origin': typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3000',
+      'client-id': clientId,
       'hide-ui': '1',
       'hotspot-hints': '0',
-      'scaling': 'scale-down'
+      'scaling': 'scale-down-width',
+      'starting-point-node-id': firstSection.startingNodeId.replace(':', '-'),
+      'mode': 'design',
+      'enable-prototype-interactions': '1'
     })
     
     return `https://embed.figma.com/proto/${fileKey}?${params.toString()}`
-  }, [fileKey])
+  }, [fileKey, clientId, sections])
 
-  // Store the iframe src separately to prevent reloading
-  const [iframeSrc, setIframeSrc] = useState<string>('')
-  
-  // Initialize iframe src on mount
-  useEffect(() => {
-    const section = sections.find(s => s.id === activeSection)
-    if (section && !iframeSrc) {
-      setIframeSrc(buildEmbedUrl(section.startingNodeId))
+  // Navigate by updating iframe URL to target node
+  const navigateToSection = useCallback((sectionId: string) => {
+    const section = sections.find(s => s.id === sectionId)
+    if (!section || !iframeRef.current) return
+
+    if (showDebugPanel) {
+      console.log('[Navigate] To section:', sectionId, 'node:', section.startingNodeId)
     }
-  }, [activeSection, sections, buildEmbedUrl, iframeSrc])
+
+    setIsNavigating(true)
+    setActiveSection(sectionId)
+    onSectionChange?.(sectionId)
+
+    // Build new URL with target node
+    const params = new URLSearchParams({
+      'node-id': section.startingNodeId.replace(':', '-'),
+      'embed-host': 'flamingo',
+      'embed_origin': typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3000',
+      'client-id': clientId,
+      'hide-ui': '1',
+      'hotspot-hints': '0',
+      'scaling': 'scale-down-width',
+      'starting-point-node-id': section.startingNodeId.replace(':', '-'),
+      'mode': 'design',
+      'enable-prototype-interactions': '1'
+    })
+    
+    const newUrl = `https://embed.figma.com/proto/${fileKey}?${params.toString()}`
+    
+    // Update iframe src to navigate to target node
+    iframeRef.current.src = newUrl
+    
+    if (showDebugPanel) {
+      setEventHistory(prev => [...prev.slice(-9), {
+        time: Date.now(),
+        type: 'URL_NAVIGATE',
+        data: { sectionId, nodeId: section.startingNodeId, url: newUrl }
+      }])
+    }
+
+    // Clear navigation flag when iframe loads
+    setIsNavigating(false)
+  }, [sections, onSectionChange, showDebugPanel, fileKey, clientId])
 
   // Handle section button click
   const handleSectionClick = useCallback((sectionId: string) => {
-    if (sectionId === activeSection) return
-
-    const section = sections.find(s => s.id === sectionId)
-    if (!section) return
-
-    if (showDebugPanel) {
-      console.log('[Manual] Switching to:', sectionId, 'node:', section.startingNodeId)
-    }
-
-    // Set manual navigation flag
-    isManualNavigationRef.current = true
-    nodeChangeCountRef.current = 0
-    expectedNodeRef.current = section.startingNodeId
-    
-    // Update iframe src to navigate to new section
-    setIframeSrc(buildEmbedUrl(section.startingNodeId))
-    
-    // Update state
-    setActiveSection(sectionId)
-    setIsLoading(true)
-    onSectionChange?.(sectionId)
-  }, [sections, activeSection, onSectionChange, showDebugPanel, buildEmbedUrl])
+    if (sectionId === activeSection || isNavigating) return
+    navigateToSection(sectionId)
+  }, [activeSection, isNavigating, navigateToSection])
 
   // Handle Figma events
   useEffect(() => {
@@ -158,16 +185,9 @@ export const FigmaPrototypeViewer: React.FC<FigmaPrototypeViewerProps> = ({ conf
         switch (figmaEvent.type) {
           case 'INITIAL_LOAD':
             setIsLoading(false)
-            hasLoadedOnceRef.current = true
+            setIsInitialized(true)
             if (showDebugPanel) {
-              console.log('[Loaded] Prototype ready, sending restart command')
-            }
-            // Send restart command to ensure we start at the beginning
-            if (iframeRef.current?.contentWindow) {
-              iframeRef.current.contentWindow.postMessage(
-                { type: 'restart' },
-                'https://www.figma.com'
-              )
+              console.log('[Initial Load] Prototype ready for navigation')
             }
             break
 
@@ -176,51 +196,22 @@ export const FigmaPrototypeViewer: React.FC<FigmaPrototypeViewerProps> = ({ conf
               const nodeId = figmaEvent.data.presentedNodeId
               setCurrentNodeId(nodeId)
               
-              // Count node changes
-              nodeChangeCountRef.current++
-              
-              // On first node change after load, check if it's the expected node
-              // If not, it's likely Figma auto-navigating, so ignore it
-              if (nodeChangeCountRef.current === 1 && expectedNodeRef.current) {
-                if (nodeId !== expectedNodeRef.current) {
+              // Auto-sync sections if not manually navigating
+              if (!isNavigating) {
+                const matchingSection = sections.find(s => {
+                  const normalized = s.startingNodeId.replace(':', '-')
+                  return normalized === nodeId || s.startingNodeId === nodeId
+                })
+                
+                if (matchingSection && matchingSection.id !== activeSection) {
                   if (showDebugPanel) {
-                    console.log('[Ignored] Auto-navigation away from expected node:', nodeId, 'expected:', expectedNodeRef.current)
+                    console.log('[Auto-sync] Section:', matchingSection.id)
                   }
-                  setIsLoading(false)
-                  return
-                }
-              }
-              
-              // After a few node changes, allow syncing with sections
-              // This gives time for Figma's auto-navigation to finish
-              if (nodeChangeCountRef.current > 3) {
-                // Only auto-sync if:
-                // 1. We've loaded at least once
-                // 2. User isn't manually navigating
-                // 3. Node matches a different section
-                if (hasLoadedOnceRef.current && !isManualNavigationRef.current) {
-                  const matchingSection = sections.find(s => {
-                    const normalized = s.startingNodeId.replace(':', '-')
-                    return normalized === nodeId || s.startingNodeId === nodeId
-                  })
-                  
-                  if (matchingSection && matchingSection.id !== activeSection) {
-                    if (showDebugPanel) {
-                      console.log('[Auto-sync] Detected section:', matchingSection.id)
-                    }
-                    setActiveSection(matchingSection.id)
-                    onSectionChange?.(matchingSection.id)
-                  }
+                  setActiveSection(matchingSection.id)
+                  onSectionChange?.(matchingSection.id)
                 }
               }
             }
-            
-            // Clear manual navigation flag after any node change
-            if (isManualNavigationRef.current) {
-              isManualNavigationRef.current = false
-            }
-            
-            setIsLoading(false)
             break
 
           case 'NEW_STATE':
@@ -232,41 +223,44 @@ export const FigmaPrototypeViewer: React.FC<FigmaPrototypeViewerProps> = ({ conf
 
     window.addEventListener('message', handleMessage)
     return () => window.removeEventListener('message', handleMessage)
-  }, [sections, activeSection, onSectionChange, showDebugPanel])
+  }, [sections, activeSection, onSectionChange, showDebugPanel, isNavigating])
 
-  // Handle iframe load
-  const handleIframeLoad = useCallback(() => {
-    if (showDebugPanel) {
-      console.log('[Iframe] Loaded')
-    }
-  }, [showDebugPanel])
-
-  // Navigation commands for debug panel
+  // Debug panel commands using URL navigation
   const sendCommand = useCallback((command: string) => {
-    if (!iframeRef.current?.contentWindow) return
+    if (!iframeRef.current) return
 
-    const commandMap: Record<string, string> = {
-      'NAVIGATE_FORWARD': 'next-page',
-      'NAVIGATE_BACKWARD': 'previous-page',
-      'RESTART': 'restart'
+    if (showDebugPanel) {
+      setEventHistory(prev => [...prev.slice(-9), {
+        time: Date.now(),
+        type: 'COMMAND',
+        data: { command }
+      }])
     }
 
-    const figmaCommand = commandMap[command]
-    if (figmaCommand) {
-      iframeRef.current.contentWindow.postMessage(
-        { type: figmaCommand },
-        'https://www.figma.com'
-      )
-
-      if (showDebugPanel) {
-        setEventHistory(prev => [...prev.slice(-9), {
-          time: Date.now(),
-          type: 'COMMAND',
-          data: { command: figmaCommand }
-        }])
-      }
+    switch (command) {
+      case 'RESTART':
+        if (sections[0]) {
+          navigateToSection(sections[0].id)
+        }
+        break
+      case 'NAVIGATE_FORWARD':
+        // Find next section
+        const currentIndex = sections.findIndex(s => s.id === activeSection)
+        const nextSection = sections[currentIndex + 1]
+        if (nextSection) {
+          navigateToSection(nextSection.id)
+        }
+        break
+      case 'NAVIGATE_BACKWARD':
+        // Find previous section
+        const currentIdx = sections.findIndex(s => s.id === activeSection)
+        const prevSection = sections[currentIdx - 1]
+        if (prevSection) {
+          navigateToSection(prevSection.id)
+        }
+        break
     }
-  }, [showDebugPanel])
+  }, [showDebugPanel, sections, activeSection, navigateToSection])
 
   return (
     <>
@@ -277,11 +271,13 @@ export const FigmaPrototypeViewer: React.FC<FigmaPrototypeViewerProps> = ({ conf
             <button
               key={section.id}
               onClick={() => handleSectionClick(section.id)}
+              disabled={isNavigating}
               className={cn(
                 'bg-ods-card border rounded-md p-6 flex gap-2 items-start',
                 'shadow-ods-card transition-all duration-200',
                 'hover:bg-ods-card-hover cursor-pointer text-left',
                 'min-h-[96px]',
+                'disabled:opacity-50 disabled:cursor-not-allowed',
                 activeSection === section.id
                   ? cn('border-[var(--ods-open-yellow-base)]', activeControlClassName)
                   : 'border-ods-border'
@@ -304,31 +300,33 @@ export const FigmaPrototypeViewer: React.FC<FigmaPrototypeViewerProps> = ({ conf
           ))}
         </div>
 
-        {/* Figma Prototype - WHITE BACKGROUND */}
+        {/* Figma Prototype - REMOVE ALL BACKGROUND STYLING */}
         <div 
-          className={cn('relative w-full bg-white', iframeClassName)}
+          className={cn('relative w-full overflow-hidden', iframeClassName)}
           style={{ height }}
         >
           {/* Loading overlay */}
-          {isLoading && (
-            <div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none">
-              <div className="flex flex-col items-center gap-2 p-4 bg-ods-bg rounded-lg shadow-lg">
-                <div className="w-8 h-8 border-2 border-ods-text-secondary border-t-transparent rounded-full animate-spin" />
-                <span className="text-ods-text-secondary text-sm">Loading...</span>
+          {(isLoading || isNavigating) && (
+            <div className="absolute inset-0 flex items-center justify-center z-10 bg-ods-bg/80 backdrop-blur-sm">
+              <div className="flex flex-col items-center gap-3 p-6 bg-ods-card rounded-lg shadow-lg border border-ods-border">
+                <div className="w-8 h-8 border-2 border-ods-accent border-t-transparent rounded-full animate-spin" />
+                <span className="text-ods-text-secondary text-sm font-medium">
+                  {isNavigating ? 'Navigating...' : 'Loading prototype...'}
+                </span>
               </div>
             </div>
           )}
 
-          {/* Figma iframe - WHITE BACKGROUND */}
-          {iframeSrc && (
+          {/* Figma iframe - NO BACKGROUND STYLING WHATSOEVER */}
+          {embedUrl && (
             <iframe
               ref={iframeRef}
-              src={iframeSrc}
-              className="w-full h-full border-0 bg-white"
-              style={{ background: 'white' }}
-              onLoad={handleIframeLoad}
+              src={embedUrl}
+              className="w-full h-full border-0"
+              style={{ minHeight: height }}
               allowFullScreen
               title={config.title}
+              loading="lazy"
             />
           )}
         </div>
@@ -342,11 +340,17 @@ export const FigmaPrototypeViewer: React.FC<FigmaPrototypeViewerProps> = ({ conf
           </h3>
           
           {/* Status */}
-          <div className="mb-3 grid grid-cols-3 gap-4 text-sm">
+          <div className="mb-3 grid grid-cols-4 gap-4 text-sm">
             <div>
               <span className="text-ods-text-secondary">Loading:</span>{' '}
               <span className={isLoading ? "text-yellow-500" : "text-green-500"}>
                 {isLoading ? 'Yes' : 'No'}
+              </span>
+            </div>
+            <div>
+              <span className="text-ods-text-secondary">Navigating:</span>{' '}
+              <span className={isNavigating ? "text-orange-500" : "text-gray-500"}>
+                {isNavigating ? 'Yes' : 'No'}
               </span>
             </div>
             <div>
@@ -396,8 +400,9 @@ export const FigmaPrototypeViewer: React.FC<FigmaPrototypeViewerProps> = ({ conf
                     event.type === 'INITIAL_LOAD' && "text-green-400",
                     event.type === 'PRESENTED_NODE_CHANGED' && "text-blue-400",
                     event.type === 'NEW_STATE' && "text-purple-400",
-                    event.type === 'COMMAND' && "text-cyan-400",
-                    !['INITIAL_LOAD', 'PRESENTED_NODE_CHANGED', 'NEW_STATE', 'COMMAND'].includes(event.type) && "text-gray-400"
+                    event.type === 'URL_NAVIGATE' && "text-cyan-400",
+                    event.type === 'COMMAND' && "text-orange-400",
+                    !['INITIAL_LOAD', 'PRESENTED_NODE_CHANGED', 'NEW_STATE', 'URL_NAVIGATE', 'COMMAND'].includes(event.type) && "text-gray-400"
                   )}>
                     {event.type}
                   </span>

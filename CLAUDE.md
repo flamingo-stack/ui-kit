@@ -12,41 +12,64 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **Application Components**: Platform-specific business components that use UI-Kit components
   - Example: `openmsp-video-stats-section.tsx` in the main app uses UI-Kit's ODS tokens but isn't part of UI-Kit
 
-## Important Component Issues (IN PROGRESS 🔧)
+## Critical Component Issues (UNFIXED 🚨)
 
-### FigmaPrototypeViewer Component - CRITICAL ISSUES
+### FigmaPrototypeViewer Component - PERSISTENT CRITICAL ISSUES
 - **Location**: `src/components/features/figma-prototype-viewer.tsx`
-- **Status**: MULTIPLE ISSUES STILL EXIST (user reported asking 5 times to fix)
+- **Status**: **UNFIXED AFTER MULTIPLE ATTEMPTS** - User frustration escalated
 
-#### Current Issues:
-1. **Prototype Jumps to Step #4**:
-   - Problem: Prototype immediately jumps to step #4 instead of starting at step #1
-   - Attempted Fix: Sending 'restart' command after INITIAL_LOAD
-   - Status: NOT WORKING
+#### User Feedback (2025-08-16):
+- **Direct Quote**: "the previous issues still persist" after our latest fixes
+- **User Requirement**: Document everything for future development sessions  
+- **User Emphasis**: "the year is 2025" - expects modern web standards
+- **Research Request**: "need to research online how to do it (the year is 2025)"
 
-2. **Black Background and Spacing**:
-   - Problem: Large black background and spacing around the Figma embed
-   - User Report: Asked 5 times to remove black background
-   - Attempted Fix: Changed background to 'white' in component
-   - Status: PARTIALLY WORKING - issues persist
+#### Critical Unfixed Problems:
 
-3. **Component Reloads on Section Click**:
-   - Problem: Section clicks reload entire iframe instead of using navigation
-   - Impact: Poor UX with full reload instead of smooth navigation
-   - Attempted Fix: Store iframe src in state
-   - Status: NOT WORKING
+1. **Complete Iframe Reload on Navigation** (UNFIXED 🚨):
+   - **User Report**: "when clicking on section button the entire element loads"
+   - **Current Issue**: `iframe.src = newUrl` causes jarring full reload
+   - **User Expectation**: Smooth navigation without iframe reload
+   - **Required**: Use modern Figma Embed API navigation techniques
 
-#### Technical Limitations Discovered:
-- **Cross-origin restrictions**: Cannot access iframe content for security
-- **Limited Figma Events**: Only INITIAL_LOAD and basic state events available
-- **No Navigation Tracking**: Cannot detect internal prototype navigation
-- **CSP Blocks**: Content Security Policy prevents Figma Embed Kit loading
+2. **Black Background and Spacing** (UNFIXED 🚨):
+   - **User Report**: "useless spacing and black background for the loaded element"
+   - **Code Comments**: "REMOVE ALL BACKGROUND STYLING" and "NO BACKGROUND STYLING WHATSOEVER"
+   - **Current Status**: White background applied but issues persist
+   - **Required**: Complete elimination of black background using proper embedding
 
-#### Next Steps for Resolution:
-- Consider alternative navigation approach without iframe reloads
-- Ensure white background is properly applied at all levels
-- Force prototype to start at step #1 consistently
-- Avoid timeouts (user called it "terrible practice")
+3. **Wrong Starting Step** (UNFIXED 🚨):
+   - **Problem**: Prototype loads at step #4 instead of step #1
+   - **Current Approach**: `starting-point-node-id` parameter and restart commands
+   - **Issue**: PostMessage NAVIGATE_TO_NODE commands ineffective
+   - **Required**: Reliable step #1 initialization
+
+#### Technical Implementation Problems:
+```typescript
+// 🚨 PROBLEMATIC: User specifically wants to avoid iframe reloads
+iframeRef.current.src = newUrl  
+
+// 🚨 INEFFECTIVE: PostMessage commands not working
+iframe.contentWindow?.postMessage({
+  type: 'NAVIGATE_TO_NODE',
+  nodeId: targetNodeId
+}, 'https://www.figma.com')
+```
+
+#### Development Requirements for Next Session:
+- **Research Required**: Modern Figma embed navigation (2025 standards)
+- **NO TIMEOUTS**: User mandate - called it "terrible practice"
+- **NO HACKS**: Event-driven programming only
+- **embed_origin**: Must be included for cross-origin communication
+- **Modern Solutions**: Must meet current web development standards
+
+#### Figma Integration Details:
+- **File**: etEsOUsmdzjqnIbSH4kULB
+- **Client ID**: UTQPwZHR9OZp68TTGPFFi5
+- **Usage**: AI Copilots section in Flamingo website
+- **Debug Panel**: Currently enabled for event tracking
+
+**CRITICAL**: These issues block the Figma prototype demo feature and require comprehensive research into modern embedding techniques before attempting another fix.
 
 ## Recent Updates (2025-08-13)
 
