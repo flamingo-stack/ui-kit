@@ -249,9 +249,9 @@ function renderUnifiedUI(state: UnifiedState, handlers: {
           config.iframeClassName
         )}
         style={{ 
-          height: viewMode === 'DESKTOP' ? (config.height || '800px') : '70vh',
-          minHeight: viewMode === 'DESKTOP' ? 'auto' : '500px',
-          maxHeight: viewMode === 'DESKTOP' ? 'none' : '800px',
+          height: viewMode === 'DESKTOP' ? (config.height || '800px') : '85vh',
+          minHeight: viewMode === 'DESKTOP' ? 'auto' : '650px',
+          maxHeight: viewMode === 'DESKTOP' ? 'none' : '950px',
           border: viewMode === 'DESKTOP' ? undefined : 'none'
         }}
       >
