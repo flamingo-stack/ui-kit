@@ -293,14 +293,18 @@ function renderUnifiedUI(state: UnifiedState, handlers: {
           src={embedUrl}
           className="border-0 w-full h-full"
           style={{ 
-            background: 'white',
+            background: 'transparent',
             zIndex: 1,
             display: showIframe ? 'block' : 'none',
             visibility: showIframe ? 'visible' : 'hidden',
             // Let Figma handle all scaling internally
             width: '100%',
             height: '100%',
-            transform: 'none'
+            transform: 'none',
+            // Remove any default iframe styling
+            border: 'none',
+            outline: 'none',
+            overflow: 'hidden'
           }}
           allow="clipboard-write; clipboard-read; fullscreen"
           referrerPolicy="no-referrer"
