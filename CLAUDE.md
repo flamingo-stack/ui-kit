@@ -1085,6 +1085,36 @@ These loading standards ensure consistent, predictable behavior across all admin
 
 ## Recent Component Additions
 
+### YouTubeEmbed Component (UPDATED 2025-08-17)
+- **Purpose**: CSP-safe YouTube video embedding with customizable UI controls
+- **Location**: `src/components/features/youtube-embed.tsx`
+- **Migration**: Moved from main app to enable cross-platform reusability
+- **Dependencies**: react-player for robust video handling
+- **Recent Cleanup (2025-08-17)**:
+  - **Dependency Cleanup**: react-player removed from main package.json (kept only in UI-Kit)
+  - **Color Token Migration**: All hardcoded colors (`#FF6B6B`, `#2A1F1F`, `#FFD951`) replaced with pure ODS tokens
+  - **Component Consolidation**: Deleted obsolete `lib/utils/lite-youtube-embed.tsx` file
+  - **Import Updates**: Updated `media-carousel.tsx` and `simple-markdown-renderer.tsx` to use UI Kit YouTubeEmbed
+- **Features**:
+  - Always uses iframe mode to prevent Content Security Policy violations
+  - Configurable UI controls: title display, meta info, minimal controls
+  - Strips "more videos" suggestions and unwanted YouTube UI elements
+  - Responsive design with pure ODS theming (no hardcoded colors)
+  - Backward compatible with existing blog shortcode system
+- **Usage**: Perfect for OpenMSP video showcase, blog embeds, and any platform needing YouTube integration
+- **Props**:
+  ```typescript
+  interface YouTubeEmbedProps {
+    videoId: string;
+    title?: string;
+    className?: string;
+    showTitle?: boolean;        // Controls video title display (default: true)
+    showMeta?: boolean;         // Controls description/meta info (default: true)
+    minimalControls?: boolean;  // Strips most controls for cleaner UI (default: false)
+    // All colors now use pure ODS tokens instead of hardcoded values
+  }
+  ```
+
 ### ParallaxImageShowcase Component
 - **Purpose**: Interactive image showcase with parallax effects for hero sections
 - **Location**: `src/components/features/parallax-image-showcase.tsx`
