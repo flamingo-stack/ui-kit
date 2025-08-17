@@ -204,7 +204,6 @@ function renderUnifiedUI(state: UnifiedState, handlers: {
 }, config: FigmaPrototypeViewerConfig, iframeRef: React.RefObject<HTMLIFrameElement>) {
   const {
     viewMode,
-    scaling,
     showSectionSelector,
     showIframe,
     showSkeleton,
@@ -260,6 +259,7 @@ function renderUnifiedUI(state: UnifiedState, handlers: {
         {showTouchOverlay && (
           <div
             className="absolute inset-0 w-full h-full"
+            data-touch-overlay="true"
             style={{
               pointerEvents: 'auto',
               touchAction: 'pan-y pinch-zoom',
@@ -278,11 +278,7 @@ function renderUnifiedUI(state: UnifiedState, handlers: {
         {/* Touch Badge - Only for MOBILE_TOUCH mode */}
         {showTouchBadge && (
           <div 
-            className="absolute z-10"
-            style={{
-              bottom: `${scaling.marginY}px`,
-              left: `${scaling.marginX}px`
-            }}
+            className="absolute z-10 bottom-4 left-4"
           >
             <Badge variant="secondary" className="bg-black/70 text-white backdrop-blur-sm">
               Tap twice to click
@@ -301,18 +297,10 @@ function renderUnifiedUI(state: UnifiedState, handlers: {
             zIndex: 1,
             display: showIframe ? 'block' : 'none',
             visibility: showIframe ? 'visible' : 'hidden',
-            // Apply scaling based on view mode
-            ...(viewMode === 'DESKTOP' ? {
-              height: 'calc(100% + 40px)',
-              width: 'calc(100% + 40px)',
-              marginLeft: '-20px',
-              marginTop: '-20px',
-              position: 'relative',
-            } : {
-              width: '100%',
-              height: '100%',
-              transform: 'none' // Let Figma handle scaling internally
-            })
+            // Let Figma handle all scaling internally
+            width: '100%',
+            height: '100%',
+            transform: 'none'
           }}
           allow="clipboard-write; clipboard-read; fullscreen"
           referrerPolicy="no-referrer"
@@ -352,9 +340,13 @@ export const FigmaPrototypeViewer: React.FC<FigmaPrototypeViewerProps> = ({
   const [screenWidth, setScreenWidth] = useState(
     typeof window !== 'undefined' ? window.innerWidth : DESKTOP_BREAKPOINT
   )
-  const [isTouchDevice, setIsTouchDevice] = useState(
-    typeof window !== 'undefined' && ('ontouchstart' in window || navigator.maxTouchPoints > 0)
-  )
+  
+  // Simple, reliable touch detection
+  const [isTouchDevice, setIsTouchDevice] = useState(() => {
+    if (typeof window === 'undefined') return false
+    // Most reliable method: check if touch events are supported
+    return 'ontouchstart' in window
+  })
   
   // Iframe Management State
   const [iframeState, setIframeState] = useState<IframeState>('INITIAL')
@@ -450,13 +442,7 @@ export const FigmaPrototypeViewer: React.FC<FigmaPrototypeViewerProps> = ({
     return () => window.removeEventListener('resize', handleResize)
   }, [])
   
-  // Device State Change Detection
-  useEffect(() => {
-    const newTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0
-    if (newTouchDevice !== isTouchDevice) {
-      setIsTouchDevice(newTouchDevice)
-    }
-  }, [isTouchDevice])
+  // Touch device detection is now done once at initialization for consistency
   
   // View Mode Change Handler (triggers iframe reload)
   const [lastViewMode, setLastViewMode] = useState(viewMode)
@@ -587,31 +573,22 @@ export const FigmaPrototypeViewer: React.FC<FigmaPrototypeViewerProps> = ({
   
   // Touch Handler for Mobile Touch Mode
   const handleTouchStart = useCallback((e: React.TouchEvent) => {
-    const touch = e.touches[0]
-    const startTime = Date.now()
+    // Simple approach: on any touch, disable overlay for longer to allow normal interaction,
+    // then re-enable for scrolling
     const overlayElement = e.currentTarget as HTMLElement
     
-    const handleTouchEnd = (endEvent: TouchEvent) => {
-      const duration = Date.now() - startTime
-      const endTouch = endEvent.changedTouches[0]
-      const distance = Math.abs(endTouch.clientY - touch.clientY)
-      
-      // Quick tap = click intent, disable overlay temporarily
-      if (duration < 200 && distance < 10) {
-        if (overlayElement) {
-          overlayElement.style.pointerEvents = 'none'
-          requestAnimationFrame(() => {
-            if (overlayElement) {
-              overlayElement.style.pointerEvents = 'auto'
-            }
-          })
-        }
-      }
-      
-      document.removeEventListener('touchend', handleTouchEnd)
-    }
+    console.log('[Touch] Touch detected, allowing iframe interaction')
     
-    document.addEventListener('touchend', handleTouchEnd)
+    // Disable overlay to allow touch to pass through to iframe
+    overlayElement.style.pointerEvents = 'none'
+    
+    // Re-enable overlay after interaction window (500ms for normal human interaction)
+    setTimeout(() => {
+      if (overlayElement && overlayElement.style.pointerEvents === 'none') {
+        overlayElement.style.pointerEvents = 'auto'
+        console.log('[Touch] Overlay re-enabled for scrolling')
+      }
+    }, 500)
   }, [])
   
   // External Active Section Change
