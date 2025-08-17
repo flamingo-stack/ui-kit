@@ -2,6 +2,7 @@
 
 import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react'
 import { cn } from '../../utils/cn'
+import { Badge } from '../ui/badge'
 
 export interface FigmaPrototypeSection {
   id: string
@@ -81,18 +82,20 @@ export const FigmaPrototypeViewer: React.FC<FigmaPrototypeViewerProps> = ({
   // Control debug panel via environment variable
   const showDebugPanel = process.env.NEXT_PUBLIC_FIGMA_DEBUG === 'true'
 
-  // Detect if we're on mobile
+  // Detect if we're on a touch device (not just small screen)
+  const [isTouchDevice, setIsTouchDevice] = useState(false)
+  // Detect if we're on mobile (small screen)
   const [isMobile, setIsMobile] = useState(false)
   
   useEffect(() => {
-    const checkMobile = () => {
+    const checkDeviceTypes = () => {
+      setIsTouchDevice('ontouchstart' in window || navigator.maxTouchPoints > 0)
       setIsMobile(window.innerWidth < 768)
     }
     
-    checkMobile()
-    window.addEventListener('resize', checkMobile)
-    
-    return () => window.removeEventListener('resize', checkMobile)
+    checkDeviceTypes()
+    window.addEventListener('resize', checkDeviceTypes)
+    return () => window.removeEventListener('resize', checkDeviceTypes)
   }, [])
 
   // State - use external active section if provided
@@ -163,7 +166,7 @@ export const FigmaPrototypeViewer: React.FC<FigmaPrototypeViewerProps> = ({
     const nodeId = isMobile && section.mobileStartingNodeId ? section.mobileStartingNodeId : section.startingNodeId
 
     if (showDebugPanel) {
-      console.log('[Navigate] To section:', sectionId, 'node:', nodeId, 'mobile:', isMobile)
+      console.log('[Navigate] To section:', sectionId, 'node:', nodeId, 'mobile:', isMobile, 'touch device:', isTouchDevice)
     }
 
     setIsNavigating(true)
@@ -185,7 +188,7 @@ export const FigmaPrototypeViewer: React.FC<FigmaPrototypeViewerProps> = ({
       setEventHistory(prev => [...prev.slice(-9), {
         time: Date.now(),
         type: 'POSTMESSAGE_NAVIGATE',
-        data: { sectionId, nodeId, command, mobile: isMobile }
+        data: { sectionId, nodeId, command, mobile: isMobile, touchDevice: isTouchDevice }
       }])
     }
 
@@ -204,8 +207,8 @@ export const FigmaPrototypeViewer: React.FC<FigmaPrototypeViewerProps> = ({
       navigateToSection(sectionId)
     }
     
-    // On mobile, scroll to the Figma viewer when manually clicking sections
-    if (isMobile && iframeRef.current) {
+    // On touch devices, scroll to the Figma viewer when manually clicking sections
+    if (isTouchDevice && iframeRef.current) {
       // Small delay to ensure navigation starts before scrolling
       setTimeout(() => {
         iframeRef.current?.scrollIntoView({ 
@@ -214,7 +217,7 @@ export const FigmaPrototypeViewer: React.FC<FigmaPrototypeViewerProps> = ({
         })
       }, 100)
     }
-  }, [activeSection, isNavigating, navigateToSection, isMobile, externalOnSectionClick])
+  }, [activeSection, isNavigating, navigateToSection, isTouchDevice, externalOnSectionClick])
 
   // Navigate when external active section changes
   useEffect(() => {
@@ -222,6 +225,7 @@ export const FigmaPrototypeViewer: React.FC<FigmaPrototypeViewerProps> = ({
       navigateToSection(externalActiveSection)
     }
   }, [externalActiveSection])
+
 
   // Handle Figma events
   useEffect(() => {
@@ -379,18 +383,67 @@ export const FigmaPrototypeViewer: React.FC<FigmaPrototypeViewerProps> = ({
           </div>
         )}
 
-        {/* Figma Prototype Container - NO BACKGROUND STYLING */}
+        {/* Figma Prototype Container */}
         <div 
           className={cn(
             'relative w-full rounded-lg border border-ods-border',
-            'overflow-hidden',
             iframeClassName
           )}
-          style={{ 
-            height: isMobile ? '100vh' : height,
-            minHeight: isMobile ? '100vh' : height,
-          }}
+          style={{ height }}
         >
+          {/* Touch devices: Transparent overlay that enables page scroll */}
+          {isTouchDevice && showIframe && (
+            <div
+              className="absolute inset-0 w-full h-full"
+              style={{
+                // This div sits above iframe and handles ONLY scroll
+                pointerEvents: 'auto', // Capture touch events for scroll
+                touchAction: 'pan-y pinch-zoom', // Enable page scrolling
+                zIndex: 2, // Above iframe
+                background: 'transparent',
+              }}
+              onTouchStart={(e) => {
+                // If it's a quick tap (likely a click), let iframe handle it
+                const touch = e.touches[0]
+                const startTime = Date.now()
+                const overlayElement = e.currentTarget as HTMLElement // Store reference
+                
+                const handleTouchEnd = (endEvent: TouchEvent) => {
+                  const endTime = Date.now()
+                  const duration = endTime - startTime
+                  const endTouch = endEvent.changedTouches[0]
+                  const distance = Math.abs(endTouch.clientY - touch.clientY)
+                  
+                  // If it's a quick tap with little movement, it's a click - let iframe handle it
+                  if (duration < 200 && distance < 10) {
+                    // Remove this overlay temporarily to let click through
+                    if (overlayElement) {
+                      overlayElement.style.pointerEvents = 'none'
+                      setTimeout(() => {
+                        if (overlayElement) {
+                          overlayElement.style.pointerEvents = 'auto'
+                        }
+                      }, 100)
+                    }
+                  }
+                  
+                  document.removeEventListener('touchend', handleTouchEnd)
+                }
+                
+                document.addEventListener('touchend', handleTouchEnd)
+              }}
+            />
+          )}
+
+          {/* Touch device instruction badge */}
+          {isTouchDevice && showIframe && (
+            <div className="absolute bottom-3 left-3 z-10">
+              <Badge variant="secondary" className="bg-black/70 text-white backdrop-blur-sm">
+                Tap twice to click
+              </Badge>
+            </div>
+          )}
+
           {/* Loading skeleton with pulse animation */}
           {!showIframe && (
             <div className="absolute inset-0 w-full h-full bg-ods-skeleton animate-pulse rounded-lg" />
@@ -398,55 +451,30 @@ export const FigmaPrototypeViewer: React.FC<FigmaPrototypeViewerProps> = ({
 
           {/* Figma iframe */}
           {embedUrl && (
-            <>
-              <iframe
-                ref={iframeRef}
-                src={embedUrl}
-                className="border-0 w-full"
-                style={{ 
-                  height: isMobile ? '100vh' : 'calc(100% + 40px)',
-                  width: isMobile ? '100%' : 'calc(100% + 40px)',
-                  marginLeft: isMobile ? '0' : '-20px',
-                  marginTop: isMobile ? '0' : '-20px',
-                  background: 'transparent',
-                  opacity: showIframe ? 1 : 0,
-                  // On mobile, disable pointer events by default
-                  pointerEvents: showIframe ? (isMobile ? 'none' : 'auto') : 'none',
+            <iframe
+              ref={iframeRef}
+              src={embedUrl}
+              className="border-0 w-full h-full"
+              style={{ 
+                background: 'transparent',
+                opacity: showIframe ? 1 : 0,
+                pointerEvents: showIframe ? 'auto' : 'none',
+                zIndex: 1, // Below scroll overlay
+                ...(isMobile ? {} : {
+                  // Desktop-specific styling (with margin adjustments)
+                  height: 'calc(100% + 40px)',
+                  width: 'calc(100% + 40px)',
+                  marginLeft: '-20px',
+                  marginTop: '-20px',
                   display: 'block',
-                }}
-                allowFullScreen
-                title={config.title}
-                loading="lazy"
-              />
-              
-              {/* Mobile touch handler - DIRECT APPROACH */}
-              {isMobile && showIframe && (
-                <div
-                  className="absolute inset-0 z-10"
-                  onPointerDown={(e) => {
-                    // On any pointer down (touch or mouse), enable iframe
-                    if (iframeRef.current) {
-                      iframeRef.current.style.pointerEvents = 'auto';
-                      // Hide this overlay so the pointer goes through to iframe
-                      e.currentTarget.style.pointerEvents = 'none';
-                      
-                      // Re-enable overlay after a short delay
-                      setTimeout(() => {
-                        e.currentTarget.style.pointerEvents = 'auto';
-                        if (iframeRef.current) {
-                          iframeRef.current.style.pointerEvents = 'none';
-                        }
-                      }, 500);
-                    }
-                  }}
-                  style={{
-                    pointerEvents: 'auto',
-                    // Critical: this makes scrolling work
-                    touchAction: 'pan-y',
-                  }}
-                />
-              )}
-            </>
+                  position: 'relative',
+                })
+              }}
+              allowFullScreen
+              allow="clipboard-write; clipboard-read; fullscreen"
+              title={config.title}
+              loading="lazy"
+            />
           )}
         </div>
       </div>
@@ -466,7 +494,7 @@ export const FigmaPrototypeViewer: React.FC<FigmaPrototypeViewerProps> = ({
             </span>
             {' '}
             <span className="text-ods-text-secondary text-xs">
-              (viewport: {typeof window !== 'undefined' ? window.innerWidth : 0}px)
+              (viewport: {typeof window !== 'undefined' ? window.innerWidth : 0}px, touch: {isTouchDevice ? 'yes' : 'no'})
             </span>
           </div>
           
