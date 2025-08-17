@@ -157,6 +157,12 @@ export const FigmaPrototypeViewer: React.FC<FigmaPrototypeViewerProps> = ({
     return `https://embed.figma.com/proto/${fileKey}?${params.toString()}`
   }, [fileKey, clientId, sections, isMobile, mobileStartingPoint, desktopStartingPoint])
 
+  // Show skeleton when embed URL changes (screen resize triggers new iframe load)
+  useEffect(() => {
+    setShowIframe(false) // Show skeleton when URL changes
+    console.log('[URL CHANGE] Showing skeleton, hiding iframe for reload')
+  }, [embedUrl])
+
   // Navigate using Figma Embed Kit 2.0 postMessage API (no iframe reload)
   const navigateToSection = useCallback((sectionId: string) => {
     const section = sections.find(s => s.id === sectionId)
@@ -510,9 +516,9 @@ export const FigmaPrototypeViewer: React.FC<FigmaPrototypeViewerProps> = ({
           {/* Status */}
           <div className="mb-3 grid grid-cols-4 gap-4 text-sm">
             <div>
-              <span className="text-ods-text-secondary">Loading:</span>{' '}
-              <span className={isLoading ? "text-yellow-500" : "text-green-500"}>
-                {isLoading ? 'Yes' : 'No'}
+              <span className="text-ods-text-secondary">Iframe:</span>{' '}
+              <span className={showIframe ? "text-green-500" : "text-yellow-500"}>
+                {showIframe ? 'Visible' : 'Hidden'}
               </span>
             </div>
             <div>
