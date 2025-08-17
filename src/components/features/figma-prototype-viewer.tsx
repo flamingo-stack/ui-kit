@@ -171,6 +171,7 @@ export const FigmaPrototypeViewer: React.FC<FigmaPrototypeViewerProps> = ({
     }
 
     setIsNavigating(true)
+    setShowIframe(false) // Hide iframe during navigation to show skeleton
     setActiveSection(sectionId)
     onSectionChange?.(sectionId)
 
@@ -233,6 +234,11 @@ export const FigmaPrototypeViewer: React.FC<FigmaPrototypeViewerProps> = ({
     const handleMessage = (event: MessageEvent) => {
       if (event.origin !== 'https://www.figma.com') return
 
+      // Log ALL Figma events (not just valid ones)
+      if (event.data?.type) {
+        console.log('[FIGMA EVENT]', event.data.type, event.data)
+      }
+
       const validEvents: FigmaEventType[] = [
         'MOUSE_PRESS_OR_RELEASE',
         'PRESENTED_NODE_CHANGED',
@@ -258,18 +264,18 @@ export const FigmaPrototypeViewer: React.FC<FigmaPrototypeViewerProps> = ({
           case 'INITIAL_LOAD':
             setIsLoading(false)
             setIsInitialized(true)
-            setShowIframe(true)  // Hide skeleton on initial load, don't wait for NEW_STATE
+            setShowIframe(true) // Show iframe on initial load as fallback
             if (showDebugPanel) {
-              console.log('[Initial Load] Prototype loaded, waiting for first render...')
+              console.log('[Initial Load] Prototype loaded, showing iframe')
             }
             break
 
           case 'NEW_STATE':
-            // Figma is fully rendered - show iframe and hide loading skeleton
+            // Figma is fully rendered - ensure iframe is visible
             setIsLoading(false)
             setShowIframe(true)
             if (showDebugPanel) {
-              console.log('[New State] Figma fully rendered, showing iframe and hiding skeleton')
+              console.log('[New State] Figma fully rendered, showing iframe')
             }
             break
 
@@ -454,14 +460,8 @@ export const FigmaPrototypeViewer: React.FC<FigmaPrototypeViewerProps> = ({
           {!showIframe && (
             <div className="absolute inset-0 w-full h-full bg-ods-skeleton animate-pulse rounded-lg z-10" />
           )}
-          
-          {/* Debug: Console log skeleton visibility */}
-          {(() => {
-            console.log('[SKELETON DEBUG] showIframe:', showIframe, 'skeleton visible:', !showIframe)
-            return null
-          })()}
 
-          {/* Figma iframe - render immediately for fastest loading */}
+          {/* Figma iframe - hidden during loading */}
           <iframe
             ref={iframeRef}
             src={embedUrl}
@@ -469,6 +469,7 @@ export const FigmaPrototypeViewer: React.FC<FigmaPrototypeViewerProps> = ({
             style={{ 
               background: 'white',
               zIndex: 1, // Below scroll overlay
+              visibility: showIframe ? 'visible' : 'hidden', // Hide iframe during loading
               ...(isMobile ? {} : {
                 // Desktop-specific styling (with margin adjustments)
                 height: 'calc(100% + 40px)',
