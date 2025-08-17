@@ -122,7 +122,7 @@ export const FigmaPrototypeViewer: React.FC<FigmaPrototypeViewerProps> = ({
   // Get client ID from environment
   const clientId = process.env.NEXT_PUBLIC_FIGMA_CLIENT_ID || 'UTQPwZHR9OZp68TTGPFFi5'
 
-  // Build embed URL with embed_origin for postMessage communication
+  // Build embed URL with Embed Kit 2.0 format for immediate loading
   const embedUrl = useMemo(() => {
     const firstSection = sections[0]
     if (!firstSection) return ''
@@ -138,20 +138,21 @@ export const FigmaPrototypeViewer: React.FC<FigmaPrototypeViewerProps> = ({
       startingNodeId = desktopStartingPoint || firstSection.startingNodeId
     }
     
+    // Get current domain for embed-host
+    const embedHost = typeof window !== 'undefined' 
+      ? window.location.hostname 
+      : 'localhost'
+    
     const params = new URLSearchParams({
       'node-id': startingNodeId.replace(':', '-'),
-      'embed-host': 'flamingo',
-      'embed_origin': typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3000',
       'client-id': clientId,
+      'embed-host': embedHost,
       'hide-ui': '1',
       'hotspot-hints': '0',
       'scaling': isMobile ? 'min-zoom' : 'scale-down-width',
       'starting-point-node-id': startingNodeId.replace(':', '-'),
       'mode': 'prototype',
-      'enable-prototype-interactions': '1',
-      'chrome': 'DOCUMENTATION',
-      'allow-fullscreen': '1',
-      'device-frame': isMobile ? '0' : '1'
+      'chrome': 'DOCUMENTATION'
     })
     
     return `https://embed.figma.com/proto/${fileKey}?${params.toString()}`
@@ -257,16 +258,18 @@ export const FigmaPrototypeViewer: React.FC<FigmaPrototypeViewerProps> = ({
           case 'INITIAL_LOAD':
             setIsLoading(false)
             setIsInitialized(true)
+            setShowIframe(true)  // Hide skeleton on initial load, don't wait for NEW_STATE
             if (showDebugPanel) {
               console.log('[Initial Load] Prototype loaded, waiting for first render...')
             }
             break
 
           case 'NEW_STATE':
-            // Wait for first NEW_STATE to ensure Figma is fully rendered
+            // Figma is fully rendered - show iframe and hide loading skeleton
+            setIsLoading(false)
             setShowIframe(true)
             if (showDebugPanel) {
-              console.log('[New State] Figma fully rendered, showing iframe')
+              console.log('[New State] Figma fully rendered, showing iframe and hiding skeleton')
             }
             break
 
@@ -353,7 +356,7 @@ export const FigmaPrototypeViewer: React.FC<FigmaPrototypeViewerProps> = ({
               <button
                 key={section.id}
                 onClick={() => handleSectionClick(section.id)}
-                disabled={!showIframe || isNavigating}
+                disabled={isNavigating}
                 className={cn(
                   'bg-ods-card border rounded-md p-6 flex gap-2 items-start',
                   'shadow-ods-card transition-all duration-200',
@@ -449,37 +452,40 @@ export const FigmaPrototypeViewer: React.FC<FigmaPrototypeViewerProps> = ({
 
           {/* Loading skeleton with pulse animation */}
           {!showIframe && (
-            <div className="absolute inset-0 w-full h-full bg-ods-skeleton animate-pulse rounded-lg" />
+            <div className="absolute inset-0 w-full h-full bg-ods-skeleton animate-pulse rounded-lg z-10" />
           )}
+          
+          {/* Debug: Console log skeleton visibility */}
+          {(() => {
+            console.log('[SKELETON DEBUG] showIframe:', showIframe, 'skeleton visible:', !showIframe)
+            return null
+          })()}
 
-          {/* Figma iframe */}
-          {embedUrl && (
-            <iframe
-              ref={iframeRef}
-              src={embedUrl}
-              className="border-0 w-full h-full"
-              style={{ 
-                background: 'transparent',
-                opacity: showIframe ? 1 : 0,
-                pointerEvents: showIframe ? 'auto' : 'none',
-                zIndex: 1, // Below scroll overlay
-                ...(isMobile ? {} : {
-                  // Desktop-specific styling (with margin adjustments)
-                  height: 'calc(100% + 40px)',
-                  width: 'calc(100% + 40px)',
-                  marginLeft: '-20px',
-                  marginTop: '-20px',
-                  display: 'block',
-                  position: 'relative',
-                })
-              }}
-              allow="clipboard-write; clipboard-read; fullscreen"
-              referrerPolicy="no-referrer"
-              sandbox="allow-scripts allow-same-origin allow-popups allow-presentation"
-              title={config.title}
-              loading="eager"
-            />
-          )}
+          {/* Figma iframe - render immediately for fastest loading */}
+          <iframe
+            ref={iframeRef}
+            src={embedUrl}
+            className="border-0 w-full h-full"
+            style={{ 
+              background: 'white',
+              zIndex: 1, // Below scroll overlay
+              ...(isMobile ? {} : {
+                // Desktop-specific styling (with margin adjustments)
+                height: 'calc(100% + 40px)',
+                width: 'calc(100% + 40px)',
+                marginLeft: '-20px',
+                marginTop: '-20px',
+                display: 'block',
+                position: 'relative',
+              })
+            }}
+            allow="clipboard-write; clipboard-read; fullscreen"
+            referrerPolicy="no-referrer"
+            sandbox="allow-scripts allow-same-origin allow-popups allow-presentation"
+            title={config.title}
+            loading="eager"
+            {...({ fetchPriority: 'high' } as any)}
+          />
         </div>
       </div>
       
