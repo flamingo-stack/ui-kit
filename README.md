@@ -25,6 +25,7 @@ This is a **source-only** TypeScript package that provides:
 - 🔗 **Button onClick Fix** - Proper onClick support with href for dropdown menu closing
 - 💰 **Investors System** - Complete CRUD with modal-based admin and Supabase integration
 - 🎬 **ParallaxImageShowcase** - Advanced parallax effects with global mouse tracking and scroll animations
+- 📺 **YouTubeEmbed Component** - CSP-safe YouTube video embedding with customizable UI controls ✅
 - 🎯 **FigmaPrototypeViewer** - ✅ FULLY COMPLETED (2025-08-17):
   - **RESOLVED**: Smooth navigation without iframe reloads using Figma Embed Kit 2.0 API
   - **RESOLVED**: Event-driven loading system with no timeouts (pure React patterns)
@@ -75,7 +76,7 @@ npm install @flamingo/ui-kit
 
 ```tsx
 import { Button, Card, Input, Modal, ModalHeader, ModalTitle, ModalFooter, Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@flamingo/ui-kit/components/ui'
-import { SSOModal, ErrorBoundary } from '@flamingo/ui-kit/components/features'
+import { SSOModal, ErrorBoundary, YouTubeEmbed } from '@flamingo/ui-kit/components/features'
 import { GitHubIcon, XLogo, OpenFrameLogo } from '@flamingo/ui-kit/components/icons'
 import { FlamingoLogo, OpenMSPLogo } from '@flamingo/ui-kit/components' // Legacy individual imports
 import { useToast } from '@flamingo/ui-kit/hooks'
@@ -113,6 +114,16 @@ function MyComponent() {
             <Button onClick={handleAction}>Confirm</Button>
           </ModalFooter>
         </Modal>
+        
+        {/* YouTube embed with customizable controls */}
+        <YouTubeEmbed 
+          videoId="TqrBjLXMkgc"
+          title="OpenMSP Community Overview"
+          showTitle={false}
+          showMeta={false}
+          minimalControls={true}
+          className="rounded-md"
+        />
       </Card>
     </TooltipProvider>
   )
@@ -195,6 +206,45 @@ function HeroSection() {
 - Configurable animation intensity via INTENSITY variable
 - Framer Motion-powered smooth animations
 - Three-layer depth perception with proper z-indexing
+
+### YouTubeEmbed Component
+
+```tsx
+import { YouTubeEmbed } from '@flamingo/ui-kit/components/features'
+
+function VideoSection() {
+  return (
+    <div className="space-y-8">
+      {/* Minimal video for product showcases */}
+      <YouTubeEmbed 
+        videoId="TqrBjLXMkgc"
+        title="OpenMSP: Transforming MSP Communities"
+        showTitle={false}
+        showMeta={false}
+        minimalControls={true}
+        className="rounded-md"
+      />
+      
+      {/* Full video for blog posts */}
+      <YouTubeEmbed 
+        videoId="someVideoId"
+        title="Tutorial: Getting Started"
+        showTitle={true}
+        showMeta={true}
+        minimalControls={false}
+      />
+    </div>
+  )
+}
+```
+
+**Features**:
+- CSP-safe iframe implementation (no script loading violations)
+- Configurable UI controls: title, meta info, minimal controls
+- Strips "more videos" suggestions when minimalControls=true
+- Responsive design with ODS theming
+- Cross-platform compatibility (OpenMSP, Flamingo, Admin-Hub, OpenFrame)
+- Blog shortcode integration: `{{youtube:VIDEO_ID}}`
 
 ### Sticky Navigation
 

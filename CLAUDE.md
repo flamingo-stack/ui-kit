@@ -1085,6 +1085,30 @@ These loading standards ensure consistent, predictable behavior across all admin
 
 ## Recent Component Additions
 
+### YouTubeEmbed Component (NEW 2025-08-17)
+- **Purpose**: CSP-safe YouTube video embedding with customizable UI controls
+- **Location**: `src/components/features/youtube-embed.tsx`
+- **Migration**: Moved from main app to enable cross-platform reusability
+- **Dependencies**: react-player for robust video handling
+- **Features**:
+  - Always uses iframe mode to prevent Content Security Policy violations
+  - Configurable UI controls: title display, meta info, minimal controls
+  - Strips "more videos" suggestions and unwanted YouTube UI elements
+  - Responsive design with ODS theming
+  - Backward compatible with existing blog shortcode system
+- **Usage**: Perfect for OpenMSP video showcase, blog embeds, and any platform needing YouTube integration
+- **Props**:
+  ```typescript
+  interface YouTubeEmbedProps {
+    videoId: string;
+    title?: string;
+    className?: string;
+    showTitle?: boolean;        // Controls video title display (default: true)
+    showMeta?: boolean;         // Controls description/meta info (default: true)
+    minimalControls?: boolean;  // Strips most controls for cleaner UI (default: false)
+  }
+  ```
+
 ### ParallaxImageShowcase Component
 - **Purpose**: Interactive image showcase with parallax effects for hero sections
 - **Location**: `src/components/features/parallax-image-showcase.tsx`
