@@ -142,12 +142,13 @@ export const FigmaPrototypeViewer: React.FC<FigmaPrototypeViewerProps> = ({
       'client-id': clientId,
       'hide-ui': '1',
       'hotspot-hints': '0',
-      'scaling': 'scale-down-width',
+      'scaling': isMobile ? 'min-zoom' : 'scale-down-width',
       'starting-point-node-id': startingNodeId.replace(':', '-'),
       'mode': 'prototype',
       'enable-prototype-interactions': '1',
       'chrome': 'DOCUMENTATION',
-      'allow-fullscreen': '1'
+      'allow-fullscreen': '1',
+      'device-frame': isMobile ? '0' : '1'
     })
     
     return `https://embed.figma.com/proto/${fileKey}?${params.toString()}`
@@ -380,34 +381,72 @@ export const FigmaPrototypeViewer: React.FC<FigmaPrototypeViewerProps> = ({
 
         {/* Figma Prototype Container - NO BACKGROUND STYLING */}
         <div 
-          className={cn('relative w-full overflow-hidden rounded-lg border border-ods-border', iframeClassName)}
-          style={{ height }}
+          className={cn(
+            'relative w-full rounded-lg border border-ods-border',
+            'overflow-hidden',
+            iframeClassName
+          )}
+          style={{ 
+            height: isMobile ? '100vh' : height,
+            minHeight: isMobile ? '100vh' : height,
+          }}
         >
           {/* Loading skeleton with pulse animation */}
           {!showIframe && (
             <div className="absolute inset-0 w-full h-full bg-ods-skeleton animate-pulse rounded-lg" />
           )}
 
-          {/* Figma iframe - Always render but visually hide until ready */}
+          {/* Figma iframe */}
           {embedUrl && (
-            <iframe
-              ref={iframeRef}
-              src={embedUrl}
-              className="w-full h-full border-0"
-              style={{ 
-                minHeight: height,
-                width: 'calc(100% + 40px)',
-                height: 'calc(100% + 40px)',
-                marginLeft: '-20px',
-                marginTop: '-20px',
-                background: 'transparent',
-                opacity: showIframe ? 1 : 0,
-                pointerEvents: showIframe ? 'auto' : 'none'
-              }}
-              allowFullScreen
-              title={config.title}
-              loading="lazy"
-            />
+            <>
+              <iframe
+                ref={iframeRef}
+                src={embedUrl}
+                className="border-0 w-full"
+                style={{ 
+                  height: isMobile ? '100vh' : 'calc(100% + 40px)',
+                  width: isMobile ? '100%' : 'calc(100% + 40px)',
+                  marginLeft: isMobile ? '0' : '-20px',
+                  marginTop: isMobile ? '0' : '-20px',
+                  background: 'transparent',
+                  opacity: showIframe ? 1 : 0,
+                  // On mobile, disable pointer events by default
+                  pointerEvents: showIframe ? (isMobile ? 'none' : 'auto') : 'none',
+                  display: 'block',
+                }}
+                allowFullScreen
+                title={config.title}
+                loading="lazy"
+              />
+              
+              {/* Mobile touch handler - DIRECT APPROACH */}
+              {isMobile && showIframe && (
+                <div
+                  className="absolute inset-0 z-10"
+                  onPointerDown={(e) => {
+                    // On any pointer down (touch or mouse), enable iframe
+                    if (iframeRef.current) {
+                      iframeRef.current.style.pointerEvents = 'auto';
+                      // Hide this overlay so the pointer goes through to iframe
+                      e.currentTarget.style.pointerEvents = 'none';
+                      
+                      // Re-enable overlay after a short delay
+                      setTimeout(() => {
+                        e.currentTarget.style.pointerEvents = 'auto';
+                        if (iframeRef.current) {
+                          iframeRef.current.style.pointerEvents = 'none';
+                        }
+                      }, 500);
+                    }
+                  }}
+                  style={{
+                    pointerEvents: 'auto',
+                    // Critical: this makes scrolling work
+                    touchAction: 'pan-y',
+                  }}
+                />
+              )}
+            </>
           )}
         </div>
       </div>
