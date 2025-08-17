@@ -1,9 +1,74 @@
 "use client"
 
 import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react'
-import { isMobile, isTablet } from 'react-device-detect'
 import { cn } from '../../utils/cn'
 import { Badge } from '../ui/badge'
+import { SectionSelector, type SectionItem } from './section-selector'
+
+// ============================================================================
+// EXACT SPECIFICATIONS - NO LEGACY COMPATIBILITY
+// ============================================================================
+
+// 1. EXACT BREAKPOINTS
+const DESKTOP_BREAKPOINT = 768 // px
+
+// 2. EXACT CONTENT DIMENSIONS  
+const CONTENT_DIMENSIONS = {
+  mobile: { width: 343, height: 600 },
+  desktop: { width: 944, height: 600 }
+} as const
+
+// 3. VIEW MODES
+type ViewMode = 'DESKTOP' | 'MOBILE' | 'MOBILE_TOUCH'
+
+// 4. IFRAME STATES
+type IframeState = 
+  | 'INITIAL'      // Not loaded yet
+  | 'LOADING'      // Loading in progress  
+  | 'READY'        // Fully loaded and functional
+  | 'RELOADING'    // Reloading due to device change
+  | 'SLEEP_RECOVERY' // Recovering from phone sleep
+
+// 5. UNIFIED STATE INTERFACE
+interface UnifiedState {
+  // Core States
+  viewMode: ViewMode
+  iframeState: IframeState
+  
+  // Device Detection
+  screenWidth: number
+  isTouchDevice: boolean
+  
+  // Scaling & Layout
+  scaling: {
+    scale: number
+    marginX: number
+    marginY: number
+    scaledDimensions: { width: number, height: number }
+  }
+  
+  // UI Control States
+  showSectionSelector: boolean
+  showIframe: boolean
+  showSkeleton: boolean
+  showTouchOverlay: boolean
+  showTouchBadge: boolean
+  sectionsDisabled: boolean
+  
+  // Navigation State
+  activeSection: string
+  isNavigating: boolean
+  
+  // Figma Integration
+  isInitialized: boolean
+  currentNodeId: string | null
+  embedUrl: string
+  iframeKey: number
+}
+
+// ============================================================================
+// CORE INTERFACES
+// ============================================================================
 
 export interface FigmaPrototypeSection {
   id: string
@@ -11,7 +76,7 @@ export interface FigmaPrototypeSection {
   title: string
   description?: string
   startingNodeId: string
-  mobileStartingNodeId?: string  // Optional mobile-specific node ID
+  mobileStartingNodeId?: string
 }
 
 export interface FigmaPrototypeViewerConfig {
@@ -25,24 +90,19 @@ export interface FigmaPrototypeViewerConfig {
   defaultSectionId?: string
   height?: string
   onSectionChange?: (sectionId: string) => void
-  mobileStartingPoint?: string  // Optional mobile-specific starting point for embed URL
-  desktopStartingPoint?: string // Optional desktop-specific starting point for embed URL
-  hideControls?: boolean // Hide built-in controls when using external SectionSelector
+  mobileStartingPoint?: string
+  desktopStartingPoint?: string
+  hideControls?: boolean
 }
 
 interface FigmaPrototypeViewerProps {
   config: FigmaPrototypeViewerConfig
-  activeSection?: string // Allow external control of active section
-  onSectionClick?: (sectionId: string) => void // External section click handler
+  activeSection?: string
+  onSectionClick?: (sectionId: string) => void
 }
 
-// Figma Embed Kit 2.0 Event Types
-type FigmaEventType = 
-  | 'MOUSE_PRESS_OR_RELEASE'
-  | 'PRESENTED_NODE_CHANGED' 
-  | 'INITIAL_LOAD'
-  | 'NEW_STATE'
-  | 'REQUEST_CLOSE'
+// Figma Events
+type FigmaEventType = 'INITIAL_LOAD' | 'NEW_STATE' | 'PRESENTED_NODE_CHANGED'
 
 interface FigmaEvent {
   type: FigmaEventType
@@ -52,733 +112,541 @@ interface FigmaEvent {
   }
 }
 
-// Figma Embed Kit 2.0 Navigation Commands
 interface FigmaNavigationCommand {
   type: 'NAVIGATE_TO_FRAME_AND_CLOSE_OVERLAYS'
-  data: {
-    nodeId: string
+  data: { nodeId: string }
+}
+
+// ============================================================================
+// CORE CALCULATION FUNCTIONS
+// ============================================================================
+
+/**
+ * Determines the current view mode based on screen size and touch capability
+ */
+function getViewMode(screenWidth: number, isTouchDevice: boolean): ViewMode {
+  if (screenWidth >= DESKTOP_BREAKPOINT && !isTouchDevice) {
+    return 'DESKTOP'
+  } else if (screenWidth < DESKTOP_BREAKPOINT && !isTouchDevice) {
+    return 'MOBILE'
+  } else {
+    return 'MOBILE_TOUCH'
   }
 }
+
+/**
+ * Calculates optimal scaling and positioning for iframe content
+ */
+function calculateScaling(
+  viewMode: ViewMode, 
+  containerDimensions: { width: number, height: number }
+) {
+  const contentSize = viewMode === 'DESKTOP' 
+    ? CONTENT_DIMENSIONS.desktop 
+    : CONTENT_DIMENSIONS.mobile
+    
+  const scaleX = containerDimensions.width / contentSize.width
+  const scaleY = containerDimensions.height / contentSize.height
+  const scale = Math.min(scaleX, scaleY, 1) // Never scale up, only down
+  
+  // Calculate margins for centering
+  const scaledWidth = contentSize.width * scale
+  const scaledHeight = contentSize.height * scale
+  const marginX = (containerDimensions.width - scaledWidth) / 2
+  const marginY = (containerDimensions.height - scaledHeight) / 2
+  
+  return {
+    scale,
+    marginX: Math.max(marginX, 4), // Very minimal margin to reduce white space
+    marginY: Math.max(marginY, 0), // Allow zero top margin to push content up
+    scaledDimensions: { width: scaledWidth, height: scaledHeight }
+  }
+}
+
+/**
+ * Generates Figma embed URL with exact parameters
+ */
+function generateEmbedUrl(
+  fileKey: string,
+  viewMode: ViewMode,
+  startingNodeId: string,
+  clientId: string
+): string {
+  const embedHost = typeof window !== 'undefined' 
+    ? window.location.hostname 
+    : 'localhost'
+    
+  const params = new URLSearchParams({
+    'node-id': startingNodeId.replace(':', '-'),
+    'client-id': clientId,
+    'embed-host': embedHost,
+    'hide-ui': '1',
+    'hotspot-hints': '0',
+    'scaling': viewMode === 'DESKTOP' ? 'scale-down-width' : 'scale-down', // Change to scale-down for mobile
+    'starting-point-node-id': startingNodeId.replace(':', '-'),
+    'mode': 'prototype',
+    'chrome': 'DOCUMENTATION'
+  })
+  
+  return `https://embed.figma.com/proto/${fileKey}?${params.toString()}`
+}
+
+// ============================================================================
+// UNIFIED DRAWING FUNCTION
+// ============================================================================
+
+/**
+ * Unified drawing function that renders all UI elements based on current state
+ */
+function renderUnifiedUI(state: UnifiedState, handlers: {
+  onSectionClick: (sectionId: string) => void
+  onTouchStart: (e: React.TouchEvent) => void
+}, config: FigmaPrototypeViewerConfig, iframeRef: React.RefObject<HTMLIFrameElement>) {
+  const {
+    viewMode,
+    showSectionSelector,
+    showIframe,
+    showSkeleton,
+    showTouchOverlay,
+    showTouchBadge,
+    sectionsDisabled,
+    embedUrl,
+    iframeKey
+  } = state
+
+  return (
+    <div className={cn(
+      config.hideControls ? '' : 'grid grid-cols-1 lg:grid-cols-[296px_1fr] gap-10', 
+      config.className
+    )}>
+      {/* Section Controls */}
+      {showSectionSelector && !config.hideControls && (
+        <div style={{ zIndex: 10 }}>
+          <SectionSelector
+            sections={config.sections.map(section => ({
+              id: section.id,
+              title: section.title,
+              description: section.description,
+              number: section.number
+            } as SectionItem))}
+            activeSection={state.activeSection}
+            onSectionChange={handlers.onSectionClick}
+            disabled={sectionsDisabled}
+            className={cn('relative', config.controlsClassName)}
+            buttonClassName={config.controlsClassName}
+            activeButtonClassName={config.activeControlClassName}
+            layout="vertical"
+            minHeight={viewMode !== 'DESKTOP' ? "76px" : "96px"}
+          />
+        </div>
+      )}
+
+      {/* Figma Container */}
+      <div 
+        className={cn(
+          'relative w-full rounded-lg overflow-hidden',
+          viewMode === 'DESKTOP' && 'border border-ods-border',
+          config.iframeClassName
+        )}
+        style={{ 
+          height: viewMode === 'DESKTOP' ? (config.height || '800px') : '70vh',
+          minHeight: viewMode === 'DESKTOP' ? 'auto' : '500px',
+          maxHeight: viewMode === 'DESKTOP' ? 'none' : '800px',
+          border: viewMode === 'DESKTOP' ? undefined : 'none'
+        }}
+      >
+        {/* Touch Overlay - Only for MOBILE_TOUCH mode */}
+        {showTouchOverlay && (
+          <div
+            className="absolute inset-0 w-full h-full"
+            data-touch-overlay="true"
+            style={{
+              pointerEvents: 'auto',
+              touchAction: 'pan-y pinch-zoom',
+              zIndex: 2,
+              background: 'transparent',
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0
+            }}
+            onTouchStart={handlers.onTouchStart}
+          />
+        )}
+
+        {/* Touch Badge - Only for MOBILE_TOUCH mode */}
+        {showTouchBadge && (
+          <div 
+            className="absolute z-10 bottom-4 left-4"
+          >
+            <Badge variant="secondary" className="bg-black/70 text-white backdrop-blur-sm">
+              Tap twice to click
+            </Badge>
+          </div>
+        )}
+
+        {/* Figma Iframe */}
+        <iframe
+          ref={iframeRef}
+          key={iframeKey}
+          src={embedUrl}
+          className="border-0 w-full h-full"
+          style={{ 
+            background: 'white',
+            zIndex: 1,
+            display: showIframe ? 'block' : 'none',
+            visibility: showIframe ? 'visible' : 'hidden',
+            // Let Figma handle all scaling internally
+            width: '100%',
+            height: '100%',
+            transform: 'none'
+          }}
+          allow="clipboard-write; clipboard-read; fullscreen"
+          referrerPolicy="no-referrer"
+          sandbox="allow-scripts allow-same-origin allow-popups allow-presentation"
+          title={config.title}
+          loading="eager"
+          {...({ fetchPriority: 'high' } as any)}
+        />
+
+        {/* Loading Skeleton */}
+        {showSkeleton && (
+          <div className="absolute inset-0 w-full h-full bg-ods-skeleton animate-pulse rounded-lg z-10" />
+        )}
+      </div>
+    </div>
+  )
+}
+
+// ============================================================================
+// MAIN COMPONENT
+// ============================================================================
 
 export const FigmaPrototypeViewer: React.FC<FigmaPrototypeViewerProps> = ({ 
   config,
   activeSection: externalActiveSection,
   onSectionClick: externalOnSectionClick 
 }) => {
-  const {
-    fileKey,
-    sections,
-    className,
-    iframeClassName,
-    controlsClassName,
-    activeControlClassName,
-    defaultSectionId,
-    height = '800px',
-    onSectionChange,
-    mobileStartingPoint,
-    desktopStartingPoint,
-    hideControls = false
-  } = config
-  
-  // Control debug panel via environment variable
+  // Environment & Client Setup
+  const clientId = process.env.NEXT_PUBLIC_FIGMA_CLIENT_ID || 'UTQPwZHR9OZp68TTGPFFi5'
   const showDebugPanel = process.env.NEXT_PUBLIC_FIGMA_DEBUG === 'true'
-
-  /*
-   * BULLETPROOF LOADING STATE SYSTEM
-   * 
-   * This component implements a comprehensive loading state system that:
-   * 1. Tracks iframe reloads for both initial load and device size changes
-   * 2. Disables section buttons during loading states
-   * 3. Bundles all conditional logic (touch, mobile, badge, overlay) under unified state
-   * 4. Hooks into Figma's event system without touching the release mechanism
-   * 5. Ensures iframe is hidden until fully loaded and skeleton is shown appropriately
-   * 
-   * Key Features:
-   * - reloadTracker: Monitors iframe reload count and reasons (initial, device-change, navigation)
-   * - deviceState: Detects device changes that trigger reloads
-   * - loadingState: Unified state controlling all UI elements (buttons, iframe, skeleton, badge, overlay)
-   * - Automatic device change detection that triggers proper reload tracking
-   * - Section buttons are disabled during any loading state
-   * - Touch overlay and badge only appear when iframe is ready and on touch devices
-   */
-
-  // Iframe reload tracking state
-  const [reloadTracker, setReloadTracker] = useState({
-    reloadCount: 0,
-    lastReloadReason: 'initial' as 'initial' | 'device-change' | 'navigation',
-    isReloading: false
-  })
-
-  // GRANULAR STATE DEFINITIONS
-  // State 1: REGULAR DESKTOP - window >= 768px, no touch
-  // State 2: MOBILE - window < 768px OR mobile device, no touch overlay needed
-  // State 3: MOBILE WITH TOUCH - window < 768px OR mobile device, WITH touch overlay + badge
-
-  // Dynamic device detection
-  const [windowWidth, setWindowWidth] = useState(typeof window !== 'undefined' ? window.innerWidth : 768)
-  const isMobileSize = windowWidth < 768
-  const isDeviceMobile = isMobile || isTablet
-  const isTouchDevice = typeof window !== 'undefined' && ('ontouchstart' in window || navigator.maxTouchPoints > 0)
   
-  // CLEAR STATE DETERMINATION
-  const isMobileMode = isMobileSize || isDeviceMobile
-  const showTouchElements = isMobileMode && isTouchDevice
-
-  // Current viewport state for logging
-  const currentState = isMobileMode 
-    ? (showTouchElements ? 'MOBILE_WITH_TOUCH' : 'MOBILE')
-    : 'DESKTOP'
-
-  // Unified loading and UI state
-  const [uiState, setUiState] = useState({
-    // Loading states
-    isLoading: true,
-    showSkeleton: true,
-    showIframe: false,
-    buttonsDisabled: true,
-    
-    // Touch interaction states  
-    showTouchBadge: false,
-    showTouchOverlay: false,
-    
-    // Navigation state
-    isNavigating: false
+  // Refs
+  const iframeRef = useRef<HTMLIFrameElement>(null)
+  const containerRef = useRef<HTMLDivElement>(null)
+  
+  // Device Detection State
+  const [screenWidth, setScreenWidth] = useState(
+    typeof window !== 'undefined' ? window.innerWidth : DESKTOP_BREAKPOINT
+  )
+  
+  // Simple, reliable touch detection
+  const [isTouchDevice, setIsTouchDevice] = useState(() => {
+    if (typeof window === 'undefined') return false
+    // Most reliable method: check if touch events are supported
+    return 'ontouchstart' in window
   })
-
-  // Track state changes for reload detection
-  const [lastState, setLastState] = useState(currentState)
+  
+  // Iframe Management State
+  const [iframeState, setIframeState] = useState<IframeState>('INITIAL')
   const [iframeKey, setIframeKey] = useState(0)
+  const [isInitialized, setIsInitialized] = useState(false)
+  const [currentNodeId, setCurrentNodeId] = useState<string | null>(null)
   
-  // Listen for window size changes
+  // Navigation State
+  const [internalActiveSection, setInternalActiveSection] = useState<string>(
+    config.defaultSectionId || config.sections[0]?.id || ''
+  )
+  const activeSection = externalActiveSection || internalActiveSection
+  const [isNavigating, setIsNavigating] = useState(false)
+  
+  // Container Dimensions for Scaling
+  const [containerDimensions, setContainerDimensions] = useState({ width: 1200, height: 800 })
+  
+  // Calculate Current View Mode
+  const viewMode = useMemo(() => 
+    getViewMode(screenWidth, isTouchDevice), 
+    [screenWidth, isTouchDevice]
+  )
+  
+  // Calculate Scaling
+  const scaling = useMemo(() => 
+    calculateScaling(viewMode, containerDimensions),
+    [viewMode, containerDimensions]
+  )
+  
+  // Generate Embed URL
+  const embedUrl = useMemo(() => {
+    const firstSection = config.sections[0]
+    if (!firstSection) return ''
+    
+    let startingNodeId = firstSection.startingNodeId
+    
+    if (viewMode !== 'DESKTOP') {
+      startingNodeId = config.mobileStartingPoint || 
+                     firstSection.mobileStartingNodeId || 
+                     firstSection.startingNodeId
+    } else {
+      startingNodeId = config.desktopStartingPoint || firstSection.startingNodeId
+    }
+    
+    return generateEmbedUrl(config.fileKey, viewMode, startingNodeId, clientId)
+  }, [config.fileKey, config.sections, viewMode, config.mobileStartingPoint, config.desktopStartingPoint, clientId])
+  
+  // Create Unified State
+  const unifiedState: UnifiedState = useMemo(() => ({
+    viewMode,
+    iframeState,
+    screenWidth,
+    isTouchDevice,
+    scaling,
+    showSectionSelector: true,
+    showIframe: iframeState === 'READY',
+    showSkeleton: iframeState !== 'READY',
+    showTouchOverlay: viewMode === 'MOBILE_TOUCH' && iframeState === 'READY',
+    showTouchBadge: viewMode === 'MOBILE_TOUCH' && iframeState === 'READY',
+    sectionsDisabled: iframeState !== 'READY' || isNavigating,
+    activeSection,
+    isNavigating,
+    isInitialized,
+    currentNodeId,
+    embedUrl,
+    iframeKey
+  }), [
+    viewMode, iframeState, screenWidth, isTouchDevice, scaling, 
+    activeSection, isNavigating, isInitialized, currentNodeId, embedUrl, iframeKey
+  ])
+  
+  // ============================================================================
+  // EVENT HANDLERS
+  // ============================================================================
+  
+  // Window Resize Handler
   useEffect(() => {
     const handleResize = () => {
       const newWidth = window.innerWidth
-      setWindowWidth(newWidth)
-      console.log('[Resize] New width:', newWidth, 'Threshold: 768px')
+      setScreenWidth(newWidth)
+      
+      // Update container dimensions
+      if (containerRef.current) {
+        const rect = containerRef.current.getBoundingClientRect()
+        setContainerDimensions({ width: rect.width, height: rect.height })
+      }
     }
+    
+    // Initial measurement
+    handleResize()
     
     window.addEventListener('resize', handleResize)
     return () => window.removeEventListener('resize', handleResize)
   }, [])
   
-  // IMMEDIATE STATE APPLICATION ON SCREEN SIZE CHANGE
+  // Touch device detection is now done once at initialization for consistency
+  
+  // View Mode Change Handler (triggers iframe reload)
+  const [lastViewMode, setLastViewMode] = useState(viewMode)
   useEffect(() => {
-    console.log('[State Change] From:', lastState, '→', currentState)
-    console.log('[State Details] Mobile mode:', isMobileMode, 'Touch elements:', showTouchElements)
-    
-    // If state changed, trigger reload
-    if (lastState !== currentState && !uiState.isLoading) {
-      console.log('[State Change] Triggering reload for state change')
-      
-      // Update reload tracking
-      setReloadTracker(prev => ({
-        reloadCount: prev.reloadCount + 1,
-        lastReloadReason: 'device-change',
-        isReloading: true
-      }))
-      
-      // Reset to loading state
-      setUiState({
-        isLoading: true,
-        showSkeleton: true,
-        showIframe: false,
-        buttonsDisabled: true,
-        showTouchBadge: false,
-        showTouchOverlay: false,
-        isNavigating: false
-      })
-      
-      // Force iframe recreation
+    if (lastViewMode !== viewMode && iframeState === 'READY') {
+      console.log('[ViewMode Change]', lastViewMode, '→', viewMode)
+      setIframeState('RELOADING')
       setIframeKey(prev => prev + 1)
-      console.log('[State Change] Recreating iframe with key:', iframeKey + 1)
     }
-    
-    setLastState(currentState)
-  }, [currentState, lastState, uiState.isLoading, isMobileMode, showTouchElements, iframeKey])
-
-  // State - use external active section if provided
-  const [internalActiveSection, setInternalActiveSection] = useState<string>(sections[0]?.id || '')
-  const activeSection = externalActiveSection || internalActiveSection
-  const setActiveSection = externalActiveSection ? () => {} : setInternalActiveSection
+    setLastViewMode(viewMode)
+  }, [viewMode, lastViewMode, iframeState])
   
-  const [currentNodeId, setCurrentNodeId] = useState<string | null>(null)
-  const [isInitialized, setIsInitialized] = useState(false)
-  
-  // Refs
-  const iframeRef = useRef<HTMLIFrameElement>(null)
-  
-  // Debug state
-  const [eventHistory, setEventHistory] = useState<Array<{ 
-    time: number
-    type: string
-    data?: any 
-  }>>([])
-
-  // Get client ID from environment
-  const clientId = process.env.NEXT_PUBLIC_FIGMA_CLIENT_ID || 'UTQPwZHR9OZp68TTGPFFi5'
-
-  // Build embed URL with Embed Kit 2.0 format for immediate loading
-  const embedUrl = useMemo(() => {
-    const firstSection = sections[0]
-    if (!firstSection) return ''
-    
-    // Use device-specific starting point if provided
-    let startingNodeId = firstSection.startingNodeId
-    
-    if (isMobileMode) {
-      // States 2 & 3: Use mobile prototype
-      startingNodeId = mobileStartingPoint || firstSection.mobileStartingNodeId || firstSection.startingNodeId
-    } else {
-      // State 1: Use desktop prototype
-      startingNodeId = desktopStartingPoint || firstSection.startingNodeId
-    }
-    
-    // Get current domain for embed-host
-    const embedHost = typeof window !== 'undefined' 
-      ? window.location.hostname 
-      : 'localhost'
-    
-    const params = new URLSearchParams({
-      'node-id': startingNodeId.replace(':', '-'),
-      'client-id': clientId,
-      'embed-host': embedHost,
-      'hide-ui': '1',
-      'hotspot-hints': '0',
-      'scaling': isMobileMode ? 'min-zoom' : 'scale-down-width',
-      'starting-point-node-id': startingNodeId.replace(':', '-'),
-      'mode': 'prototype',
-      'chrome': 'DOCUMENTATION'
-    })
-    
-    console.log('[Embed URL] State:', currentState, 'Scaling:', isMobileMode ? 'min-zoom' : 'scale-down-width')
-    
-    return `https://embed.figma.com/proto/${fileKey}?${params.toString()}`
-  }, [fileKey, clientId, sections, isMobileMode, currentState, mobileStartingPoint, desktopStartingPoint])
-
-  // Navigate using Figma Embed Kit 2.0 postMessage API (no iframe reload)
-  const navigateToSection = useCallback((sectionId: string) => {
-    const section = sections.find(s => s.id === sectionId)
-    if (!section || !iframeRef.current?.contentWindow || !isInitialized) return
-
-    // Use mobile node ID if on mobile and available, otherwise use desktop node ID
-    const nodeId = isMobileMode && section.mobileStartingNodeId ? section.mobileStartingNodeId : section.startingNodeId
-
-    if (showDebugPanel) {
-      console.log('[Navigate] To section:', sectionId, 'node:', nodeId, 'mobile:', isMobileMode, 'touch device:', isTouchDevice)
-    }
-
-    // Update loading state for navigation
-    setUiState(prev => ({
-      ...prev,
-      isNavigating: true
-    }))
-    
-    setActiveSection(sectionId)
-    onSectionChange?.(sectionId)
-
-    // Use Figma Embed Kit 2.0 postMessage API for smooth navigation
-    const command: FigmaNavigationCommand = {
-      type: 'NAVIGATE_TO_FRAME_AND_CLOSE_OVERLAYS',
-      data: {
-        nodeId: nodeId
+  // Visibility Change Handler (phone sleep recovery)
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible' && iframeState === 'READY') {
+        console.log('[Sleep Recovery] Reloading iframe after sleep')
+        setIframeState('SLEEP_RECOVERY')
+        setIframeKey(prev => prev + 1)
       }
     }
     
-    // Send navigation command to Figma iframe
-    iframeRef.current.contentWindow.postMessage(command, 'https://www.figma.com')
-    
-    if (showDebugPanel) {
-      setEventHistory(prev => [...prev.slice(-9), {
-        time: Date.now(),
-        type: 'POSTMESSAGE_NAVIGATE',
-        data: { sectionId, nodeId, command, mobile: isMobileMode, touchDevice: isTouchDevice }
-      }])
+    document.addEventListener('visibilitychange', handleVisibilityChange)
+    return () => document.removeEventListener('visibilitychange', handleVisibilityChange)
+  }, [iframeState])
+  
+  // Figma Event Handler
+  useEffect(() => {
+    const handleMessage = (event: MessageEvent) => {
+      if (event.origin !== 'https://www.figma.com') return
+      
+      const validEvents: FigmaEventType[] = ['INITIAL_LOAD', 'NEW_STATE', 'PRESENTED_NODE_CHANGED']
+      
+      if (event.data?.type && validEvents.includes(event.data.type)) {
+        const figmaEvent = event.data as FigmaEvent
+        
+        console.log('[Figma Event]', figmaEvent.type, viewMode)
+        
+        switch (figmaEvent.type) {
+          case 'INITIAL_LOAD':
+          case 'NEW_STATE':
+            setIsInitialized(true)
+            setIframeState('READY')
+            break
+            
+          case 'PRESENTED_NODE_CHANGED':
+            if (figmaEvent.data?.presentedNodeId) {
+              setCurrentNodeId(figmaEvent.data.presentedNodeId)
+              
+              // Auto-sync active section if not manually navigating
+              if (!isNavigating) {
+                const matchingSection = config.sections.find(s => {
+                  const desktopMatch = s.startingNodeId === figmaEvent.data?.presentedNodeId ||
+                                    s.startingNodeId.replace(':', '-') === figmaEvent.data?.presentedNodeId
+                  const mobileMatch = s.mobileStartingNodeId === figmaEvent.data?.presentedNodeId ||
+                                    s.mobileStartingNodeId?.replace(':', '-') === figmaEvent.data?.presentedNodeId
+                  return desktopMatch || mobileMatch
+                })
+                
+                if (matchingSection && matchingSection.id !== activeSection) {
+                  if (!externalActiveSection) {
+                    setInternalActiveSection(matchingSection.id)
+                  }
+                  config.onSectionChange?.(matchingSection.id)
+                }
+              }
+            }
+            break
+        }
+      }
     }
-
-    // Clear navigation flag immediately (no iframe reload)
-    setUiState(prev => ({
-      ...prev,
-      isNavigating: false
-    }))
-  }, [sections, onSectionChange, showDebugPanel, isInitialized, isMobileMode])
-
-  // Handle section button click
-  const handleSectionClick = useCallback((sectionId: string) => {
-    if (sectionId === activeSection || uiState.isNavigating) return
     
-    // If external handler provided, use it
+    window.addEventListener('message', handleMessage)
+    return () => window.removeEventListener('message', handleMessage)
+  }, [config.sections, activeSection, isNavigating, externalActiveSection, config.onSectionChange, viewMode])
+  
+  // Navigation Function
+  const navigateToSection = useCallback((sectionId: string) => {
+    const section = config.sections.find(s => s.id === sectionId)
+    if (!section || !iframeRef.current?.contentWindow || !isInitialized) {
+      return
+    }
+    
+    setIsNavigating(true)
+    
+    // Choose node ID based on view mode
+    const nodeId = (viewMode !== 'DESKTOP' && section.mobileStartingNodeId) 
+      ? section.mobileStartingNodeId 
+      : section.startingNodeId
+    
+    // Update active section
+    if (!externalActiveSection) {
+      setInternalActiveSection(sectionId)
+    }
+    config.onSectionChange?.(sectionId)
+    
+    // Send Figma command
+    const command: FigmaNavigationCommand = {
+      type: 'NAVIGATE_TO_FRAME_AND_CLOSE_OVERLAYS',
+      data: { nodeId }
+    }
+    
+    try {
+      iframeRef.current.contentWindow.postMessage(command, 'https://www.figma.com')
+      console.log('[Navigation]', sectionId, '→', nodeId, viewMode)
+    } catch (error) {
+      console.error('[Navigation Error]', error)
+    }
+    
+    // Reset navigation flag
+    setTimeout(() => setIsNavigating(false), 500)
+  }, [config.sections, isInitialized, viewMode, externalActiveSection, config.onSectionChange])
+  
+  // Section Click Handler
+  const handleSectionClick = useCallback((sectionId: string) => {
+    const sectionsDisabled = iframeState !== 'READY' || isNavigating
+    
+    if (sectionId === activeSection || sectionsDisabled) {
+      return
+    }
+    
     if (externalOnSectionClick) {
       externalOnSectionClick(sectionId)
     } else {
       navigateToSection(sectionId)
     }
+  }, [activeSection, iframeState, isNavigating, externalOnSectionClick, navigateToSection])
+  
+  // Touch Handler for Mobile Touch Mode
+  const handleTouchStart = useCallback((e: React.TouchEvent) => {
+    // Simple approach: on any touch, disable overlay for longer to allow normal interaction,
+    // then re-enable for scrolling
+    const overlayElement = e.currentTarget as HTMLElement
     
-    // On touch devices, scroll to the Figma viewer when manually clicking sections
-    if (isTouchDevice && iframeRef.current) {
-      // Small delay to ensure navigation starts before scrolling
-      setTimeout(() => {
-        iframeRef.current?.scrollIntoView({ 
-          behavior: 'smooth', 
-          block: 'start'
-        })
-      }, 100)
-    }
-  }, [activeSection, uiState.isNavigating, navigateToSection, isTouchDevice, externalOnSectionClick])
-
-  // Navigate when external active section changes
+    console.log('[Touch] Touch detected, allowing iframe interaction')
+    
+    // Disable overlay to allow touch to pass through to iframe
+    overlayElement.style.pointerEvents = 'none'
+    
+    // Re-enable overlay after interaction window (500ms for normal human interaction)
+    setTimeout(() => {
+      if (overlayElement && overlayElement.style.pointerEvents === 'none') {
+        overlayElement.style.pointerEvents = 'auto'
+        console.log('[Touch] Overlay re-enabled for scrolling')
+      }
+    }, 500)
+  }, [])
+  
+  // External Active Section Change
   useEffect(() => {
-    if (externalActiveSection && externalActiveSection !== activeSection) {
+    if (externalActiveSection && externalActiveSection !== activeSection && isInitialized) {
       navigateToSection(externalActiveSection)
     }
-  }, [externalActiveSection])
-
-
-
-  // Handle Figma events
-  useEffect(() => {
-    console.log('🎧 [EVENT LISTENER] Setting up Figma message listener')
-    
-    const handleMessage = (event: MessageEvent) => {
-      console.log('📨 [ALL MESSAGES] Origin:', event.origin, 'Data:', event.data)
-      
-      if (event.origin !== 'https://www.figma.com') return
-
-      // Always log any Figma message for debugging
-      console.log('🔍 [FIGMA MESSAGE] Received:', event.data)
-
-      const validEvents: FigmaEventType[] = [
-        'MOUSE_PRESS_OR_RELEASE',
-        'PRESENTED_NODE_CHANGED',
-        'INITIAL_LOAD',
-        'NEW_STATE',
-        'REQUEST_CLOSE'
-      ]
-
-      if (event.data?.type && validEvents.includes(event.data.type)) {
-        const figmaEvent = event.data as FigmaEvent
-        
-        // Debug logging
-        if (showDebugPanel) {
-          console.log('[Event]', figmaEvent.type, figmaEvent.data)
-          setEventHistory(prev => [...prev.slice(-9), {
-            time: Date.now(),
-            type: figmaEvent.type,
-            data: figmaEvent.data
-          }])
-        }
-
-        switch (figmaEvent.type) {
-          case 'INITIAL_LOAD':
-            setIsInitialized(true)
-            // Mark reload as complete if this was a reload
-            setReloadTracker(prev => ({
-              ...prev,
-              isReloading: false
-            }))
-            
-            console.log('🎯 [FIGMA EVENT] INITIAL_LOAD received - iframe functional')
-            console.log('📱 [DEVICE STATE] isTouchDevice:', isTouchDevice, 'isMobileMode:', isMobileMode)
-            
-            // Show iframe and activate all UI based on current device state
-            setUiState(prev => {
-              console.log('[INITIAL_LOAD] Setting touch elements - isTouchDevice:', isTouchDevice)
-              return {
-                ...prev,
-                isLoading: false,
-                showIframe: true,
-                buttonsDisabled: false,
-                showSkeleton: false,
-                showTouchBadge: showTouchElements, // Based on unified state
-                showTouchOverlay: showTouchElements // Based on unified state
-              }
-            })
-            
-            if (showDebugPanel) {
-              console.log('[Initial Load] Prototype loaded and activated - touch overlay/badge:', isTouchDevice)
-            }
-            break
-
-          case 'NEW_STATE':
-            console.log('🎯 [FIGMA EVENT] NEW_STATE received - fully rendered')
-            console.log('📱 [DEVICE STATE] isTouchDevice:', isTouchDevice, 'isMobileMode:', isMobileMode)
-            
-            // Ensure UI is activated based on current device state
-            setUiState(prev => {
-              console.log('[NEW_STATE] Setting touch elements - isTouchDevice:', isTouchDevice)
-              return {
-                ...prev,
-                isLoading: false,
-                showIframe: true,
-                buttonsDisabled: false,
-                showSkeleton: false,
-                showTouchBadge: showTouchElements, // Based on unified state
-                showTouchOverlay: showTouchElements // Based on unified state
-              }
-            })
-            
-            if (showDebugPanel) {
-              console.log('[New State] Figma fully rendered - touch overlay/badge:', isTouchDevice)
-            }
-            break
-
-          case 'PRESENTED_NODE_CHANGED':
-            if (figmaEvent.data?.presentedNodeId) {
-              const nodeId = figmaEvent.data.presentedNodeId
-              setCurrentNodeId(nodeId)
-              
-              // Auto-sync sections if not manually navigating
-              if (!uiState.isNavigating) {
-                const matchingSection = sections.find(s => {
-                  // Check both desktop and mobile node IDs
-                  const desktopNormalized = s.startingNodeId.replace(':', '-')
-                  const mobileNormalized = s.mobileStartingNodeId?.replace(':', '-')
-                  
-                  return desktopNormalized === nodeId || 
-                         s.startingNodeId === nodeId ||
-                         mobileNormalized === nodeId ||
-                         s.mobileStartingNodeId === nodeId
-                })
-                
-                if (matchingSection && matchingSection.id !== activeSection) {
-                  if (showDebugPanel) {
-                    console.log('[Auto-sync] Section:', matchingSection.id, 'from node:', nodeId)
-                  }
-                  setActiveSection(matchingSection.id)
-                  onSectionChange?.(matchingSection.id)
-                }
-              }
-            }
-            break
-        }
-      }
-    }
-
-    window.addEventListener('message', handleMessage)
-    return () => window.removeEventListener('message', handleMessage)
-  }, [sections, activeSection, onSectionChange, showDebugPanel, uiState.isNavigating])
-
-  // Debug panel commands using URL navigation
-  const sendCommand = useCallback((command: string) => {
-    if (!iframeRef.current) return
-
-    if (showDebugPanel) {
-      setEventHistory(prev => [...prev.slice(-9), {
-        time: Date.now(),
-        type: 'COMMAND',
-        data: { command }
-      }])
-    }
-
-    switch (command) {
-      case 'RESTART':
-        if (sections[0]) {
-          navigateToSection(sections[0].id)
-        }
-        break
-      case 'NAVIGATE_FORWARD':
-        // Find next section
-        const currentIndex = sections.findIndex(s => s.id === activeSection)
-        const nextSection = sections[currentIndex + 1]
-        if (nextSection) {
-          navigateToSection(nextSection.id)
-        }
-        break
-      case 'NAVIGATE_BACKWARD':
-        // Find previous section
-        const currentIdx = sections.findIndex(s => s.id === activeSection)
-        const prevSection = sections[currentIdx - 1]
-        if (prevSection) {
-          navigateToSection(prevSection.id)
-        }
-        break
-    }
-  }, [showDebugPanel, sections, activeSection, navigateToSection])
-
+  }, [externalActiveSection, activeSection, isInitialized, navigateToSection])
+  
+  // ============================================================================
+  // RENDER
+  // ============================================================================
+  
   return (
-    <>
-      <div className={cn(hideControls ? '' : 'grid grid-cols-1 lg:grid-cols-[296px_1fr] gap-10', className)}>
-        {/* Section Controls - only show if not hidden */}
-        {!hideControls && (
-          <div className={cn('flex flex-col gap-2', controlsClassName)}>
-            {sections.map((section) => (
-              <button
-                key={section.id}
-                onClick={() => handleSectionClick(section.id)}
-                disabled={uiState.buttonsDisabled || uiState.isNavigating}
-                className={cn(
-                  'bg-ods-card border rounded-md p-6 flex gap-2 items-start',
-                  'shadow-ods-card transition-all duration-200',
-                  'hover:bg-ods-card-hover cursor-pointer text-left',
-                  'min-h-[96px]',
-                  'disabled:opacity-50 disabled:cursor-not-allowed',
-                  activeSection === section.id
-                    ? cn('border-[var(--ods-open-yellow-base)]', activeControlClassName)
-                    : 'border-ods-border'
-                )}
-              >
-                <span className="font-['DM_Sans'] font-bold text-[var(--ods-open-yellow-base)] text-lg tracking-[-0.36px] leading-[24px] shrink-0">
-                  {section.number}
-                </span>
-                <div className="flex-1">
-                  <p className="font-['DM_Sans'] font-medium text-ods-text-primary text-lg leading-[24px]">
-                    {section.title}
-                  </p>
-                  {section.description && (
-                    <p className="font-['DM_Sans'] text-ods-text-secondary text-sm mt-1 hidden xl:block">
-                      {section.description}
-                    </p>
-                  )}
-                </div>
-              </button>
-            ))}
-          </div>
-        )}
-
-        {/* Figma Prototype Container */}
-        <div 
-          className={cn(
-            'relative w-full rounded-lg border border-ods-border',
-            iframeClassName
-          )}
-          style={{ 
-            height: isMobileMode ? '80vh' : height,
-            minHeight: isMobileMode ? '600px' : 'auto'
-          }}
-        >
-          {/* Touch devices: Transparent overlay that enables page scroll */}
-          {uiState.showTouchOverlay && (
-            <div
-              className="absolute inset-0 w-full h-full"
-              style={{
-                // This div sits above iframe and handles ONLY scroll
-                pointerEvents: 'auto', // Capture touch events for scroll
-                touchAction: 'pan-y pinch-zoom', // Enable page scrolling
-                zIndex: 2, // Above iframe
-                background: 'transparent',
-              }}
-              onTouchStart={(e) => {
-                // If it's a quick tap (likely a click), let iframe handle it
-                const touch = e.touches[0]
-                const startTime = Date.now()
-                const overlayElement = e.currentTarget as HTMLElement // Store reference
-                
-                const handleTouchEnd = (endEvent: TouchEvent) => {
-                  const endTime = Date.now()
-                  const duration = endTime - startTime
-                  const endTouch = endEvent.changedTouches[0]
-                  const distance = Math.abs(endTouch.clientY - touch.clientY)
-                  
-                  // If it's a quick tap with little movement, it's a click - let iframe handle it
-                  if (duration < 200 && distance < 10) {
-                    // Remove this overlay temporarily to let click through
-                    if (overlayElement) {
-                      overlayElement.style.pointerEvents = 'none'
-                      setTimeout(() => {
-                        if (overlayElement) {
-                          overlayElement.style.pointerEvents = 'auto'
-                        }
-                      }, 100)
-                    }
-                  }
-                  
-                  document.removeEventListener('touchend', handleTouchEnd)
-                }
-                
-                document.addEventListener('touchend', handleTouchEnd)
-              }}
-            />
-          )}
-
-          {/* Touch device instruction badge */}
-          {uiState.showTouchBadge && (
-            <div className="absolute bottom-3 left-3 z-10">
-              <Badge variant="secondary" className="bg-black/70 text-white backdrop-blur-sm">
-                Tap twice to click
-              </Badge>
-            </div>
-          )}
-
-          {/* Figma iframe - HIDDEN DURING LOADING */}
-          <iframe
-            key={iframeKey}
-            ref={iframeRef}
-            src={embedUrl}
-            className="border-0 w-full h-full"
-            style={{ 
-              background: 'white',
-              zIndex: 1,
-              display: uiState.showIframe ? 'block' : 'none', // COMPLETELY HIDE DURING LOADING
-              visibility: uiState.showIframe ? 'visible' : 'hidden', // EXTRA HIDING
-              ...(isMobileMode ? {} : {
-                // Desktop-specific styling (with margin adjustments)
-                height: 'calc(100% + 40px)',
-                width: 'calc(100% + 40px)',
-                marginLeft: '-20px',
-                marginTop: '-20px',
-                position: 'relative',
-              })
-            }}
-            allow="clipboard-write; clipboard-read; fullscreen"
-            referrerPolicy="no-referrer"
-            sandbox="allow-scripts allow-same-origin allow-popups allow-presentation"
-            title={config.title}
-            loading="eager"
-            {...({ fetchPriority: 'high' } as any)}
-          />
-
-          {/* Loading skeleton - shown during loading */}
-          {uiState.showSkeleton && (
-            <div className="absolute inset-0 w-full h-full bg-ods-skeleton animate-pulse rounded-lg z-10" />
-          )}
-        </div>
-      </div>
+    <div ref={containerRef}>
+      {renderUnifiedUI(unifiedState, {
+        onSectionClick: handleSectionClick,
+        onTouchStart: handleTouchStart
+      }, config, iframeRef)}
       
       {/* Debug Panel */}
       {showDebugPanel && (
         <div className="mt-6 p-4 bg-ods-card border border-ods-border rounded-md">
-          <h3 className="font-semibold text-ods-text-primary mb-3">
-            🔍 Debug Panel
-          </h3>
+          <h3 className="font-semibold text-ods-text-primary mb-3">🔍 Debug Panel</h3>
           
-          {/* Device Mode */}
-          <div className="mb-3 p-2 bg-ods-bg rounded text-sm">
-            <span className="text-ods-text-secondary">Device Mode:</span>{' '}
-            <span className={isMobileMode ? "text-blue-500 font-semibold" : "text-green-500 font-semibold"}>
-              {isMobileMode ? '📱 Mobile' : '🖥️ Desktop'}
-            </span>
-            {' '}
-            <span className="text-ods-text-secondary text-xs">
-              (device: {isDeviceMobile ? 'mobile' : 'desktop'}, window: {isMobileSize ? 'mobile' : 'desktop'}, touch: {isTouchDevice ? 'yes' : 'no'})
-            </span>
-          </div>
-          
-          {/* Reload Tracking Status */}
-          <div className="mb-3 p-2 bg-ods-bg rounded text-sm">
-            <span className="text-ods-text-secondary">Reload Tracking:</span>{' '}
-            <span className="text-ods-text-primary">
-              Count: {reloadTracker.reloadCount}
-            </span>
-            {' | '}
-            <span className="text-ods-text-primary">
-              Last: {reloadTracker.lastReloadReason}
-            </span>
-            {' | '}
-            <span className={reloadTracker.isReloading ? "text-orange-500" : "text-gray-500"}>
-              {reloadTracker.isReloading ? 'Reloading...' : 'Stable'}
-            </span>
-          </div>
-          
-          {/* Loading State Status */}
-          <div className="mb-3 grid grid-cols-2 gap-4 text-sm">
+          <div className="grid grid-cols-2 gap-4 text-sm">
             <div>
-              <span className="text-ods-text-secondary">Main Loading:</span>{' '}
-              <span className={uiState.isLoading ? "text-yellow-500" : "text-green-500"}>
-                {uiState.isLoading ? 'Yes' : 'No'}
-              </span>
+              <span className="text-ods-text-secondary">View Mode:</span>{' '}
+              <span className="text-ods-text-primary font-mono">{viewMode}</span>
             </div>
             <div>
-              <span className="text-ods-text-secondary">Navigating:</span>{' '}
-              <span className={uiState.isNavigating ? "text-orange-500" : "text-gray-500"}>
-                {uiState.isNavigating ? 'Yes' : 'No'}
-              </span>
+              <span className="text-ods-text-secondary">Iframe State:</span>{' '}
+              <span className="text-ods-text-primary font-mono">{iframeState}</span>
             </div>
             <div>
-              <span className="text-ods-text-secondary">Buttons:</span>{' '}
-              <span className={uiState.buttonsDisabled ? "text-red-500" : "text-green-500"}>
-                {uiState.buttonsDisabled ? 'Disabled' : 'Enabled'}
-              </span>
+              <span className="text-ods-text-secondary">Screen:</span>{' '}
+              <span className="text-ods-text-primary">{screenWidth}px</span>
             </div>
             <div>
-              <span className="text-ods-text-secondary">Iframe:</span>{' '}
-              <span className={uiState.showIframe ? "text-green-500" : "text-yellow-500"}>
-                {uiState.showIframe ? 'Visible' : 'Hidden'}
-              </span>
-            </div>
-          </div>
-          
-          {/* Touch & Mobile Status */}
-          <div className="mb-3 grid grid-cols-2 gap-4 text-sm">
-            <div>
-              <span className="text-ods-text-secondary">Touch Overlay:</span>{' '}
-              <span className={uiState.showTouchOverlay ? "text-blue-500" : "text-gray-500"}>
-                {uiState.showTouchOverlay ? 'Active' : 'Hidden'}
-              </span>
+              <span className="text-ods-text-secondary">Touch:</span>{' '}
+              <span className="text-ods-text-primary">{isTouchDevice ? 'Yes' : 'No'}</span>
             </div>
             <div>
-              <span className="text-ods-text-secondary">Touch Badge:</span>{' '}
-              <span className={uiState.showTouchBadge ? "text-blue-500" : "text-gray-500"}>
-                {uiState.showTouchBadge ? 'Shown' : 'Hidden'}
-              </span>
+              <span className="text-ods-text-secondary">Scale:</span>{' '}
+              <span className="text-ods-text-primary">{scaling.scale.toFixed(2)}</span>
             </div>
-          </div>
-          
-          {/* Active State */}
-          <div className="mb-3 grid grid-cols-2 gap-4 text-sm">
             <div>
               <span className="text-ods-text-secondary">Section:</span>{' '}
               <span className="text-ods-text-primary">{activeSection}</span>
             </div>
-            <div>
-              <span className="text-ods-text-secondary">Node:</span>{' '}
-              <span className="text-ods-text-primary text-xs">{currentNodeId || 'unknown'}</span>
-            </div>
           </div>
           
-          {/* Navigation */}
-          <div className="mb-3 flex gap-2">
-            <button
-              onClick={() => sendCommand('NAVIGATE_BACKWARD')}
-              className="px-3 py-1 rounded text-sm bg-blue-500 text-white hover:bg-blue-600"
-            >
-              ← Back
-            </button>
-            <button
-              onClick={() => sendCommand('RESTART')}
-              className="px-3 py-1 rounded text-sm bg-purple-500 text-white hover:bg-purple-600"
-            >
-              Restart
-            </button>
-            <button
-              onClick={() => sendCommand('NAVIGATE_FORWARD')}
-              className="px-3 py-1 rounded text-sm bg-blue-500 text-white hover:bg-blue-600"
-            >
-              Next →
-            </button>
-          </div>
-          
-          {/* Events */}
-          <div className="max-h-24 overflow-y-auto p-2 bg-ods-bg rounded text-xs space-y-1">
-            {eventHistory.length === 0 ? (
-              <div className="text-ods-text-secondary">No events yet...</div>
-            ) : (
-              eventHistory.slice().reverse().map((event, i) => (
-                <div key={`${event.time}-${i}`} className="flex gap-2">
-                  <span className="text-ods-text-secondary">
-                    {new Date(event.time).toLocaleTimeString()}
-                  </span>
-                  <span className={cn(
-                    "font-medium",
-                    event.type === 'INITIAL_LOAD' && "text-green-400",
-                    event.type === 'PRESENTED_NODE_CHANGED' && "text-blue-400",
-                    event.type === 'NEW_STATE' && "text-purple-400",
-                    event.type === 'POSTMESSAGE_NAVIGATE' && "text-cyan-400",
-                    event.type === 'COMMAND' && "text-orange-400",
-                    !['INITIAL_LOAD', 'PRESENTED_NODE_CHANGED', 'NEW_STATE', 'POSTMESSAGE_NAVIGATE', 'COMMAND'].includes(event.type) && "text-gray-400"
-                  )}>
-                    {event.type}
-                  </span>
-                  {event.data && (
-                    <span className="text-ods-text-secondary truncate flex-1">
-                      {JSON.stringify(event.data)}
-                    </span>
-                  )}
-                </div>
-              ))
-            )}
+          <div className="mt-3 text-xs text-ods-text-secondary">
+            Margins: {scaling.marginX.toFixed(0)}px × {scaling.marginY.toFixed(0)}px
           </div>
         </div>
       )}
-    </>
+    </div>
   )
 }
 
