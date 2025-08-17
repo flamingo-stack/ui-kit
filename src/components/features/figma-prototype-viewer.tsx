@@ -473,8 +473,9 @@ export const FigmaPrototypeViewer: React.FC<FigmaPrototypeViewerProps> = ({
                   position: 'relative',
                 })
               }}
-              allowFullScreen
               allow="clipboard-write; clipboard-read; fullscreen"
+              referrerPolicy="no-referrer"
+              sandbox="allow-scripts allow-same-origin allow-popups allow-presentation"
               title={config.title}
               loading="eager"
             />
