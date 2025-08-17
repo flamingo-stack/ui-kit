@@ -389,7 +389,10 @@ export const FigmaPrototypeViewer: React.FC<FigmaPrototypeViewerProps> = ({
             'relative w-full rounded-lg border border-ods-border',
             iframeClassName
           )}
-          style={{ height }}
+          style={{ 
+            height: isMobile ? '70vh' : height,
+            minHeight: isMobile ? '500px' : 'auto'
+          }}
         >
           {/* Touch devices: Transparent overlay that enables page scroll */}
           {isTouchDevice && showIframe && (
@@ -473,7 +476,7 @@ export const FigmaPrototypeViewer: React.FC<FigmaPrototypeViewerProps> = ({
               allowFullScreen
               allow="clipboard-write; clipboard-read; fullscreen"
               title={config.title}
-              loading="lazy"
+              loading="eager"
             />
           )}
         </div>
