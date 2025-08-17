@@ -391,7 +391,7 @@ export const FigmaPrototypeViewer: React.FC<FigmaPrototypeViewerProps> = ({
           )}
           style={{ 
             height: isMobile ? '70vh' : height,
-            minHeight: isMobile ? '500px' : 'auto'
+            minHeight: isMobile ? '700px' : 'auto'
           }}
         >
           {/* Touch devices: Transparent overlay that enables page scroll */}
