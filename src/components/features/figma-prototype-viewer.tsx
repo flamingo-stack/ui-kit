@@ -23,7 +23,6 @@ export interface FigmaPrototypeViewerConfig {
   defaultSectionId?: string
   height?: string
   onSectionChange?: (sectionId: string) => void
-  showDebugPanel?: boolean
   mobileStartingPoint?: string  // Optional mobile-specific starting point for embed URL
   desktopStartingPoint?: string // Optional desktop-specific starting point for embed URL
   hideControls?: boolean // Hide built-in controls when using external SectionSelector
@@ -74,11 +73,13 @@ export const FigmaPrototypeViewer: React.FC<FigmaPrototypeViewerProps> = ({
     defaultSectionId,
     height = '800px',
     onSectionChange,
-    showDebugPanel = false,
     mobileStartingPoint,
     desktopStartingPoint,
     hideControls = false
   } = config
+  
+  // Control debug panel via environment variable
+  const showDebugPanel = process.env.NEXT_PUBLIC_FIGMA_DEBUG === 'true'
 
   // Detect if we're on mobile
   const [isMobile, setIsMobile] = useState(false)
