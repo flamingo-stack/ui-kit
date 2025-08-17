@@ -1206,3 +1206,135 @@ These loading standards ensure consistent, predictable behavior across all admin
 - **Dynamic job name display** from metadata instead of hardcoded values
 - **Icon consistency** with proper icon assignments for all job types
 - **OpenFrame Docs Job** properly renamed and positioned
+
+## Container Layout Standards (COMPLETED ✅)
+
+### PageContainer Component
+A standardized container component that ensures consistent layout across all Flamingo website sections:
+
+**Location**: `src/components/layout/page-container.tsx`
+
+**Purpose**: 
+- Eliminates container inconsistencies across components
+- Provides reusable layout logic with customizable options
+- Ensures responsive design with proper max-width constraints
+
+**Props Interface**:
+```typescript
+interface PageContainerProps {
+  children: React.ReactNode;
+  className?: string;                    // Additional classes for the container
+  fullWidthBackground?: boolean;         // Whether background spans full width (default: true)
+  backgroundClassName?: string;          // Background color classes (default: 'bg-ods-bg')
+  backgroundStyle?: React.CSSProperties; // Custom background styles (e.g., gradients)
+  contentPadding?: string;              // Content padding classes (default: 'px-6 md:px-20 py-6 md:py-10')
+  maxWidth?: string;                    // Max width constraint (default: 'max-w-[1920px]')
+  as?: keyof JSX.IntrinsicElements;     // HTML element type (default: 'section')
+  id?: string;                          // Optional ID for the container
+}
+```
+
+**Standard Implementation**:
+```typescript
+// Default usage - responsive container with proper spacing
+<PageContainer>
+  <h1>Section Title</h1>
+  <p>Section content...</p>
+</PageContainer>
+
+// With gradient background (for sections like Team)
+<PageContainer 
+  backgroundStyle={{
+    background: 'linear-gradient(to bottom, rgb(33, 33, 33), rgb(22, 22, 22))'
+  }}
+>
+  <TeamContent />
+</PageContainer>
+
+// Custom padding and max-width
+<PageContainer 
+  contentPadding="px-8 md:px-24 py-8 md:py-12"
+  maxWidth="max-w-7xl"
+>
+  <CustomContent />
+</PageContainer>
+```
+
+### Migration Guidelines
+
+**All Flamingo website components MUST use PageContainer** instead of manual container patterns.
+
+**Before (inconsistent patterns)**:
+```typescript
+// MediaMaterialsSection - full screen padding
+<section className="p-6 md:p-[80px]">
+
+// TeamSection - mixed container patterns  
+<section className="max-w-[1920px] mx-auto">
+  <div className="px-6 md:px-20 py-6 md:py-10">
+
+// MissionSection - manual container setup
+<section className="container mx-auto px-6 py-8">
+```
+
+**After (standardized with PageContainer)**:
+```typescript
+// All sections use PageContainer consistently
+<PageContainer>
+  {/* Content automatically gets proper max-width, padding, and centering */}
+</PageContainer>
+
+// With custom background for Team section
+<PageContainer 
+  backgroundStyle={{
+    background: 'linear-gradient(to bottom, rgb(33, 33, 33), rgb(22, 22, 22))'
+  }}
+>
+  {/* Team content */}
+</PageContainer>
+```
+
+### Container Standards
+- **Max Width**: `max-w-[1920px]` for consistent content bounds
+- **Responsive Padding**: `px-6 md:px-20 py-6 md:py-10` for proper spacing
+- **Centered Content**: `mx-auto` ensures horizontal centering
+- **Full-Width Backgrounds**: Background spans entire viewport width
+- **Gradient Support**: Custom background styles via `backgroundStyle` prop
+
+### Successfully Migrated Components
+The following components have been updated to use the standardized PageContainer:
+
+1. **MediaMaterialsSection** (`components/shared/media-materials-section.tsx`)
+   - Changed from `p-6 md:p-[80px]` to PageContainer
+   - Fixed screen-width wrapping issue
+   - Maintains media grid layout
+
+2. **TeamSection** (`components/shared/team-section.tsx`)  
+   - Replaced manual container logic with PageContainer
+   - Preserved gradient background support via `backgroundStyle` prop
+   - Consistent with other sections
+
+3. **MissionSection** (`components/shared/mission-section.tsx`)
+   - Updated from manual container to PageContainer
+   - Maintains mission grid layout and responsive design
+   - Uses standard container properties
+
+### Export Configuration
+PageContainer is properly exported from UI Kit:
+- `ui-kit/src/components/layout/page-container.tsx` - Component file
+- `ui-kit/src/components/index.ts` - Main index export
+- `ui-kit/src/components/ui/index.ts` - UI components index export
+
+**Import Pattern**:
+```typescript
+import { PageContainer } from '@flamingo/ui-kit/components/ui'
+```
+
+### Development Guidelines
+1. **Always use PageContainer** for new Flamingo website sections
+2. **Migrate existing components** when making updates to use PageContainer
+3. **Custom backgrounds** should use `backgroundStyle` prop, not className overrides
+4. **Content padding** can be customized via `contentPadding` prop when needed
+5. **Max-width constraints** should use `maxWidth` prop for different section requirements
+
+This standardization ensures visual consistency across the entire Flamingo website and provides a maintainable foundation for future component development.
