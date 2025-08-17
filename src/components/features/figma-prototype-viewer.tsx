@@ -390,8 +390,8 @@ export const FigmaPrototypeViewer: React.FC<FigmaPrototypeViewerProps> = ({
             iframeClassName
           )}
           style={{ 
-            height: isMobile ? '70vh' : height,
-            minHeight: isMobile ? '550px' : 'auto'
+            height: isMobile ? '80vh' : height,
+            minHeight: isMobile ? '600px' : 'auto'
           }}
         >
           {/* Touch devices: Transparent overlay that enables page scroll */}
