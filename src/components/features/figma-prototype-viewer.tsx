@@ -111,7 +111,24 @@ export const FigmaPrototypeViewer: React.FC<FigmaPrototypeViewerProps> = ({
 
   // Device detection: combine user-agent detection with dynamic window size
   const isDeviceTypeMobile = isMobile || isTablet // Static device type
-  const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0
+  
+  // Dynamic touch detection (re-check on component updates)
+  const [isTouchDevice, setIsTouchDevice] = useState(
+    typeof window !== 'undefined' && ('ontouchstart' in window || navigator.maxTouchPoints > 0)
+  )
+  
+  // Re-detect touch capability (useful for browser dev tools device simulation)
+  useEffect(() => {
+    const detectTouch = () => {
+      const hasTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0
+      console.log('[Touch Detection] Current touch state:', hasTouch)
+      setIsTouchDevice(hasTouch)
+    }
+    
+    // Re-detect touch on focus (useful when switching between device simulation modes)
+    window.addEventListener('focus', detectTouch)
+    return () => window.removeEventListener('focus', detectTouch)
+  }, [])
   
   // Dynamic window size detection for fullscreen changes
   const [windowWidth, setWindowWidth] = useState(typeof window !== 'undefined' ? window.innerWidth : 768)
@@ -175,21 +192,13 @@ export const FigmaPrototypeViewer: React.FC<FigmaPrototypeViewerProps> = ({
         showTouchOverlay: false
       }))
       
-      // Force iframe to reload with new URL by changing the src
-      if (iframeRef.current) {
-        console.log('[Force Reload] Clearing iframe src and reloading')
-        iframeRef.current.src = 'about:blank'
-        setTimeout(() => {
-          if (iframeRef.current) {
-            iframeRef.current.src = embedUrl
-            console.log('[Force Reload] New iframe URL set:', embedUrl)
-          }
-        }, 100)
-      }
+      // Force iframe recreation by changing React key (no timeout needed)
+      setIframeKey(prev => prev + 1)
+      console.log('[Force Reload] Recreating iframe with new key:', iframeKey + 1)
       
       setLastMobileState(isActuallyMobile)
     }
-  }, [isActuallyMobile, loadingState.isLoading, lastMobileState, isDeviceTypeMobile, isWindowMobile, windowWidth, embedUrl])
+  }, [isActuallyMobile, loadingState.isLoading, lastMobileState, isDeviceTypeMobile, isWindowMobile, windowWidth, iframeKey])
 
   // Update touch UI immediately when touch device state changes (don't wait for Figma events)
   useEffect(() => {
@@ -385,15 +394,18 @@ export const FigmaPrototypeViewer: React.FC<FigmaPrototypeViewerProps> = ({
             console.log('📱 [DEVICE STATE] isTouchDevice:', isTouchDevice, 'isActuallyMobile:', isActuallyMobile)
             
             // Show iframe and activate all UI based on current device state
-            setLoadingState(prev => ({
-              ...prev,
-              isLoading: false,
-              showIframe: true,
-              buttonsDisabled: false,
-              showSkeleton: false,
-              showBadge: isTouchDevice, // Only show on touch devices
-              showTouchOverlay: isTouchDevice // Only show on touch devices
-            }))
+            setLoadingState(prev => {
+              console.log('[INITIAL_LOAD] Setting touch elements - isTouchDevice:', isTouchDevice)
+              return {
+                ...prev,
+                isLoading: false,
+                showIframe: true,
+                buttonsDisabled: false,
+                showSkeleton: false,
+                showBadge: isTouchDevice, // Only show on touch devices
+                showTouchOverlay: isTouchDevice // Only show on touch devices
+              }
+            })
             
             if (showDebugPanel) {
               console.log('[Initial Load] Prototype loaded and activated - touch overlay/badge:', isTouchDevice)
@@ -405,15 +417,18 @@ export const FigmaPrototypeViewer: React.FC<FigmaPrototypeViewerProps> = ({
             console.log('📱 [DEVICE STATE] isTouchDevice:', isTouchDevice, 'isActuallyMobile:', isActuallyMobile)
             
             // Ensure UI is activated based on current device state
-            setLoadingState(prev => ({
-              ...prev,
-              isLoading: false,
-              showIframe: true,
-              buttonsDisabled: false,
-              showSkeleton: false,
-              showBadge: isTouchDevice, // Only show on touch devices
-              showTouchOverlay: isTouchDevice // Only show on touch devices
-            }))
+            setLoadingState(prev => {
+              console.log('[NEW_STATE] Setting touch elements - isTouchDevice:', isTouchDevice)
+              return {
+                ...prev,
+                isLoading: false,
+                showIframe: true,
+                buttonsDisabled: false,
+                showSkeleton: false,
+                showBadge: isTouchDevice, // Only show on touch devices
+                showTouchOverlay: isTouchDevice // Only show on touch devices
+              }
+            })
             
             if (showDebugPanel) {
               console.log('[New State] Figma fully rendered - touch overlay/badge:', isTouchDevice)
@@ -599,6 +614,7 @@ export const FigmaPrototypeViewer: React.FC<FigmaPrototypeViewerProps> = ({
 
           {/* Figma iframe - HIDDEN DURING LOADING */}
           <iframe
+            key={iframeKey}
             ref={iframeRef}
             src={embedUrl}
             className="border-0 w-full h-full"
