@@ -103,11 +103,10 @@ export const FigmaPrototypeViewer: React.FC<FigmaPrototypeViewerProps> = ({
   const activeSection = externalActiveSection || internalActiveSection
   const setActiveSection = externalActiveSection ? () => {} : setInternalActiveSection
   
-  const [isLoading, setIsLoading] = useState(true)
   const [isNavigating, setIsNavigating] = useState(false)
   const [currentNodeId, setCurrentNodeId] = useState<string | null>(null)
   const [isInitialized, setIsInitialized] = useState(false)
-  const [showIframe, setShowIframe] = useState(false)
+  const [showIframe, setShowIframe] = useState(false) // Simple: false = skeleton shows, true = iframe shows
   
   // Refs
   const iframeRef = useRef<HTMLIFrameElement>(null)
@@ -171,7 +170,7 @@ export const FigmaPrototypeViewer: React.FC<FigmaPrototypeViewerProps> = ({
     }
 
     setIsNavigating(true)
-    setShowIframe(false) // Hide iframe during navigation to show skeleton
+    setShowIframe(false) // Show skeleton, hide iframe
     setActiveSection(sectionId)
     onSectionChange?.(sectionId)
 
@@ -229,6 +228,7 @@ export const FigmaPrototypeViewer: React.FC<FigmaPrototypeViewerProps> = ({
   }, [externalActiveSection])
 
 
+
   // Handle Figma events
   useEffect(() => {
     const handleMessage = (event: MessageEvent) => {
@@ -262,20 +262,18 @@ export const FigmaPrototypeViewer: React.FC<FigmaPrototypeViewerProps> = ({
 
         switch (figmaEvent.type) {
           case 'INITIAL_LOAD':
-            setIsLoading(false)
             setIsInitialized(true)
-            setShowIframe(true) // Show iframe on initial load as fallback
+            setShowIframe(true) // Hide skeleton, show iframe
             if (showDebugPanel) {
-              console.log('[Initial Load] Prototype loaded, showing iframe')
+              console.log('[Initial Load] Hide skeleton, show iframe')
             }
             break
 
           case 'NEW_STATE':
-            // Figma is fully rendered - ensure iframe is visible
-            setIsLoading(false)
-            setShowIframe(true)
+            setShowIframe(true) // Hide skeleton, show iframe
+            setIsNavigating(false)
             if (showDebugPanel) {
-              console.log('[New State] Figma fully rendered, showing iframe')
+              console.log('[New State] Hide skeleton, show iframe')
             }
             break
 
@@ -456,20 +454,20 @@ export const FigmaPrototypeViewer: React.FC<FigmaPrototypeViewerProps> = ({
             </div>
           )}
 
-          {/* Loading skeleton with pulse animation */}
+          {/* Loading skeleton - shows when iframe hidden */}
           {!showIframe && (
             <div className="absolute inset-0 w-full h-full bg-ods-skeleton animate-pulse rounded-lg z-10" />
           )}
 
-          {/* Figma iframe - hidden during loading */}
+          {/* Figma iframe - shows when skeleton hidden */}
           <iframe
             ref={iframeRef}
             src={embedUrl}
             className="border-0 w-full h-full"
             style={{ 
               background: 'white',
-              zIndex: 1, // Below scroll overlay
-              visibility: showIframe ? 'visible' : 'hidden', // Hide iframe during loading
+              zIndex: 1,
+              visibility: showIframe ? 'visible' : 'hidden', // Simple: skeleton shows = iframe hidden
               ...(isMobile ? {} : {
                 // Desktop-specific styling (with margin adjustments)
                 height: 'calc(100% + 40px)',
