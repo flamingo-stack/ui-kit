@@ -26,6 +26,7 @@ This is a **source-only** TypeScript package that provides:
 - 💰 **Investors System** - Complete CRUD with modal-based admin and Supabase integration
 - 🎬 **ParallaxImageShowcase** - Advanced parallax effects with global mouse tracking and scroll animations
 - 📺 **YouTubeEmbed Component** - CSP-safe YouTube video embedding with pure ODS color integration and dependency cleanup ✅
+- 📦 **PageContainer Component** - Standardized layout container ensuring consistent spacing and responsive design across all sections ✅
 - 🎯 **FigmaPrototypeViewer** - ✅ FULLY COMPLETED (2025-08-17):
   - **RESOLVED**: Smooth navigation without iframe reloads using Figma Embed Kit 2.0 API
   - **RESOLVED**: Event-driven loading system with no timeouts (pure React patterns)
