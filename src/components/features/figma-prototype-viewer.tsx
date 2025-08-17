@@ -1,6 +1,7 @@
 "use client"
 
 import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react'
+import { isMobile, isTablet } from 'react-device-detect'
 import { cn } from '../../utils/cn'
 import { Badge } from '../ui/badge'
 
@@ -82,32 +83,133 @@ export const FigmaPrototypeViewer: React.FC<FigmaPrototypeViewerProps> = ({
   // Control debug panel via environment variable
   const showDebugPanel = process.env.NEXT_PUBLIC_FIGMA_DEBUG === 'true'
 
-  // Detect if we're on a touch device (not just small screen)
-  const [isTouchDevice, setIsTouchDevice] = useState(false)
-  // Detect if we're on mobile (small screen)
-  const [isMobile, setIsMobile] = useState(false)
+  /*
+   * BULLETPROOF LOADING STATE SYSTEM
+   * 
+   * This component implements a comprehensive loading state system that:
+   * 1. Tracks iframe reloads for both initial load and device size changes
+   * 2. Disables section buttons during loading states
+   * 3. Bundles all conditional logic (touch, mobile, badge, overlay) under unified state
+   * 4. Hooks into Figma's event system without touching the release mechanism
+   * 5. Ensures iframe is hidden until fully loaded and skeleton is shown appropriately
+   * 
+   * Key Features:
+   * - reloadTracker: Monitors iframe reload count and reasons (initial, device-change, navigation)
+   * - deviceState: Detects device changes that trigger reloads
+   * - loadingState: Unified state controlling all UI elements (buttons, iframe, skeleton, badge, overlay)
+   * - Automatic device change detection that triggers proper reload tracking
+   * - Section buttons are disabled during any loading state
+   * - Touch overlay and badge only appear when iframe is ready and on touch devices
+   */
+
+  // Iframe reload tracking state
+  const [reloadTracker, setReloadTracker] = useState({
+    reloadCount: 0,
+    lastReloadReason: 'initial' as 'initial' | 'device-change' | 'navigation',
+    isReloading: false
+  })
+
+  // Device detection: combine user-agent detection with dynamic window size
+  const isDeviceTypeMobile = isMobile || isTablet // Static device type
+  const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0
   
+  // Dynamic window size detection for fullscreen changes
+  const [windowWidth, setWindowWidth] = useState(typeof window !== 'undefined' ? window.innerWidth : 768)
+  const isWindowMobile = windowWidth < 768
+  
+  // Final mobile state: device is mobile OR window is mobile-sized
+  const isActuallyMobile = isDeviceTypeMobile || isWindowMobile
+
+  // Comprehensive loading state - controls everything
+  const [loadingState, setLoadingState] = useState({
+    isLoading: true,           // Main loading flag
+    isNavigating: false,       // Navigation in progress
+    showIframe: false,         // Iframe visibility
+    buttonsDisabled: true,     // Section buttons state
+    showSkeleton: true,        // Skeleton visibility
+    showBadge: false,          // Touch badge visibility
+    showTouchOverlay: false    // Touch overlay visibility
+  })
+
+  // Track mobile state for iframe URL changes (both device type and window size)
+  const [lastMobileState, setLastMobileState] = useState(isActuallyMobile)
+  
+  // Force iframe recreation key
+  const [iframeKey, setIframeKey] = useState(0)
+  
+  // Listen for window resize (including fullscreen changes)
   useEffect(() => {
-    const checkDeviceTypes = () => {
-      setIsTouchDevice('ontouchstart' in window || navigator.maxTouchPoints > 0)
-      setIsMobile(window.innerWidth < 768)
+    const handleResize = () => {
+      const newWidth = window.innerWidth
+      setWindowWidth(newWidth)
+      
+      console.log('[Window Resize] New width:', newWidth, 'Mobile threshold: 768px')
     }
     
-    checkDeviceTypes()
-    window.addEventListener('resize', checkDeviceTypes)
-    return () => window.removeEventListener('resize', checkDeviceTypes)
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
   }, [])
+  
+  // Check for mobile state changes that require iframe reload
+  useEffect(() => {
+    if (lastMobileState !== isActuallyMobile && !loadingState.isLoading) {
+      console.log('[Mobile State Change] Changed:', lastMobileState, '→', isActuallyMobile)
+      console.log('[Mobile State Change] Cause: deviceType:', isDeviceTypeMobile, 'windowSize:', isWindowMobile, 'width:', windowWidth)
+      console.log('[Mobile State Change] Forcing iframe reload with new URL')
+      
+      // Trigger reload tracking
+      setReloadTracker(prev => ({
+        reloadCount: prev.reloadCount + 1,
+        lastReloadReason: 'device-change',
+        isReloading: true
+      }))
+      
+      // Reset loading state for reload
+      setLoadingState(prev => ({
+        ...prev,
+        isLoading: true,
+        showIframe: false,
+        buttonsDisabled: true,
+        showSkeleton: true,
+        showBadge: false,
+        showTouchOverlay: false
+      }))
+      
+      // Force iframe to reload with new URL by changing the src
+      if (iframeRef.current) {
+        console.log('[Force Reload] Clearing iframe src and reloading')
+        iframeRef.current.src = 'about:blank'
+        setTimeout(() => {
+          if (iframeRef.current) {
+            iframeRef.current.src = embedUrl
+            console.log('[Force Reload] New iframe URL set:', embedUrl)
+          }
+        }, 100)
+      }
+      
+      setLastMobileState(isActuallyMobile)
+    }
+  }, [isActuallyMobile, loadingState.isLoading, lastMobileState, isDeviceTypeMobile, isWindowMobile, windowWidth, embedUrl])
+
+  // Update touch UI immediately when touch device state changes (don't wait for Figma events)
+  useEffect(() => {
+    if (!loadingState.isLoading && loadingState.showIframe) {
+      console.log('[Touch State Update] Updating touch elements immediately:', isTouchDevice)
+      setLoadingState(prev => ({
+        ...prev,
+        showBadge: isTouchDevice,
+        showTouchOverlay: isTouchDevice
+      }))
+    }
+  }, [isTouchDevice, loadingState.isLoading, loadingState.showIframe])
 
   // State - use external active section if provided
   const [internalActiveSection, setInternalActiveSection] = useState<string>(sections[0]?.id || '')
   const activeSection = externalActiveSection || internalActiveSection
   const setActiveSection = externalActiveSection ? () => {} : setInternalActiveSection
   
-  const [isLoading, setIsLoading] = useState(true)
-  const [isNavigating, setIsNavigating] = useState(false)
   const [currentNodeId, setCurrentNodeId] = useState<string | null>(null)
   const [isInitialized, setIsInitialized] = useState(false)
-  const [showIframe, setShowIframe] = useState(false)
   
   // Refs
   const iframeRef = useRef<HTMLIFrameElement>(null)
@@ -130,7 +232,7 @@ export const FigmaPrototypeViewer: React.FC<FigmaPrototypeViewerProps> = ({
     // Use device-specific starting point if provided
     let startingNodeId = firstSection.startingNodeId
     
-    if (isMobile) {
+    if (isActuallyMobile) {
       // Use mobile starting point if provided, or mobile node ID from first section
       startingNodeId = mobileStartingPoint || firstSection.mobileStartingNodeId || firstSection.startingNodeId
     } else {
@@ -149,14 +251,14 @@ export const FigmaPrototypeViewer: React.FC<FigmaPrototypeViewerProps> = ({
       'embed-host': embedHost,
       'hide-ui': '1',
       'hotspot-hints': '0',
-      'scaling': isMobile ? 'min-zoom' : 'scale-down-width',
+      'scaling': isActuallyMobile ? 'min-zoom' : 'scale-down-width',
       'starting-point-node-id': startingNodeId.replace(':', '-'),
       'mode': 'prototype',
       'chrome': 'DOCUMENTATION'
     })
     
     return `https://embed.figma.com/proto/${fileKey}?${params.toString()}`
-  }, [fileKey, clientId, sections, isMobile, mobileStartingPoint, desktopStartingPoint])
+  }, [fileKey, clientId, sections, isActuallyMobile, mobileStartingPoint, desktopStartingPoint])
 
   // Navigate using Figma Embed Kit 2.0 postMessage API (no iframe reload)
   const navigateToSection = useCallback((sectionId: string) => {
@@ -164,13 +266,18 @@ export const FigmaPrototypeViewer: React.FC<FigmaPrototypeViewerProps> = ({
     if (!section || !iframeRef.current?.contentWindow || !isInitialized) return
 
     // Use mobile node ID if on mobile and available, otherwise use desktop node ID
-    const nodeId = isMobile && section.mobileStartingNodeId ? section.mobileStartingNodeId : section.startingNodeId
+    const nodeId = isActuallyMobile && section.mobileStartingNodeId ? section.mobileStartingNodeId : section.startingNodeId
 
     if (showDebugPanel) {
-      console.log('[Navigate] To section:', sectionId, 'node:', nodeId, 'mobile:', isMobile, 'touch device:', isTouchDevice)
+      console.log('[Navigate] To section:', sectionId, 'node:', nodeId, 'mobile:', isActuallyMobile, 'touch device:', isTouchDevice)
     }
 
-    setIsNavigating(true)
+    // Update loading state for navigation
+    setLoadingState(prev => ({
+      ...prev,
+      isNavigating: true
+    }))
+    
     setActiveSection(sectionId)
     onSectionChange?.(sectionId)
 
@@ -194,12 +301,15 @@ export const FigmaPrototypeViewer: React.FC<FigmaPrototypeViewerProps> = ({
     }
 
     // Clear navigation flag immediately (no iframe reload)
-    setIsNavigating(false)
-  }, [sections, onSectionChange, showDebugPanel, isInitialized, isMobile])
+    setLoadingState(prev => ({
+      ...prev,
+      isNavigating: false
+    }))
+  }, [sections, onSectionChange, showDebugPanel, isInitialized, isActuallyMobile])
 
   // Handle section button click
   const handleSectionClick = useCallback((sectionId: string) => {
-    if (sectionId === activeSection || isNavigating) return
+    if (sectionId === activeSection || loadingState.isNavigating) return
     
     // If external handler provided, use it
     if (externalOnSectionClick) {
@@ -218,7 +328,7 @@ export const FigmaPrototypeViewer: React.FC<FigmaPrototypeViewerProps> = ({
         })
       }, 100)
     }
-  }, [activeSection, isNavigating, navigateToSection, isTouchDevice, externalOnSectionClick])
+  }, [activeSection, loadingState.isNavigating, navigateToSection, isTouchDevice, externalOnSectionClick])
 
   // Navigate when external active section changes
   useEffect(() => {
@@ -228,10 +338,18 @@ export const FigmaPrototypeViewer: React.FC<FigmaPrototypeViewerProps> = ({
   }, [externalActiveSection])
 
 
+
   // Handle Figma events
   useEffect(() => {
+    console.log('🎧 [EVENT LISTENER] Setting up Figma message listener')
+    
     const handleMessage = (event: MessageEvent) => {
+      console.log('📨 [ALL MESSAGES] Origin:', event.origin, 'Data:', event.data)
+      
       if (event.origin !== 'https://www.figma.com') return
+
+      // Always log any Figma message for debugging
+      console.log('🔍 [FIGMA MESSAGE] Received:', event.data)
 
       const validEvents: FigmaEventType[] = [
         'MOUSE_PRESS_OR_RELEASE',
@@ -256,20 +374,49 @@ export const FigmaPrototypeViewer: React.FC<FigmaPrototypeViewerProps> = ({
 
         switch (figmaEvent.type) {
           case 'INITIAL_LOAD':
-            setIsLoading(false)
             setIsInitialized(true)
-            setShowIframe(true)  // Hide skeleton on initial load, don't wait for NEW_STATE
+            // Mark reload as complete if this was a reload
+            setReloadTracker(prev => ({
+              ...prev,
+              isReloading: false
+            }))
+            
+            console.log('🎯 [FIGMA EVENT] INITIAL_LOAD received - iframe functional')
+            console.log('📱 [DEVICE STATE] isTouchDevice:', isTouchDevice, 'isActuallyMobile:', isActuallyMobile)
+            
+            // Show iframe and activate all UI based on current device state
+            setLoadingState(prev => ({
+              ...prev,
+              isLoading: false,
+              showIframe: true,
+              buttonsDisabled: false,
+              showSkeleton: false,
+              showBadge: isTouchDevice, // Only show on touch devices
+              showTouchOverlay: isTouchDevice // Only show on touch devices
+            }))
+            
             if (showDebugPanel) {
-              console.log('[Initial Load] Prototype loaded, waiting for first render...')
+              console.log('[Initial Load] Prototype loaded and activated - touch overlay/badge:', isTouchDevice)
             }
             break
 
           case 'NEW_STATE':
-            // Figma is fully rendered - show iframe and hide loading skeleton
-            setIsLoading(false)
-            setShowIframe(true)
+            console.log('🎯 [FIGMA EVENT] NEW_STATE received - fully rendered')
+            console.log('📱 [DEVICE STATE] isTouchDevice:', isTouchDevice, 'isActuallyMobile:', isActuallyMobile)
+            
+            // Ensure UI is activated based on current device state
+            setLoadingState(prev => ({
+              ...prev,
+              isLoading: false,
+              showIframe: true,
+              buttonsDisabled: false,
+              showSkeleton: false,
+              showBadge: isTouchDevice, // Only show on touch devices
+              showTouchOverlay: isTouchDevice // Only show on touch devices
+            }))
+            
             if (showDebugPanel) {
-              console.log('[New State] Figma fully rendered, showing iframe and hiding skeleton')
+              console.log('[New State] Figma fully rendered - touch overlay/badge:', isTouchDevice)
             }
             break
 
@@ -279,7 +426,7 @@ export const FigmaPrototypeViewer: React.FC<FigmaPrototypeViewerProps> = ({
               setCurrentNodeId(nodeId)
               
               // Auto-sync sections if not manually navigating
-              if (!isNavigating) {
+              if (!loadingState.isNavigating) {
                 const matchingSection = sections.find(s => {
                   // Check both desktop and mobile node IDs
                   const desktopNormalized = s.startingNodeId.replace(':', '-')
@@ -307,7 +454,7 @@ export const FigmaPrototypeViewer: React.FC<FigmaPrototypeViewerProps> = ({
 
     window.addEventListener('message', handleMessage)
     return () => window.removeEventListener('message', handleMessage)
-  }, [sections, activeSection, onSectionChange, showDebugPanel, isNavigating])
+  }, [sections, activeSection, onSectionChange, showDebugPanel, loadingState.isNavigating])
 
   // Debug panel commands using URL navigation
   const sendCommand = useCallback((command: string) => {
@@ -356,7 +503,7 @@ export const FigmaPrototypeViewer: React.FC<FigmaPrototypeViewerProps> = ({
               <button
                 key={section.id}
                 onClick={() => handleSectionClick(section.id)}
-                disabled={isNavigating}
+                disabled={loadingState.buttonsDisabled || loadingState.isNavigating}
                 className={cn(
                   'bg-ods-card border rounded-md p-6 flex gap-2 items-start',
                   'shadow-ods-card transition-all duration-200',
@@ -393,12 +540,12 @@ export const FigmaPrototypeViewer: React.FC<FigmaPrototypeViewerProps> = ({
             iframeClassName
           )}
           style={{ 
-            height: isMobile ? '80vh' : height,
-            minHeight: isMobile ? '600px' : 'auto'
+            height: isActuallyMobile ? '80vh' : height,
+            minHeight: isActuallyMobile ? '600px' : 'auto'
           }}
         >
           {/* Touch devices: Transparent overlay that enables page scroll */}
-          {isTouchDevice && showIframe && (
+          {loadingState.showTouchOverlay && (
             <div
               className="absolute inset-0 w-full h-full"
               style={{
@@ -442,7 +589,7 @@ export const FigmaPrototypeViewer: React.FC<FigmaPrototypeViewerProps> = ({
           )}
 
           {/* Touch device instruction badge */}
-          {isTouchDevice && showIframe && (
+          {loadingState.showBadge && (
             <div className="absolute bottom-3 left-3 z-10">
               <Badge variant="secondary" className="bg-black/70 text-white backdrop-blur-sm">
                 Tap twice to click
@@ -450,32 +597,22 @@ export const FigmaPrototypeViewer: React.FC<FigmaPrototypeViewerProps> = ({
             </div>
           )}
 
-          {/* Loading skeleton with pulse animation */}
-          {!showIframe && (
-            <div className="absolute inset-0 w-full h-full bg-ods-skeleton animate-pulse rounded-lg z-10" />
-          )}
-          
-          {/* Debug: Console log skeleton visibility */}
-          {(() => {
-            console.log('[SKELETON DEBUG] showIframe:', showIframe, 'skeleton visible:', !showIframe)
-            return null
-          })()}
-
-          {/* Figma iframe - render immediately for fastest loading */}
+          {/* Figma iframe - HIDDEN DURING LOADING */}
           <iframe
             ref={iframeRef}
             src={embedUrl}
             className="border-0 w-full h-full"
             style={{ 
               background: 'white',
-              zIndex: 1, // Below scroll overlay
-              ...(isMobile ? {} : {
+              zIndex: 1,
+              display: loadingState.showIframe ? 'block' : 'none', // COMPLETELY HIDE DURING LOADING
+              visibility: loadingState.showIframe ? 'visible' : 'hidden', // EXTRA HIDING
+              ...(isActuallyMobile ? {} : {
                 // Desktop-specific styling (with margin adjustments)
                 height: 'calc(100% + 40px)',
                 width: 'calc(100% + 40px)',
                 marginLeft: '-20px',
                 marginTop: '-20px',
-                display: 'block',
                 position: 'relative',
               })
             }}
@@ -486,6 +623,11 @@ export const FigmaPrototypeViewer: React.FC<FigmaPrototypeViewerProps> = ({
             loading="eager"
             {...({ fetchPriority: 'high' } as any)}
           />
+
+          {/* Loading skeleton - shown during loading */}
+          {loadingState.showSkeleton && (
+            <div className="absolute inset-0 w-full h-full bg-ods-skeleton animate-pulse rounded-lg z-10" />
+          )}
         </div>
       </div>
       
@@ -499,29 +641,77 @@ export const FigmaPrototypeViewer: React.FC<FigmaPrototypeViewerProps> = ({
           {/* Device Mode */}
           <div className="mb-3 p-2 bg-ods-bg rounded text-sm">
             <span className="text-ods-text-secondary">Device Mode:</span>{' '}
-            <span className={isMobile ? "text-blue-500 font-semibold" : "text-green-500 font-semibold"}>
-              {isMobile ? '📱 Mobile' : '🖥️ Desktop'}
+            <span className={isActuallyMobile ? "text-blue-500 font-semibold" : "text-green-500 font-semibold"}>
+              {isActuallyMobile ? '📱 Mobile' : '🖥️ Desktop'}
             </span>
             {' '}
             <span className="text-ods-text-secondary text-xs">
-              (viewport: {typeof window !== 'undefined' ? window.innerWidth : 0}px, touch: {isTouchDevice ? 'yes' : 'no'})
+              (device: {isDeviceTypeMobile ? 'mobile' : 'desktop'}, window: {isWindowMobile ? 'mobile' : 'desktop'}, touch: {isTouchDevice ? 'yes' : 'no'})
             </span>
           </div>
           
-          {/* Status */}
-          <div className="mb-3 grid grid-cols-4 gap-4 text-sm">
+          {/* Reload Tracking Status */}
+          <div className="mb-3 p-2 bg-ods-bg rounded text-sm">
+            <span className="text-ods-text-secondary">Reload Tracking:</span>{' '}
+            <span className="text-ods-text-primary">
+              Count: {reloadTracker.reloadCount}
+            </span>
+            {' | '}
+            <span className="text-ods-text-primary">
+              Last: {reloadTracker.lastReloadReason}
+            </span>
+            {' | '}
+            <span className={reloadTracker.isReloading ? "text-orange-500" : "text-gray-500"}>
+              {reloadTracker.isReloading ? 'Reloading...' : 'Stable'}
+            </span>
+          </div>
+          
+          {/* Loading State Status */}
+          <div className="mb-3 grid grid-cols-2 gap-4 text-sm">
             <div>
-              <span className="text-ods-text-secondary">Loading:</span>{' '}
-              <span className={isLoading ? "text-yellow-500" : "text-green-500"}>
-                {isLoading ? 'Yes' : 'No'}
+              <span className="text-ods-text-secondary">Main Loading:</span>{' '}
+              <span className={loadingState.isLoading ? "text-yellow-500" : "text-green-500"}>
+                {loadingState.isLoading ? 'Yes' : 'No'}
               </span>
             </div>
             <div>
               <span className="text-ods-text-secondary">Navigating:</span>{' '}
-              <span className={isNavigating ? "text-orange-500" : "text-gray-500"}>
-                {isNavigating ? 'Yes' : 'No'}
+              <span className={loadingState.isNavigating ? "text-orange-500" : "text-gray-500"}>
+                {loadingState.isNavigating ? 'Yes' : 'No'}
               </span>
             </div>
+            <div>
+              <span className="text-ods-text-secondary">Buttons:</span>{' '}
+              <span className={loadingState.buttonsDisabled ? "text-red-500" : "text-green-500"}>
+                {loadingState.buttonsDisabled ? 'Disabled' : 'Enabled'}
+              </span>
+            </div>
+            <div>
+              <span className="text-ods-text-secondary">Iframe:</span>{' '}
+              <span className={loadingState.showIframe ? "text-green-500" : "text-yellow-500"}>
+                {loadingState.showIframe ? 'Visible' : 'Hidden'}
+              </span>
+            </div>
+          </div>
+          
+          {/* Touch & Mobile Status */}
+          <div className="mb-3 grid grid-cols-2 gap-4 text-sm">
+            <div>
+              <span className="text-ods-text-secondary">Touch Overlay:</span>{' '}
+              <span className={loadingState.showTouchOverlay ? "text-blue-500" : "text-gray-500"}>
+                {loadingState.showTouchOverlay ? 'Active' : 'Hidden'}
+              </span>
+            </div>
+            <div>
+              <span className="text-ods-text-secondary">Touch Badge:</span>{' '}
+              <span className={loadingState.showBadge ? "text-blue-500" : "text-gray-500"}>
+                {loadingState.showBadge ? 'Shown' : 'Hidden'}
+              </span>
+            </div>
+          </div>
+          
+          {/* Active State */}
+          <div className="mb-3 grid grid-cols-2 gap-4 text-sm">
             <div>
               <span className="text-ods-text-secondary">Section:</span>{' '}
               <span className="text-ods-text-primary">{activeSection}</span>
