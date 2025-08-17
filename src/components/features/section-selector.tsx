@@ -59,14 +59,18 @@ const SectionButton: React.FC<{
       onClick={onClick}
       disabled={disabled}
       variant={isActive ? "section-active" : "section"}
-      size={layout === 'vertical' ? "section" : "sectionWrap"}
+      size={layout === 'vertical' ? "touch" : "sectionWrap"}
       className={cn(
         widthClasses,
         buttonClassName,
         isActive && activeButtonClassName,
-        layout === 'vertical' ? '' : 'overflow-hidden'
+        layout === 'vertical' ? '!h-auto !py-4 !px-4 !min-h-[80px]' : 'overflow-hidden'
       )}
-      style={{ minHeight }}
+      style={{ 
+        minHeight,
+        touchAction: 'manipulation',
+        WebkitTapHighlightColor: 'transparent'
+      }}
     >
       {layout === 'vertical' ? (
         // Vertical layout with optional number prefix
@@ -76,12 +80,12 @@ const SectionButton: React.FC<{
               {section.number}
             </span>
           )}
-          <div className="flex-1 text-left">
-            <p className={cn(titleClasses, 'font-medium text-lg leading-[24px]')}>
+          <div className="flex-1 text-left min-w-0">
+            <p className={cn(titleClasses, 'font-medium text-lg leading-[24px] whitespace-normal break-words')}>
               {section.title}
             </p>
             {section.description && showDescription && (
-              <p className={cn(subtitleClasses, 'text-sm mt-1 hidden xl:block')}>
+              <p className={cn(subtitleClasses, 'text-sm mt-1 hidden xl:block whitespace-normal break-words')}>
                 {section.description}
               </p>
             )}
