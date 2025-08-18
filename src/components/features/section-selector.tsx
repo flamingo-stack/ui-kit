@@ -10,6 +10,11 @@ export interface SectionItem {
   subtitle?: string
   description?: string
   number?: string
+  screenshots?: {
+    src: string
+    alt: string
+    position: 'left' | 'center' | 'right'
+  }[]
 }
 
 export interface SectionSelectorProps {
