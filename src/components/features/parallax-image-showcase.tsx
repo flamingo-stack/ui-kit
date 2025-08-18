@@ -10,19 +10,23 @@ interface ParallaxImageShowcaseProps {
     position: 'left' | 'center' | 'right'
   }[]
   className?: string
-  layout?: 'non-boxed' | 'boxed' // New layout prop
+  layout?: 'non-boxed' | 'boxed' | 'grid' // New layout prop
   logoElement?: React.ReactNode // Custom logo for boxed layout
+  intensity?: number // Animation intensity (used for grid layout)
+  shadow?: boolean // Add shadow to images (used for grid layout)
 }
 
 export const ParallaxImageShowcase: React.FC<ParallaxImageShowcaseProps> = ({ 
   images, 
   className = '', 
   layout = 'non-boxed',
-  logoElement 
+  logoElement,
+  intensity,
+  shadow = false
 }) => {
   // ANIMATION INTENSITY CONTROL
   // 0.1 = very gentle, 1 = normal, 5 = aggressive, 10 = super aggressive
-  const INTENSITY = 1 // Super aggressive for testing
+  const INTENSITY = intensity || 1 // Use provided intensity or default to 1
   
   // Scroll animation - works everywhere on the page
   const { scrollY } = useScroll()
@@ -111,6 +115,88 @@ export const ParallaxImageShowcase: React.FC<ParallaxImageShowcaseProps> = ({
   const leftImage = images.find(img => img.position === 'left')
   const centerImage = images.find(img => img.position === 'center')
   const rightImage = images.find(img => img.position === 'right')
+  
+  // Grid Layout: Simple 3-column grid with gentler animations
+  if (layout === 'grid') {
+    // Gentler transforms for grid layout - only vertical movement
+    const scrollY_Grid = useTransform(scrollY, [0, 1000], [0, -3 * INTENSITY])
+    const scrollRotateGrid = useTransform(scrollY, [0, 1000], [0, 0.05 * INTENSITY])
+    
+    const mouseTransformYGrid = useTransform(mouseYSpring, [-20, 20], [-1 * INTENSITY, 1 * INTENSITY])
+    const mouseRotateGrid = useTransform(mouseXSpring, [-20, 20], [-0.03 * INTENSITY, 0.03 * INTENSITY])
+    
+    const yGrid = useTransform(
+      [scrollY_Grid, mouseTransformYGrid],
+      ([s, m]) => (s as number) + (m as number)
+    )
+    const rotateGrid = useTransform(
+      [scrollRotateGrid, mouseRotateGrid],
+      ([s, m]) => (s as number) + (m as number)
+    )
+    
+    return (
+      <div 
+        ref={componentRef}
+        className={`relative w-full h-full flex items-center ${className}`}
+      >
+        <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-4">
+          {/* Image #1 - Left */}
+          {leftImage && (
+            <motion.div
+              className="relative w-full"
+              style={{
+                y: yGrid,
+                rotate: rotateGrid,
+              }}
+            >
+              <img
+                src={leftImage.src}
+                alt={leftImage.alt}
+                className="w-full h-auto object-contain"
+                style={shadow ? { boxShadow: '0 20px 40px rgba(0, 0, 0, 0.3)' } : {}}
+              />
+            </motion.div>
+          )}
+          
+          {/* Image #2 - Center */}
+          {centerImage && (
+            <motion.div
+              className="relative w-full"
+              style={{
+                y: yGrid,
+                rotate: rotateGrid,
+              }}
+            >
+              <img
+                src={centerImage.src}
+                alt={centerImage.alt}
+                className="w-full h-auto object-contain"
+                style={shadow ? { boxShadow: '0 20px 40px rgba(0, 0, 0, 0.3)' } : {}}
+              />
+            </motion.div>
+          )}
+          
+          {/* Image #3 - Right */}
+          {rightImage && (
+            <motion.div
+              className="relative w-full"
+              style={{
+                y: yGrid,
+                rotate: rotateGrid,
+              }}
+            >
+              <img
+                src={rightImage.src}
+                alt={rightImage.alt}
+                className="w-full h-auto object-contain"
+                style={shadow ? { boxShadow: '0 20px 40px rgba(0, 0, 0, 0.3)' } : {}}
+              />
+            </motion.div>
+          )}
+        </div>
+      </div>
+    )
+  }
   
   // Boxed Layout: Clean two-row grid structure with overlaps
   if (layout === 'boxed') {
