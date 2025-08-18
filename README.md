@@ -24,7 +24,11 @@ This is a **source-only** TypeScript package that provides:
 - 💀 **Loading Skeletons** - Comprehensive skeleton components preventing double-loading issues
 - 🔗 **Button onClick Fix** - Proper onClick support with href for dropdown menu closing
 - 💰 **Investors System** - Complete CRUD with modal-based admin and Supabase integration
-- 🎬 **ParallaxImageShowcase** - Advanced parallax effects with global mouse tracking and scroll animations
+- 🎬 **ParallaxImageShowcase** - Advanced parallax effects with global mouse tracking, scroll animations, and OpenMSP layout variant
+  - **Default Layout**: Three-layer depth parallax for hero sections
+  - **OpenMSP Layout**: Two-row structure (logo + images) with edge positioning
+  - **Motion Integration**: Combined scroll and mouse tracking effects
+  - **Responsive Design**: Mobile and desktop optimized layouts
 - 📺 **YouTubeEmbed Component** - CSP-safe YouTube video embedding with pure ODS color integration and dependency cleanup ✅
 - 📦 **PageContainer Component** - Standardized layout container ensuring consistent spacing and responsive design across all sections ✅
 - 🎯 **FigmaPrototypeViewer** - ✅ FULLY COMPLETED (2025-08-17):

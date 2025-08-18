@@ -1127,7 +1127,32 @@ These loading standards ensure consistent, predictable behavior across all admin
   - Responsive sizing for mobile and desktop (lg: breakpoint)
   - Configurable animation intensity via INTENSITY variable
   - Performance optimized with spring animations
+  - **OpenMSP Layout Variant**: Specialized two-row layout implementation
 - **Usage**: Perfect for hero sections with overlapping dashboard screenshots or product images
+
+#### OpenMSP Layout Variant (NEW)
+- **Purpose**: Clean two-row layout for OpenMSP community showcase
+- **Layout Structure**:
+  - **Row 1**: Logo row (h-32 / 128px) with centered branding
+  - **Row 2**: Image row (remaining space) with edge-positioned screenshots
+- **Image Positioning**:
+  - Left image: `absolute top-0 left-0 w-1/2 h-full` (left edge)
+  - Right image: `absolute top-0 right-0 w-1/2 h-full` (right edge)
+- **Motion Integration**: Retains full parallax scroll and mouse tracking
+- **Z-Index Layering**: Logo (z-30), left image (z-20), right image (z-10)
+
+```typescript
+// Usage example
+<ParallaxImageShowcase
+  layout="openmsp"
+  images={[
+    { src: '/screenshot1.png', alt: 'Directory', position: 'left' },
+    { src: '/screenshot2.png', alt: 'Report', position: 'center' }
+  ]}
+  logoElement={<OpenmspBrandingElement />}
+  className="w-full h-full"
+/>
+```
 
 ### BenefitCard Component
 - **Purpose**: Reusable card for displaying benefits, features, or value propositions
