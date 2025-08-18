@@ -10,9 +10,16 @@ interface ParallaxImageShowcaseProps {
     position: 'left' | 'center' | 'right'
   }[]
   className?: string
+  layout?: 'default' | 'openmsp' // New layout prop
+  logoElement?: React.ReactNode // Custom logo for openmsp layout
 }
 
-export const ParallaxImageShowcase: React.FC<ParallaxImageShowcaseProps> = ({ images, className = '' }) => {
+export const ParallaxImageShowcase: React.FC<ParallaxImageShowcaseProps> = ({ 
+  images, 
+  className = '', 
+  layout = 'default',
+  logoElement 
+}) => {
   // ANIMATION INTENSITY CONTROL
   // 0.1 = very gentle, 1 = normal, 5 = aggressive, 10 = super aggressive
   const INTENSITY = 1 // Super aggressive for testing
@@ -105,6 +112,57 @@ export const ParallaxImageShowcase: React.FC<ParallaxImageShowcaseProps> = ({ im
   const centerImage = images.find(img => img.position === 'center')
   const rightImage = images.find(img => img.position === 'right')
   
+  // OpenMSP Layout: Clean two-row grid structure with overlaps
+  if (layout === 'openmsp') {
+    return (
+      <div 
+        ref={componentRef}
+        className={`relative w-full h-full overflow-hidden ${className}`}
+      >
+        {/* Row 1: OpenMSP Logo Component */}
+        {logoElement && (
+          <div className="absolute top-4 left-1/2 -translate-x-1/2 z-30 scale-50">
+            {logoElement}
+          </div>
+        )}
+        
+        {/* Row 2: Two images with overlaps and margin from row 1 */}
+        <div className="absolute top-32 inset-x-0 h-80">
+          {/* Left half: Image overlaps to the left */}
+          {leftImage && (
+            <motion.div
+              className="absolute left-20 w-1/2 h-full z-10"
+              style={{ x: x, y: y, rotate: rotate }}
+            >
+              <img
+                src={leftImage.src}
+                alt={leftImage.alt}
+                className="w-full h-full object-top object-cover"
+              />
+              <div className="absolute inset-0 shadow-2xl" />
+            </motion.div>
+          )}
+          
+          {/* Right half: Image overlaps to the right */}
+          {centerImage && (
+            <motion.div
+              className="absolute top-20 right-20 w-1/2 h-full z-20"
+              style={{ x: x, y: y, rotate: rotate }}
+            >
+              <img
+                src={centerImage.src}
+                alt={centerImage.alt}
+                className="w-full h-full object-top object-cover"
+              />
+              <div className="absolute inset-0 shadow-2xl" />
+            </motion.div>
+          )}
+        </div>
+      </div>
+    )
+  }
+  
+  // Default Layout (original implementation)
   return (
     <div 
       ref={componentRef}
