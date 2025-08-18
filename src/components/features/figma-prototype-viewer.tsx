@@ -316,7 +316,16 @@ function renderUnifiedUI(state: UnifiedState, handlers: {
 
         {/* Loading Skeleton */}
         {showSkeleton && (
-          <div className="absolute inset-0 w-full h-full bg-ods-skeleton animate-pulse rounded-lg z-10" />
+          <div className="absolute inset-0 w-full h-full bg-ods-skeleton animate-pulse rounded-lg z-10 flex items-center justify-center">
+            <div className="text-center">
+              <div className="text-xl md:text-2xl font-['Azeret_Mono'] font-semibold text-ods-text-primary">
+                Warming up <span className="text-[var(--ods-open-yellow-base)]">Fae</span> and <span className="text-[var(--ods-open-yellow-base)]">Mingo</span>
+              </div>
+              <div className="mt-2 text-sm text-ods-text-secondary">
+                Loading AI Co-Pilots...
+              </div>
+            </div>
+          </div>
         )}
       </div>
     </div>
