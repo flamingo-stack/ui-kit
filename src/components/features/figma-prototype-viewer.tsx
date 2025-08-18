@@ -340,8 +340,8 @@ function renderUnifiedUI(state: UnifiedState, handlers: {
       {/* Figma Container */}
       <div 
         className={cn(
-          'relative w-full rounded-lg overflow-hidden',
-          viewMode === 'DESKTOP' && 'border border-ods-border',
+          'relative w-full rounded-lg overflow-hidden border border-ods-border',
+          // viewMode === 'DESKTOP' && 'border border-ods-border',
           config.iframeClassName
         )}
         style={{ 
@@ -360,7 +360,7 @@ function renderUnifiedUI(state: UnifiedState, handlers: {
           })(),
           maxHeight: viewMode === 'DESKTOP' ? 'none' : (() => {
             const contentDimensions = getContentDimensions(config)
-            return `${contentDimensions.mobile.height}px`
+            return `${contentDimensions.mobile.height + 200 }px`
           })(),
           border: viewMode === 'DESKTOP' ? undefined : 'none'
         }}
