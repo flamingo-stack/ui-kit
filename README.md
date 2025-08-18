@@ -43,7 +43,7 @@ This is a **source-only** TypeScript package that provides:
     - **Environment Overrides**: Complete environment variable system for deployment flexibility
     - **Configurable Dimensions**: Content dimensions via props and environment variables
     - **Enhanced Debug Panel**: Active node ID display and resolved configuration monitoring
-    - **Backward Compatibility**: Legacy fileKey support maintained for existing implementations
+    - **Modern Architecture**: Pure split configuration - NO LEGACY SUPPORT
 
 ### Scope Clarification
 

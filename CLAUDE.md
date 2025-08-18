@@ -113,10 +113,10 @@ NEXT_PUBLIC_FIGMA_DEBUG=true
 2. **Component Config Props** (medium) - Per-component customization
 3. **Default Fallbacks** (lowest) - Reliable operation guarantee
 
-**Backward Compatibility:**
-- **Legacy `fileKey` Support**: Still works for existing implementations
-- **Gradual Migration**: Can upgrade to split configuration incrementally
-- **No Breaking Changes**: All existing usage patterns continue to work
+**Modern Architecture:**
+- **NO LEGACY SUPPORT**: Legacy `fileKey` has been completely removed
+- **Pure Split Configuration**: Must use `desktopFileKey` and `mobileFileKey`
+- **Breaking Change**: All implementations must migrate to new configuration system
 
 **Implementation Example:**
 ```typescript
