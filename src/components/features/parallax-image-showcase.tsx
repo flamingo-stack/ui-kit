@@ -217,13 +217,13 @@ export const ParallaxImageShowcase: React.FC<ParallaxImageShowcaseProps> = ({
           {/* Left half: Image overlaps to the left */}
           {leftImage && (
             <motion.div
-              className="absolute left-20 w-1/2 h-full z-10"
+              className="absolute left-20 lg:w-1/2 w-full h-full z-10"
               style={{ x: x, y: y, rotate: rotate }}
             >
               <img
                 src={leftImage.src}
                 alt={leftImage.alt}
-                className="w-full h-full object-top object-cover ods-card/50 border border-ods-border"
+                className="w-full h-full object-left object-top object-cover ods-card/50 border border-ods-border"
               />
               <div className="absolute inset-0 shadow-2xl" />
             </motion.div>
@@ -232,13 +232,13 @@ export const ParallaxImageShowcase: React.FC<ParallaxImageShowcaseProps> = ({
           {/* Right half: Image overlaps to the right */}
           {centerImage && (
             <motion.div
-              className="absolute top-20 right-20 w-1/2 h-full z-20"
+              className="absolute top-20 right-20 lg:w-1/2 w-full h-full z-20"
               style={{ x: x, y: y, rotate: rotate }}
             >
               <img
                 src={centerImage.src}
                 alt={centerImage.alt}
-                className="w-full h-full object-top object-cover ods-card/50 border border-ods-border"
+                className="w-full h-full object-left object-top object-cover ods-card/50 border border-ods-border"
               />
               <div className="absolute inset-0 shadow-2xl" />
             </motion.div>
