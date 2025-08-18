@@ -10,9 +10,16 @@ interface ParallaxImageShowcaseProps {
     position: 'left' | 'center' | 'right'
   }[]
   className?: string
+  layout?: 'default' | 'openmsp' // New layout prop
+  logoElement?: React.ReactNode // Custom logo for openmsp layout
 }
 
-export const ParallaxImageShowcase: React.FC<ParallaxImageShowcaseProps> = ({ images, className = '' }) => {
+export const ParallaxImageShowcase: React.FC<ParallaxImageShowcaseProps> = ({ 
+  images, 
+  className = '', 
+  layout = 'default',
+  logoElement 
+}) => {
   // ANIMATION INTENSITY CONTROL
   // 0.1 = very gentle, 1 = normal, 5 = aggressive, 10 = super aggressive
   const INTENSITY = 1 // Super aggressive for testing
@@ -105,6 +112,60 @@ export const ParallaxImageShowcase: React.FC<ParallaxImageShowcaseProps> = ({ im
   const centerImage = images.find(img => img.position === 'center')
   const rightImage = images.find(img => img.position === 'right')
   
+  // OpenMSP Layout: Logo at top, two screenshots stacked vertically
+  if (layout === 'openmsp') {
+    return (
+      <div 
+        ref={componentRef}
+        className={`relative w-full h-full overflow-hidden ${className}`}
+      >
+        {/* OpenMSP Logo at top center */}
+        {logoElement && (
+          <div className="absolute top-[88px] left-1/2 transform -translate-x-1/2 z-[4]">
+            {logoElement}
+          </div>
+        )}
+        
+        {/* Screenshot 1 - Left side, stacked on top */}
+        {leftImage && (
+          <motion.div
+            className="absolute left-10 top-[124px] w-80 h-[828px] z-[2] rounded shadow-[0px_24px_48px_0px_#000000]"
+            style={{
+              x: x,
+              y: y,
+              rotate: rotate,
+            }}
+          >
+            <img
+              src={leftImage.src}
+              alt={leftImage.alt}
+              className="w-full h-full object-cover rounded border border-[#3a3a3a]"
+            />
+          </motion.div>
+        )}
+        
+        {/* Screenshot 2 - Right side, lower, overlapping */}
+        {centerImage && (
+          <motion.div
+            className="absolute right-10 bottom-[-415px] w-[320px] h-[610px] z-[3] rounded shadow-[0px_24px_48px_0px_#000000]"
+            style={{
+              x: x,
+              y: y,
+              rotate: rotate,
+            }}
+          >
+            <img
+              src={centerImage.src}
+              alt={centerImage.alt}
+              className="w-full h-full object-cover rounded border border-[#3a3a3a]"
+            />
+          </motion.div>
+        )}
+      </div>
+    )
+  }
+  
+  // Default Layout (original implementation)
   return (
     <div 
       ref={componentRef}
