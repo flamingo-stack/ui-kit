@@ -17,6 +17,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ### FigmaPrototypeViewer Component - ALL CRITICAL ISSUES RESOLVED ✅
 - **Location**: `src/components/features/figma-prototype-viewer.tsx`
 - **Status**: ✅ **FULLY COMPLETED** - All major functionality working perfectly
+- **Latest Enhancement**: ✅ **Enhanced Configuration System (2025-08-17)**
 
 #### ✅ Successfully Resolved Issues (COMPLETED 2025-08-17):
 
@@ -69,6 +70,76 @@ iframeRef.current.contentWindow.postMessage(command, 'https://www.figma.com')
 case 'NEW_STATE':
   setShowIframe(true) // Show iframe when Figma is fully rendered
   break
+```
+
+#### ✅ Enhanced Configuration System (NEW 2025-08-17):
+
+**Split Mobile/Desktop Configuration:**
+- **Separate File Keys**: `desktopFileKey` and `mobileFileKey` for optimal device-specific prototypes
+- **Device-Specific Starting Points**: `desktopStartingPoint` and `mobileStartingPoint` for tailored experiences
+- **Per-Section Node IDs**: Both `startingNodeId` (desktop) and `mobileStartingNodeId` (mobile) supported
+
+**Environment Variable Override System:**
+```bash
+# Complete deployment flexibility
+NEXT_PUBLIC_FIGMA_DESKTOP_FILE_KEY=cUlttG0yUwiYlfIRfoqrX6
+NEXT_PUBLIC_FIGMA_MOBILE_FILE_KEY=erC12EwP5IxZU7vXrLv2eg
+NEXT_PUBLIC_FIGMA_DESKTOP_STARTING_POINT=1:258
+NEXT_PUBLIC_FIGMA_MOBILE_STARTING_POINT=1:261
+
+# Content dimension overrides
+NEXT_PUBLIC_FIGMA_DESKTOP_WIDTH=944
+NEXT_PUBLIC_FIGMA_DESKTOP_HEIGHT=600
+NEXT_PUBLIC_FIGMA_MOBILE_WIDTH=343
+NEXT_PUBLIC_FIGMA_MOBILE_HEIGHT=440
+
+# Debug panel
+NEXT_PUBLIC_FIGMA_DEBUG=true
+```
+
+**Configurable Content Dimensions:**
+- **Component Props**: `desktopContentDimensions` and `mobileContentDimensions` for internal calculations
+- **Environment Overrides**: `NEXT_PUBLIC_FIGMA_*_WIDTH` and `NEXT_PUBLIC_FIGMA_*_HEIGHT` variables
+- **Scaling Impact**: Dimensions used for responsive iframe scaling and container height calculations
+
+**Enhanced Debug Panel:**
+- **Active Node Tracking**: Shows current Figma node ID from navigation events
+- **Configuration Resolution**: Displays resolved file keys, starting points, and dimensions
+- **Hierarchy Display**: Shows which values came from env vars vs config vs defaults
+- **Real-Time Monitoring**: Updates during navigation and device changes
+
+**Configuration Hierarchy (Priority Order):**
+1. **Environment Variables** (highest) - Deployment and testing flexibility
+2. **Component Config Props** (medium) - Per-component customization
+3. **Default Fallbacks** (lowest) - Reliable operation guarantee
+
+**Backward Compatibility:**
+- **Legacy `fileKey` Support**: Still works for existing implementations
+- **Gradual Migration**: Can upgrade to split configuration incrementally
+- **No Breaking Changes**: All existing usage patterns continue to work
+
+**Implementation Example:**
+```typescript
+const config: FigmaPrototypeViewerConfig = {
+  // NEW: Split configuration
+  desktopFileKey: 'cUlttG0yUwiYlfIRfoqrX6',
+  mobileFileKey: 'erC12EwP5IxZU7vXrLv2eg',
+  
+  // NEW: Configurable dimensions (can be env overridden)
+  desktopContentDimensions: { width: 944, height: 600 },
+  mobileContentDimensions: { width: 343, height: 440 },
+  
+  // NEW: Device-specific starting points
+  desktopStartingPoint: '1:258',
+  mobileStartingPoint: '1:261',
+  
+  sections: [{
+    id: 'example',
+    startingNodeId: '1:258',        // Desktop
+    mobileStartingNodeId: '1:261',  // Mobile
+    // ...
+  }]
+}
 ```
 
 #### 🎯 Current Features - FULLY FUNCTIONAL:

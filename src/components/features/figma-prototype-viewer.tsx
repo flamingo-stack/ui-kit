@@ -12,11 +12,31 @@ import { SectionSelector, type SectionItem } from './section-selector'
 // 1. EXACT BREAKPOINTS
 const DESKTOP_BREAKPOINT = 768 // px
 
-// 2. EXACT CONTENT DIMENSIONS  
-const CONTENT_DIMENSIONS = {
-  mobile: { width: 343, height: 600 },
-  desktop: { width: 944, height: 600 }
-} as const
+// 2. CONFIGURABLE CONTENT DIMENSIONS (externalized from .env.local and config)
+const getContentDimensions = (config?: FigmaPrototypeViewerConfig) => {
+  // Default dimensions
+  const defaultMobile = { width: 343, height: 600 }
+  const defaultDesktop = { width: 944, height: 600 }
+  
+  // Environment variables take highest priority
+  const envMobileWidth = process.env.NEXT_PUBLIC_FIGMA_MOBILE_WIDTH ? parseInt(process.env.NEXT_PUBLIC_FIGMA_MOBILE_WIDTH) : null
+  const envMobileHeight = process.env.NEXT_PUBLIC_FIGMA_MOBILE_HEIGHT ? parseInt(process.env.NEXT_PUBLIC_FIGMA_MOBILE_HEIGHT) : null
+  const envDesktopWidth = process.env.NEXT_PUBLIC_FIGMA_DESKTOP_WIDTH ? parseInt(process.env.NEXT_PUBLIC_FIGMA_DESKTOP_WIDTH) : null
+  const envDesktopHeight = process.env.NEXT_PUBLIC_FIGMA_DESKTOP_HEIGHT ? parseInt(process.env.NEXT_PUBLIC_FIGMA_DESKTOP_HEIGHT) : null
+  
+  // Resolve mobile dimensions (env vars > config > defaults)
+  const mobileWidth = envMobileWidth ?? config?.mobileContentDimensions?.width ?? defaultMobile.width
+  const mobileHeight = envMobileHeight ?? config?.mobileContentDimensions?.height ?? defaultMobile.height
+  
+  // Resolve desktop dimensions (env vars > config > defaults)
+  const desktopWidth = envDesktopWidth ?? config?.desktopContentDimensions?.width ?? defaultDesktop.width
+  const desktopHeight = envDesktopHeight ?? config?.desktopContentDimensions?.height ?? defaultDesktop.height
+  
+  return {
+    mobile: { width: mobileWidth, height: mobileHeight },
+    desktop: { width: desktopWidth, height: desktopHeight }
+  } as const
+}
 
 // 3. VIEW MODES
 type ViewMode = 'DESKTOP' | 'MOBILE' | 'MOBILE_TOUCH'
@@ -80,7 +100,11 @@ export interface FigmaPrototypeSection {
 }
 
 export interface FigmaPrototypeViewerConfig {
-  fileKey: string
+  // File configuration - can specify different files for mobile/desktop
+  fileKey?: string              // Legacy: single file for both (deprecated)
+  mobileFileKey?: string        // Separate mobile Figma file key
+  desktopFileKey?: string       // Separate desktop Figma file key
+  
   title: string
   sections: FigmaPrototypeSection[]
   className?: string
@@ -90,8 +114,15 @@ export interface FigmaPrototypeViewerConfig {
   defaultSectionId?: string
   height?: string
   onSectionChange?: (sectionId: string) => void
-  mobileStartingPoint?: string
-  desktopStartingPoint?: string
+  
+  // Starting points - can be overridden by environment variables
+  mobileStartingPoint?: string  // Default mobile starting point
+  desktopStartingPoint?: string // Default desktop starting point
+  
+  // Content dimensions - can be overridden by environment variables
+  mobileContentDimensions?: { width: number; height: number }   // Mobile content size
+  desktopContentDimensions?: { width: number; height: number }  // Desktop content size
+  
   hideControls?: boolean
 }
 
@@ -139,11 +170,13 @@ function getViewMode(screenWidth: number, isTouchDevice: boolean): ViewMode {
  */
 function calculateScaling(
   viewMode: ViewMode, 
-  containerDimensions: { width: number, height: number }
+  containerDimensions: { width: number, height: number },
+  config?: FigmaPrototypeViewerConfig
 ) {
+  const contentDimensions = getContentDimensions(config)
   const contentSize = viewMode === 'DESKTOP' 
-    ? CONTENT_DIMENSIONS.desktop 
-    : CONTENT_DIMENSIONS.mobile
+    ? contentDimensions.desktop 
+    : contentDimensions.mobile
     
   const scaleX = containerDimensions.width / contentSize.width
   const scaleY = containerDimensions.height / contentSize.height
@@ -164,14 +197,77 @@ function calculateScaling(
 }
 
 /**
+ * Resolves the appropriate file key based on viewMode and environment variables
+ */
+function resolveFileKey(config: FigmaPrototypeViewerConfig, viewMode: ViewMode): string {
+  // Check environment variables first (highest priority)
+  if (viewMode === 'DESKTOP') {
+    const envDesktopFileKey = process.env.NEXT_PUBLIC_FIGMA_DESKTOP_FILE_KEY
+    if (envDesktopFileKey) return envDesktopFileKey
+    
+    // Fall back to config
+    if (config.desktopFileKey) return config.desktopFileKey
+  } else {
+    const envMobileFileKey = process.env.NEXT_PUBLIC_FIGMA_MOBILE_FILE_KEY
+    if (envMobileFileKey) return envMobileFileKey
+    
+    // Fall back to config
+    if (config.mobileFileKey) return config.mobileFileKey
+  }
+  
+  // Legacy fallback to single fileKey
+  if (config.fileKey) return config.fileKey
+  
+  // Throw error if no file key found
+  throw new Error(`No Figma file key found for ${viewMode} mode. Please set NEXT_PUBLIC_FIGMA_${viewMode}_FILE_KEY or provide ${viewMode.toLowerCase()}FileKey in config.`)
+}
+
+/**
+ * Resolves the starting point node ID based on viewMode, environment variables, and config
+ */
+function resolveStartingPoint(config: FigmaPrototypeViewerConfig, viewMode: ViewMode, section?: FigmaPrototypeSection): string {
+  // If a specific section is provided, use its starting node
+  if (section) {
+    if (viewMode !== 'DESKTOP' && section.mobileStartingNodeId) {
+      return section.mobileStartingNodeId
+    }
+    return section.startingNodeId
+  }
+  
+  // Check environment variables for default starting points (highest priority)
+  if (viewMode === 'DESKTOP') {
+    const envDesktopStarting = process.env.NEXT_PUBLIC_FIGMA_DESKTOP_STARTING_POINT
+    if (envDesktopStarting) return envDesktopStarting
+    
+    // Fall back to config
+    if (config.desktopStartingPoint) return config.desktopStartingPoint
+  } else {
+    const envMobileStarting = process.env.NEXT_PUBLIC_FIGMA_MOBILE_STARTING_POINT
+    if (envMobileStarting) return envMobileStarting
+    
+    // Fall back to config
+    if (config.mobileStartingPoint) return config.mobileStartingPoint
+  }
+  
+  // Final fallback to first section
+  const firstSection = config.sections[0]
+  if (firstSection) {
+    return resolveStartingPoint(config, viewMode, firstSection)
+  }
+  
+  throw new Error(`No starting point found for ${viewMode} mode. Please set NEXT_PUBLIC_FIGMA_${viewMode}_STARTING_POINT or provide ${viewMode.toLowerCase()}StartingPoint in config.`)
+}
+
+/**
  * Generates Figma embed URL with exact parameters
  */
 function generateEmbedUrl(
-  fileKey: string,
+  config: FigmaPrototypeViewerConfig,
   viewMode: ViewMode,
   startingNodeId: string,
   clientId: string
 ): string {
+  const fileKey = resolveFileKey(config, viewMode)
   const embedHost = typeof window !== 'undefined' 
     ? window.location.hostname 
     : 'localhost'
@@ -249,9 +345,23 @@ function renderUnifiedUI(state: UnifiedState, handlers: {
           config.iframeClassName
         )}
         style={{ 
-          height: viewMode === 'DESKTOP' ? (config.height || '800px') : '85vh',
-          minHeight: viewMode === 'DESKTOP' ? 'auto' : '650px',
-          maxHeight: viewMode === 'DESKTOP' ? 'none' : '950px',
+          height: viewMode === 'DESKTOP' 
+            ? (config.height || '800px') 
+            : (() => {
+                const contentDimensions = getContentDimensions(config)
+                const mobileHeight = contentDimensions.mobile.height
+                // Use content height + some padding, but respect viewport limits
+                const calculatedHeight = Math.max(mobileHeight + 100, 400) // minimum 400px
+                return `${Math.min(calculatedHeight, window?.innerHeight * 0.85 || 650)}px`
+              })(),
+          minHeight: viewMode === 'DESKTOP' ? 'auto' : (() => {
+            const contentDimensions = getContentDimensions(config)
+            return `${Math.max(contentDimensions.mobile.height, 400)}px`
+          })(),
+          maxHeight: viewMode === 'DESKTOP' ? 'none' : (() => {
+            const contentDimensions = getContentDimensions(config)
+            return `${contentDimensions.mobile.height}px`
+          })(),
           border: viewMode === 'DESKTOP' ? undefined : 'none'
         }}
       >
@@ -385,27 +495,20 @@ export const FigmaPrototypeViewer: React.FC<FigmaPrototypeViewerProps> = ({
   
   // Calculate Scaling
   const scaling = useMemo(() => 
-    calculateScaling(viewMode, containerDimensions),
-    [viewMode, containerDimensions]
+    calculateScaling(viewMode, containerDimensions, config),
+    [viewMode, containerDimensions, config]
   )
   
   // Generate Embed URL
   const embedUrl = useMemo(() => {
-    const firstSection = config.sections[0]
-    if (!firstSection) return ''
-    
-    let startingNodeId = firstSection.startingNodeId
-    
-    if (viewMode !== 'DESKTOP') {
-      startingNodeId = config.mobileStartingPoint || 
-                     firstSection.mobileStartingNodeId || 
-                     firstSection.startingNodeId
-    } else {
-      startingNodeId = config.desktopStartingPoint || firstSection.startingNodeId
+    try {
+      const startingNodeId = resolveStartingPoint(config, viewMode)
+      return generateEmbedUrl(config, viewMode, startingNodeId, clientId)
+    } catch (error) {
+      console.error('[FigmaPrototypeViewer] Failed to generate embed URL:', error)
+      return ''
     }
-    
-    return generateEmbedUrl(config.fileKey, viewMode, startingNodeId, clientId)
-  }, [config.fileKey, config.sections, viewMode, config.mobileStartingPoint, config.desktopStartingPoint, clientId])
+  }, [config, viewMode, clientId])
   
   // Create Unified State
   const unifiedState: UnifiedState = useMemo(() => ({
@@ -541,10 +644,8 @@ export const FigmaPrototypeViewer: React.FC<FigmaPrototypeViewerProps> = ({
     
     setIsNavigating(true)
     
-    // Choose node ID based on view mode
-    const nodeId = (viewMode !== 'DESKTOP' && section.mobileStartingNodeId) 
-      ? section.mobileStartingNodeId 
-      : section.startingNodeId
+    // Use resolver to get the correct node ID for this section
+    const nodeId = resolveStartingPoint(config, viewMode, section)
     
     // Update active section
     if (!externalActiveSection) {
@@ -567,7 +668,7 @@ export const FigmaPrototypeViewer: React.FC<FigmaPrototypeViewerProps> = ({
     
     // Reset navigation flag
     setTimeout(() => setIsNavigating(false), 500)
-  }, [config.sections, isInitialized, viewMode, externalActiveSection, config.onSectionChange])
+  }, [config, isInitialized, viewMode, externalActiveSection])
   
   // Section Click Handler
   const handleSectionClick = useCallback((sectionId: string) => {
@@ -652,10 +753,60 @@ export const FigmaPrototypeViewer: React.FC<FigmaPrototypeViewerProps> = ({
               <span className="text-ods-text-secondary">Section:</span>{' '}
               <span className="text-ods-text-primary">{activeSection}</span>
             </div>
+            <div className="col-span-2">
+              <span className="text-ods-text-secondary">Active Node ID:</span>{' '}
+              <span className="text-ods-text-primary font-mono">
+                {currentNodeId || 'Not detected'}
+              </span>
+            </div>
           </div>
           
           <div className="mt-3 text-xs text-ods-text-secondary">
             Margins: {scaling.marginX.toFixed(0)}px × {scaling.marginY.toFixed(0)}px
+          </div>
+          
+          {/* Additional debug info */}
+          <div className="mt-3 pt-3 border-t border-ods-border">
+            <div className="text-xs text-ods-text-secondary space-y-1">
+              <div>
+                <span className="text-ods-text-secondary">File Key:</span>{' '}
+                <span className="text-ods-text-primary font-mono">
+                  {(() => {
+                    try {
+                      return resolveFileKey(config, viewMode)
+                    } catch (e) {
+                      return 'Error'
+                    }
+                  })()}
+                </span>
+              </div>
+              <div>
+                <span className="text-ods-text-secondary">Starting Point:</span>{' '}
+                <span className="text-ods-text-primary font-mono">
+                  {(() => {
+                    try {
+                      return resolveStartingPoint(config, viewMode)
+                    } catch (e) {
+                      return 'Error'
+                    }
+                  })()}
+                </span>
+              </div>
+              <div>
+                <span className="text-ods-text-secondary">Content Dimensions:</span>{' '}
+                <span className="text-ods-text-primary font-mono">
+                  {(() => {
+                    try {
+                      const dims = getContentDimensions(config)
+                      const current = viewMode === 'DESKTOP' ? dims.desktop : dims.mobile
+                      return `${current.width}x${current.height}`
+                    } catch (e) {
+                      return 'Error'
+                    }
+                  })()}
+                </span>
+              </div>
+            </div>
           </div>
         </div>
       )}

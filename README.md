@@ -38,6 +38,12 @@ This is a **source-only** TypeScript package that provides:
   - **RESOLVED**: Visual polish with transparent backgrounds and clean presentation
   - **REVOLUTIONARY**: Advanced touch gesture detection for mobile devices
   - **MODERN**: 2025 web development standards with unified state management
+  - **NEW**: Enhanced Configuration System (2025-08-17):
+    - **Split Mobile/Desktop**: Separate file keys and starting points for optimal device experience
+    - **Environment Overrides**: Complete environment variable system for deployment flexibility
+    - **Configurable Dimensions**: Content dimensions via props and environment variables
+    - **Enhanced Debug Panel**: Active node ID display and resolved configuration monitoring
+    - **Backward Compatibility**: Legacy fileKey support maintained for existing implementations
 
 ### Scope Clarification
 
@@ -492,6 +498,77 @@ The `FigmaPrototypeViewer` component (`src/components/features/figma-prototype-v
 - **PostMessage API**: Direct communication with Figma using `NAVIGATE_TO_FRAME_AND_CLOSE_OVERLAYS`
 - **Performance**: Optimized with `useMemo`, `useCallback`, proper dependency arrays
 - **Accessibility**: Proper ARIA labels, keyboard navigation, focus management
+
+### FigmaPrototypeViewer Configuration System
+
+The enhanced configuration system provides maximum flexibility for deployments and device optimization:
+
+```tsx
+import { FigmaPrototypeViewer, type FigmaPrototypeViewerConfig } from '@flamingo/ui-kit/components/features'
+
+const config: FigmaPrototypeViewerConfig = {
+  // SPLIT MOBILE/DESKTOP CONFIGURATION
+  desktopFileKey: 'cUlttG0yUwiYlfIRfoqrX6',  // Desktop-specific Figma file
+  mobileFileKey: 'erC12EwP5IxZU7vXrLv2eg',   // Mobile-specific Figma file
+  
+  // STARTING POINTS (can be overridden by env vars)
+  desktopStartingPoint: '1:258',  // Default desktop starting node
+  mobileStartingPoint: '1:261',   // Default mobile starting node
+  
+  // CONFIGURABLE CONTENT DIMENSIONS
+  desktopContentDimensions: { width: 944, height: 600 },  // Desktop content size
+  mobileContentDimensions: { width: 343, height: 440 },   // Mobile content size
+  
+  title: 'AI Co-Pilots Demo',
+  sections: [
+    {
+      id: 'intake',
+      number: '1.',
+      title: 'Fae triages the request',
+      startingNodeId: '1:258',        // Desktop node
+      mobileStartingNodeId: '1:261'   // Mobile node  
+    },
+    // Additional sections...
+  ]
+}
+
+<FigmaPrototypeViewer config={config} />
+```
+
+**Environment Variable Override System:**
+```bash
+# .env.local or deployment environment
+# Override file keys
+NEXT_PUBLIC_FIGMA_DESKTOP_FILE_KEY=newDesktopFileKey
+NEXT_PUBLIC_FIGMA_MOBILE_FILE_KEY=newMobileFileKey
+
+# Override starting points
+NEXT_PUBLIC_FIGMA_DESKTOP_STARTING_POINT=1:123
+NEXT_PUBLIC_FIGMA_MOBILE_STARTING_POINT=1:456
+
+# Override content dimensions
+NEXT_PUBLIC_FIGMA_DESKTOP_WIDTH=1200
+NEXT_PUBLIC_FIGMA_DESKTOP_HEIGHT=800
+NEXT_PUBLIC_FIGMA_MOBILE_WIDTH=375
+NEXT_PUBLIC_FIGMA_MOBILE_HEIGHT=500
+
+# Enable debug panel
+NEXT_PUBLIC_FIGMA_DEBUG=true
+```
+
+**Configuration Hierarchy:**
+1. **Environment Variables** (highest priority) - Override everything for deployment flexibility
+2. **Component Config** (medium priority) - Per-component configuration via props
+3. **Default Values** (lowest priority) - Fallback values for reliable operation
+
+**Enhanced Debug Panel:**
+When `NEXT_PUBLIC_FIGMA_DEBUG=true`, shows:
+- Current view mode (DESKTOP/MOBILE/MOBILE_TOUCH)
+- Iframe loading state and navigation status
+- Resolved file key and starting point from configuration hierarchy
+- Current content dimensions and scaling factors
+- Active Figma node ID for navigation tracking
+- Complete configuration resolution details
 
 **🎨 Visual Polish:**
 - Transparent iframe backgrounds for clean presentation
