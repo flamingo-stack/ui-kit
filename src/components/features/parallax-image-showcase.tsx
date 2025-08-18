@@ -137,7 +137,7 @@ export const ParallaxImageShowcase: React.FC<ParallaxImageShowcaseProps> = ({
               <img
                 src={leftImage.src}
                 alt={leftImage.alt}
-                className="w-full h-full object-top object-cover"
+                className="w-full h-full object-top object-cover ods-card/50 border border-ods-border"
               />
               <div className="absolute inset-0 shadow-2xl" />
             </motion.div>
@@ -152,7 +152,7 @@ export const ParallaxImageShowcase: React.FC<ParallaxImageShowcaseProps> = ({
               <img
                 src={centerImage.src}
                 alt={centerImage.alt}
-                className="w-full h-full object-top object-cover"
+                className="w-full h-full object-top object-cover ods-card/50 border border-ods-border"
               />
               <div className="absolute inset-0 shadow-2xl" />
             </motion.div>
