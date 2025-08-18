@@ -10,14 +10,14 @@ interface ParallaxImageShowcaseProps {
     position: 'left' | 'center' | 'right'
   }[]
   className?: string
-  layout?: 'default' | 'openmsp' // New layout prop
-  logoElement?: React.ReactNode // Custom logo for openmsp layout
+  layout?: 'non-boxed' | 'boxed' // New layout prop
+  logoElement?: React.ReactNode // Custom logo for boxed layout
 }
 
 export const ParallaxImageShowcase: React.FC<ParallaxImageShowcaseProps> = ({ 
   images, 
   className = '', 
-  layout = 'default',
+  layout = 'non-boxed',
   logoElement 
 }) => {
   // ANIMATION INTENSITY CONTROL
@@ -112,14 +112,14 @@ export const ParallaxImageShowcase: React.FC<ParallaxImageShowcaseProps> = ({
   const centerImage = images.find(img => img.position === 'center')
   const rightImage = images.find(img => img.position === 'right')
   
-  // OpenMSP Layout: Clean two-row grid structure with overlaps
-  if (layout === 'openmsp') {
+  // Boxed Layout: Clean two-row grid structure with overlaps
+  if (layout === 'boxed') {
     return (
       <div 
         ref={componentRef}
         className={`relative w-full h-full overflow-hidden ${className}`}
       >
-        {/* Row 1: OpenMSP Logo Component */}
+        {/* Row 1: Logo Component */}
         {logoElement && (
           <div className="absolute top-4 left-1/2 -translate-x-1/2 z-30 scale-50">
             {logoElement}
@@ -162,7 +162,7 @@ export const ParallaxImageShowcase: React.FC<ParallaxImageShowcaseProps> = ({
     )
   }
   
-  // Default Layout (original implementation)
+  // Non-Boxed Layout (original implementation)
   return (
     <div 
       ref={componentRef}
