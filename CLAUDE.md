@@ -279,6 +279,58 @@ Unified authentication system supporting both page-based (OpenFrame) and modal-b
 - **ProviderButton**: Individual SSO provider buttons
 - **AuthModal**: Modal wrapper (used by AuthTrigger)
 
+#### OpenFrame Authentication Architecture
+OpenFrame implements a modular sections-based authentication pattern following the multi-platform-hub structure:
+
+```typescript
+// Main orchestrator (follows about-page.tsx pattern)
+export default function OpenFrameAuthPage() {
+  const { navigateTo, replace } = useNavigation()
+  
+  return (
+    <div className="min-h-screen bg-ods-bg flex flex-col lg:flex-row">
+      <AuthChoiceSection onAction={handleAction} />
+      <AuthBenefitsSection /> {/* Shared across all auth screens */}
+    </div>
+  )
+}
+
+// Individual sections using UI-Kit components
+import { AuthProvidersList } from '@flamingo/ui-kit/components/features'
+
+export function AuthChoiceSection({ onAction }) {
+  return (
+    <div className="w-full lg:w-1/2 p-6 lg:p-20">
+      <AuthProvidersList 
+        enabledProviders={providers}
+        onProviderClick={handleAuth}
+        orientation="vertical"
+      />
+    </div>
+  )
+}
+```
+
+#### Navigation Integration
+OpenFrame uses navigation utilities for proper URL routing with browser history:
+
+```typescript
+import { useNavigation, authRoutes } from '@/lib/navigation'
+
+export function AuthComponent() {
+  const { navigateTo } = useNavigation()
+  
+  const handleNext = () => {
+    navigateTo(authRoutes.signup) // Updates both state and URL
+  }
+}
+```
+
+**URL Structure:**
+- `/auth` → AuthChoiceSection (organization setup)
+- `/auth/signup` → AuthSignupSection (user registration)
+- `/auth/login` → AuthLoginSection (SSO provider selection)
+
 ### Loading Skeleton Components
 Comprehensive skeleton system for preventing double-loading issues:
 

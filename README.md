@@ -309,6 +309,53 @@ function DocumentationPage() {
 - Automatic active section highlighting
 - Mobile-responsive with proper breakpoints
 
+### Authentication Components
+
+OpenFrame implements a modular, sections-based authentication architecture following the multi-platform-hub pattern:
+
+```tsx
+import { AuthProvidersList } from '@flamingo/ui-kit/components/features'
+
+// Main orchestrator (like about-page.tsx pattern)  
+export default function OpenFrameAuthPage() {
+  const { navigateTo } = useNavigation()
+  
+  return (
+    <div className="min-h-screen bg-ods-bg flex flex-col lg:flex-row">
+      <AuthChoiceSection onAction={handleAction} />
+      <AuthBenefitsSection /> {/* Shared across all auth screens */}
+    </div>
+  )
+}
+
+// Individual sections using UI-Kit components
+export function AuthChoiceSection({ onAction }) {
+  return (
+    <div className="w-full lg:w-1/2 p-6 lg:p-20">
+      <AuthProvidersList 
+        enabledProviders={providers}
+        onProviderClick={handleAuth}
+        orientation="vertical"
+      />
+    </div>
+  )
+}
+```
+
+**Navigation Integration:**
+```tsx
+import { useNavigation, authRoutes } from '@/lib/navigation'
+
+// Navigation utilities for proper URL routing with browser history
+const { navigateTo, replace } = useNavigation()
+navigateTo(authRoutes.signup) // Updates both state and URL
+```
+
+**URL Structure:**
+- `/auth` → AuthChoiceSection (organization setup)
+- `/auth/signup` → AuthSignupSection (user registration)  
+- `/auth/login` → AuthLoginSection (SSO provider selection)
+
 ### Hooks
 
 ```tsx
