@@ -8,18 +8,18 @@ import { cn } from "../../utils/cn"
 const buttonVariants = cva(
   // Base styles following ButtonFull specifications with Figma-accurate typography
   // Default width behavior - let parent container control width
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-[6px] font-['DM_Sans'] font-bold text-lg leading-tight transition-colors duration-200 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-[6px] font-['DM_Sans'] font-bold text-lg leading-tight transition-colors duration-200 focus-visible:outline-none disabled:pointer-events-none [&_svg]:pointer-events-none [&_svg]:shrink-0",
   {
     variants: {
       variant: { 
         // Primary variant for main CTAs (ButtonFull primary)
-        primary: "bg-ods-accent text-ods-text-on-accent hover:bg-ods-accent-hover active:bg-ods-accent-active focus-visible:ring-2 focus-visible:ring-ods-focus disabled:bg-ods-disabled disabled:text-ods-text-disabled",
+        primary: "bg-ods-accent text-ods-text-on-accent hover:bg-ods-accent-hover active:bg-ods-accent-active focus-visible:ring-2 focus-visible:ring-ods-focus disabled:bg-ods-disabled disabled:text-ods-text-secondary disabled:cursor-not-allowed disabled:shadow-none",
         // White background variant for secondary actions (ButtonFull secondary)
-        white: "bg-white text-black hover:bg-ods-text-secondary hover:text-black active:bg-ods-text-muted active:text-black focus-visible:ring-2 focus-visible:ring-ods-focus disabled:bg-ods-disabled disabled:text-ods-text-disabled",
+        white: "bg-white text-black hover:bg-ods-text-secondary hover:text-black active:bg-ods-text-muted active:text-black focus-visible:ring-2 focus-visible:ring-ods-focus disabled:bg-ods-disabled disabled:text-ods-text-secondary disabled:cursor-not-allowed disabled:shadow-none",
         // Secondary variant for alternative actions (ButtonFull secondary)
-        secondary: "bg-ods-text-primary text-black hover:bg-ods-text-secondary hover:text-black active:bg-ods-text-muted active:text-black focus-visible:ring-2 focus-visible:ring-ods-focus disabled:bg-ods-disabled disabled:text-ods-text-disabled",
+        secondary: "bg-ods-text-primary text-black hover:bg-ods-text-secondary hover:text-black active:bg-ods-text-muted active:text-black focus-visible:ring-2 focus-visible:ring-ods-focus disabled:bg-ods-disabled disabled:text-ods-text-secondary disabled:cursor-not-allowed disabled:shadow-none",
         // Outline variant for Submit Product buttons and secondary actions
-        outline: "border border-ods-border bg-transparent text-ods-text-primary hover:bg-ods-bg-hover active:bg-ods-bg-active focus-visible:ring-2 focus-visible:ring-ods-focus disabled:border-ods-disabled disabled:text-ods-text-disabled",
+        outline: "border border-ods-border bg-transparent text-ods-text-primary hover:bg-ods-bg-hover active:bg-ods-bg-active focus-visible:ring-2 focus-visible:ring-ods-focus disabled:border-ods-disabled disabled:text-ods-text-secondary disabled:bg-ods-disabled disabled:cursor-not-allowed disabled:shadow-none",
         // Transparent variant for ghost-like actions (ButtonFull transparent)
         transparent: "bg-transparent text-ods-text-primary hover:bg-ods-bg-hover active:bg-ods-bg-active focus-visible:ring-2 focus-visible:ring-ods-focus disabled:text-ods-text-disabled",
         // Ghost variant for subtle interactions

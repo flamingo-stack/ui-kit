@@ -31,6 +31,11 @@ export { EmptyVendorIcon } from './empty-vendor-icon';
 export { ErrorIcon } from './error-icon';
 export { MarginCrisisIcon } from './margin-crisis-icon';
 
+// OpenFrame benefit icons
+export { CutVendorCostsIcon } from './cut-vendor-costs-icon';
+export { AutomateEverythingIcon } from './automate-everything-icon';
+export { ReclaimProfitsIcon } from './reclaim-profits-icon';
+
 // Brand and social icons
 export { GitHubIcon } from './github-icon';
 export { SlackIcon } from './slack-icon';

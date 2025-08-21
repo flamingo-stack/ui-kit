@@ -16,7 +16,7 @@ export const BenefitCard: React.FC<BenefitCardProps> = ({
   variant = 'default',
   className = ''
 }) => {
-  const baseStyles = "flex-1 flex flex-col gap-4 relative"
+  const baseStyles = "flex gap-2 items-start justify-start relative"
   
   const variantStyles = {
     default: {
@@ -39,12 +39,22 @@ export const BenefitCard: React.FC<BenefitCardProps> = ({
       styles.container,
       className
     )}>
-      {icon && icon}
-      <div className="flex flex-col gap-0">
-        <h3 className={styles.title}>
+      {icon && (
+        <div className="w-6 h-6 flex-shrink-0">
+          {icon}
+        </div>
+      )}
+      <div className="flex flex-col gap-1 flex-1 min-w-0">
+        <h3 className={cn(
+          "font-['DM_Sans'] font-bold text-[18px] leading-[24px] tracking-[-0.36px] text-white",
+          styles.title
+        )}>
           {title}
         </h3>
-        <p className={styles.description}>
+        <p className={cn(
+          "font-['DM_Sans'] font-medium text-[18px] leading-[24px] text-[#888888]",
+          styles.description
+        )}>
           {description}
         </p>
       </div>
