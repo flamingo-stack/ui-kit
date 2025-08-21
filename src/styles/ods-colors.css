@@ -128,15 +128,19 @@
 
 
 [data-app-type="openframe"] {
-  --color-accent-primary: var(--ods-flamingo-cyan-base);
-  --color-accent-hover: var(--ods-flamingo-cyan-hover);
-  --color-accent-active: var(--ods-flamingo-cyan-action);
-  --color-accent-focus: var(--ods-flamingo-cyan-base);
-  --color-focus-ring: var(--ods-flamingo-cyan-base);
-  --color-focus-visible: var(--ods-flamingo-cyan-base);
+  /* OpenFrame uses yellow buttons for auth flows, cyan for general accents */
+  --color-accent-primary: var(--ods-open-yellow-base);
+  --color-accent-hover: var(--ods-open-yellow-hover);
+  --color-accent-active: var(--ods-open-yellow-action);
+  --color-accent-focus: var(--ods-open-yellow-base);
+  --color-focus-ring: var(--ods-open-yellow-base);
+  --color-focus-visible: var(--ods-open-yellow-base);
   --color-link: var(--ods-flamingo-cyan-base);
   --color-link-hover: var(--ods-flamingo-cyan-hover);
-  --color-bg: #0A0A0A;
+  --color-bg: var(--ods-system-greys-background);
+  /* Add OpenFrame-specific card backgrounds to match Figma */
+  --color-bg-card-primary: var(--ods-system-greys-black);
+  --color-bg-card-secondary: var(--ods-system-greys-background);
 }
 
 [data-app-type="flamingo"] {

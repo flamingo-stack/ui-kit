@@ -50,6 +50,10 @@
     "./assets": {
       "types": "./src/assets/index.ts",
       "default": "./src/assets/index.ts"
+    },
+    "./fonts": {
+      "types": "./src/fonts.ts",
+      "default": "./src/fonts.ts"
     }
   },
   "scripts": {
