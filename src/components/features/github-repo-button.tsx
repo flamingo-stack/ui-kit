@@ -10,7 +10,7 @@ interface GithubRepoButtonProps extends Omit<ButtonProps, 'children' | 'leftIcon
 export function GithubRepoButton({ 
   children = 'Get Started',
   size = 'default',
-  href = 'https://github.com/Flamingo-CX/openframe',
+  href = 'https://github.com/flamingo-stack/openframe',
   className = '',
   ...props 
 }: GithubRepoButtonProps) {

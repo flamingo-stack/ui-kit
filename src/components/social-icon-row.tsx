@@ -15,7 +15,7 @@ export function SocialIconRow({ className = '' }: SocialIconRowProps) {
         className="flex-1"
       >
         <a
-          href="https://github.com/Flamingo-CX"
+          href="https://github.com/flamingo-stack"
           target="_blank"
           rel="noopener noreferrer"
           aria-label="GitHub"
