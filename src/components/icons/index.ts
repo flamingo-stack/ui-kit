@@ -1,6 +1,7 @@
 // Logo icons
 export { OpenmspLogo } from './openmsp-logo';
 export { OpenFrameLogo } from './openframe-logo';
+export { OpenFrameText } from './openframe-text';
 export { FlamingoLogo } from './flamingo-logo';
 export { ElestioLogo } from './elestio-logo';
 
@@ -82,6 +83,17 @@ export {
 
 // Tool Directory Icons
 export * from './tool-directory-icons';
+
+// Navigation Icons
+export { DashboardIcon } from './dashboard-icon';
+export { DevicesIcon } from './devices-icon';
+export { LogsIcon } from './logs-icon';
+export { SettingsIcon } from './settings-icon';
+export { LogOutIcon } from './log-out-icon';
+
+// Arrow Icons
+export { ChevronLeftIcon } from './chevron-left-icon';
+export { ChevronRightIcon } from './chevron-right-icon';
 
 // Utility exports
 export * from './icon-utils';

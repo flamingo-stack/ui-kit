@@ -73,3 +73,30 @@ export interface SlidingSidebarConfig {
   position?: 'left' | 'right'
   className?: string
 }
+
+/**
+ * Configuration for the navigation sidebar component
+ */
+export interface NavigationSidebarConfig {
+  items: NavigationSidebarItem[]
+  minimized?: boolean
+  footer?: React.ReactNode
+  onNavigate?: (path: string) => void
+  onToggleMinimized?: () => void
+  className?: string
+}
+
+/**
+ * Navigation sidebar item interface
+ */
+export interface NavigationSidebarItem {
+  id: string
+  label: string
+  icon: React.ReactNode
+  path?: string
+  badge?: string | React.ReactNode
+  isActive?: boolean
+  onClick?: () => void
+  children?: NavigationSidebarItem[]
+  section?: 'primary' | 'secondary' // To separate top and bottom sections
+}

@@ -17,5 +17,14 @@ export type { SlidingSidebarProps } from './sliding-sidebar'
 export { StickySectionNav, useSectionNavigation } from './sticky-section-nav'
 export type { StickyNavSection } from './sticky-section-nav'
 
+export { NavigationSidebar } from './navigation-sidebar'
+export type { NavigationSidebarProps } from './navigation-sidebar'
+
 // Re-export types from navigation types
-export type { NavigationItem, MobileNavConfig, SlidingSidebarConfig } from '../../types/navigation'
+export type { 
+  NavigationItem, 
+  MobileNavConfig, 
+  SlidingSidebarConfig,
+  NavigationSidebarConfig,
+  NavigationSidebarItem 
+} from '../../types/navigation'
