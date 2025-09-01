@@ -1,10 +1,6 @@
 /* Import Google Fonts FIRST */
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Azeret+Mono:wght@400;500;600;700&display=swap');
 
-/* Import third-party CSS libraries */
-@import 'highlight.js/styles/github-dark.css';
-@import 'react-datepicker/dist/react-datepicker.css';
-
 /* Import the ODS design system files */
 @import "./ods-colors.css";
 @import "./ods-design-tokens.css";
