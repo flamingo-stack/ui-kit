@@ -17,6 +17,7 @@ export { UserIcon } from './user-icon';
 export { HamburgerIcon } from './hamburger-icon';
 export { MenuIcon } from './menu-icon';
 export { ExploreCategoriesIcon } from './explore-categories-icon';
+export { FilterIcon } from './filter-icon'
 
 // UI state icons
 export { CheckCircleIcon } from './check-circle-icon';
@@ -31,6 +32,8 @@ export { EditProfileIcon } from './edit-profile-icon';
 export { EmptyVendorIcon } from './empty-vendor-icon';
 export { ErrorIcon } from './error-icon';
 export { MarginCrisisIcon } from './margin-crisis-icon';
+export { RefreshIcon } from './refresh-icon';
+export { CopyIcon } from './copy-icon';
 
 // OpenFrame benefit icons
 export { CutVendorCostsIcon } from './cut-vendor-costs-icon';
@@ -91,9 +94,13 @@ export { LogsIcon } from './logs-icon';
 export { SettingsIcon } from './settings-icon';
 export { LogOutIcon } from './log-out-icon';
 
+// Operating System Icons
+export { WindowsIcon } from './windows-icon';
+export { MacOSIcon } from './macos-icon';
+export { LinuxIcon } from './linux-icon';
+
 // Arrow Icons
-export { ChevronLeftIcon } from './chevron-left-icon';
-export { ChevronRightIcon } from './chevron-right-icon';
+export { DoubleChevronIcon } from './double-chevron-icon';
 
 // Utility exports
 export * from './icon-utils';
