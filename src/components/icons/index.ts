@@ -4,6 +4,7 @@ export { OpenFrameLogo } from './openframe-logo';
 export { OpenFrameText } from './openframe-text';
 export { FlamingoLogo } from './flamingo-logo';
 export { ElestioLogo } from './elestio-logo';
+export { MlgLogo } from './mlg-logo';
 
 // Navigation and feature icons
 export { VendorsIcon } from './vendors-icon';
