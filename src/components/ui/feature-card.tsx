@@ -35,19 +35,32 @@ export function FeatureCardGrid({
   const itemsPerRow = columns;
   const rows = Math.ceil(items.length / itemsPerRow);
 
-  const getBorderClasses = (isLastRow: boolean, isLastInRow: boolean) => {
+  const getBorderClasses = (isLastRow: boolean, isLastInRow: boolean, globalIndex: number) => {
     if (!showBorders) return '';
     
     let classes = '';
     
-    // Right border - not on last item in row
+    // Right border - responsive logic
     if (!isLastInRow) {
-      classes += ' border-r border-ods-border';
+      // On mobile (1 column), never show right border
+      // On desktop (2/3 columns), show right border except for last in row
+      classes += ' md:border-r border-ods-border';
     }
     
-    // Bottom border - not on last row
-    if (!isLastRow) {
+    // Bottom border logic
+    const isLastItem = globalIndex === items.length - 1;
+    
+    // Mobile: bottom border for all except last item
+    if (!isLastItem) {
       classes += ' border-b border-ods-border';
+    }
+    
+    // Desktop: override mobile border, show bottom border for all rows except last
+    if (!isLastRow) {
+      classes += ' md:border-b border-ods-border';
+    } else {
+      // Last row on desktop - remove bottom border
+      classes += ' md:border-b-0';
     }
     
     return classes;
@@ -63,12 +76,13 @@ export function FeatureCardGrid({
         return (
           <div key={rowIndex} className={`grid ${gridCols}`}>
             {rowItems.map((item, itemIndex) => {
+              const globalIndex = startIndex + itemIndex;
               const isLastInRow = itemIndex === rowItems.length - 1;
-              const borderClasses = getBorderClasses(isLastRow, isLastInRow);
+              const borderClasses = getBorderClasses(isLastRow, isLastInRow, globalIndex);
 
               return (
                 <div
-                  key={startIndex + itemIndex}
+                  key={globalIndex}
                   className={`${itemClassName}${borderClasses} relative`}
                 >
                   <div className="space-y-6">

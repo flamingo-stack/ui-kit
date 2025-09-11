@@ -18,17 +18,30 @@ export function HighlightCard({
   item,
   className = ''
 }: HighlightCardProps) {
+  // Calculate width for mobile and desktop
+  const mobileWidth = item.category.length * 12;
+  const desktopWidth = item.category.length * 14;
+  
   return (
-    <div className={`bg-ods-bg p-10 relative ${className}`}>
+    <div className={`bg-ods-bg p-6 md:p-10 relative ${className}`}>
       <div className="relative">
+        {/* Mobile highlight */}
         <div
-          className="absolute rounded-md h-10 left-[95px] top-0"
+          className="absolute rounded-md h-8 left-[80px] top-0 md:hidden"
           style={{
             backgroundColor: item.highlightBg,
-            width: `${item.category.length * 14}px`
+            width: `${mobileWidth}px`
           }}
         />
-        <h3 className="font-['Azeret_Mono'] font-semibold text-[28px] md:text-[32px] leading-[1.25] tracking-[-0.64px] text-ods-text-primary relative z-10">
+        {/* Desktop highlight */}
+        <div
+          className="absolute rounded-md h-10 left-[95px] top-0 hidden md:block"
+          style={{
+            backgroundColor: item.highlightBg,
+            width: `${desktopWidth}px`
+          }}
+        />
+        <h3 className="font-['Azeret_Mono'] font-semibold text-[24px] md:text-[28px] lg:text-[32px] leading-[1.25] tracking-[-0.64px] text-ods-text-primary relative z-10">
           Your{' '}
           <span style={{ color: item.categoryColor }}>
             {item.category}
@@ -57,6 +70,35 @@ export function HighlightCardGrid({
   const itemsPerRow = columns;
   const rows = Math.ceil(items.length / itemsPerRow);
 
+  const getBorderClasses = (isLastRow: boolean, isLastInRow: boolean, globalIndex: number) => {
+    let classes = '';
+    
+    // Right border - responsive logic
+    if (!isLastInRow) {
+      // On mobile (1 column), never show right border
+      // On desktop (2/3 columns), show right border except for last in row
+      classes += ' md:border-r border-ods-border';
+    }
+    
+    // Bottom border logic
+    const isLastItem = globalIndex === items.length - 1;
+    
+    // Mobile: bottom border for all except last item
+    if (!isLastItem) {
+      classes += ' border-b border-ods-border';
+    }
+    
+    // Desktop: override mobile border, show bottom border for all rows except last
+    if (!isLastRow) {
+      classes += ' md:border-b border-ods-border';
+    } else {
+      // Last row on desktop - remove bottom border
+      classes += ' md:border-b-0';
+    }
+    
+    return classes;
+  };
+
   return (
     <div className={`${cardClassName} ${className}`}>
       {Array.from({ length: rows }, (_, rowIndex) => {
@@ -65,19 +107,17 @@ export function HighlightCardGrid({
         const isLastRow = rowIndex === rows - 1;
 
         return (
-          <div 
-            key={rowIndex} 
-            className={`grid ${gridCols} ${!isLastRow ? 'border-b border-ods-border' : ''}`}
-          >
+          <div key={rowIndex} className={`grid ${gridCols}`}>
             {rowItems.map((item, itemIndex) => {
+              const globalIndex = startIndex + itemIndex;
               const isLastInRow = itemIndex === rowItems.length - 1;
-              const borderClass = !isLastInRow ? 'border-r border-ods-border' : '';
+              const borderClasses = getBorderClasses(isLastRow, isLastInRow, globalIndex);
 
               return (
                 <HighlightCard
-                  key={startIndex + itemIndex}
+                  key={globalIndex}
                   item={item}
-                  className={borderClass}
+                  className={borderClasses}
                 />
               );
             })}
