@@ -6,56 +6,26 @@ interface UsersGroupIconProps {
   color?: string
 }
 
-export function UsersGroupIcon({ 
-  className = '', 
-  size = 24, 
-  color = 'currentColor' 
+export function UsersGroupIcon({
+  className = '',
+  size = 24,
+  color = 'currentColor'
 }: UsersGroupIconProps) {
   return (
     <svg
       width={size}
       height={size}
-      viewBox="0 0 24 24"
+      viewBox="0 0 65 64"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       className={className}
     >
-      <circle
-        cx="9"
-        cy="7"
-        r="4"
-        stroke={color}
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        fill="none"
-      />
+
       <path
-        d="M3 21V19C3 16.79 4.79 15 7 15H11C13.21 15 15 16.79 15 19V21"
-        stroke={color}
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        fill="none"
-      />
-      <circle
-        cx="16"
-        cy="5"
-        r="3"
-        stroke={color}
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        fill="none"
-      />
-      <path
-        d="M21 12V14C21 15.66 19.66 17 18 17H17"
-        stroke={color}
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        fill="none"
-      />
+        d="M56.6667 51.9996H57.8095C58.6511 51.9996 59.3333 51.3174 59.3333 50.4758C59.3333 47.1214 57.5269 44.189 54.8338 42.5981M51.4697 13.151C53.7855 14.5526 55.3333 17.0956 55.3333 20C55.3333 22.9045 53.7855 25.4474 51.4697 26.849M10.5129 42.5903C7.81238 44.1793 6 47.1159 6 50.4758C6 51.3174 6.68223 51.9996 7.52381 51.9996H8.66667M13.8757 13.1437C11.5532 14.5437 10 17.0905 10 20C10 22.9032 11.5465 25.4452 13.8606 26.8472M21.2381 53.3337H44.0952C45.1472 53.3337 46 52.4809 46 51.4289C46 45.1171 40.8833 40.0003 34.5714 40.0003H30.7619C24.4501 40.0003 19.3333 45.1171 19.3333 51.4289C19.3333 52.4809 20.1861 53.3337 21.2381 53.3337ZM42 20C42 25.1547 37.8213 29.3334 32.6667 29.3334C27.512 29.3334 23.3333 25.1547 23.3333 20C23.3333 14.8454 27.512 10.6667 32.6667 10.6667C37.8213 10.6667 42 14.8454 42 20Z"
+        stroke={color} />
+
+
     </svg>
   )
 }
