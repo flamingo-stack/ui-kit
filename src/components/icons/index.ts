@@ -103,5 +103,15 @@ export { LinuxIcon } from './linux-icon';
 // Arrow Icons
 export { DoubleChevronIcon } from './double-chevron-icon';
 
+// Trust page icons (recovered after build script deletion)
+export { ShieldLockIcon } from './shield-lock-icon';
+export { EyeIcon } from './eye-icon';
+export { ShapeCircleDashIcon } from './shape-circle-dash-icon';
+export { BuildingsIcon } from './buildings-icon';
+export { UsersGroupIcon } from './users-group-icon';
+export { FolderShieldIcon } from './folder-shield-icon';
+export { ShieldCheckIcon } from './shield-check-icon';
+export { HotelIcon } from './hotel-icon';
+
 // Utility exports
 export * from './icon-utils';
