@@ -45,9 +45,9 @@ export const StartWithOpenFrameButton = React.forwardRef<
     iconUpperPath = "var(--ods-system-greys-black)";
   } else if (isPink) {
     buttonVariant = 'primary';
-    modeClassName = 'bg-[var(--ods-flamingo-pink-base)] hover:bg-[var(--ods-flamingo-pink-hover)] text-ods-text-primary border-[var(--ods-flamingo-pink-base)]';
-    iconLowerPath = "var(--ods-system-greys-black)";
-    iconUpperPath = "var(--ods-system-greys-white)";
+    modeClassName = 'bg-[var(--ods-flamingo-pink-base)] hover:bg-[var(--ods-flamingo-pink-hover)] text-[var(--ods-system-greys-black)] border-[var(--ods-flamingo-pink-base)]';
+    iconLowerPath = "var(--ods-system-greys-white)";
+    iconUpperPath = "var(--ods-system-greys-black)";
   } else if (isCyan) {
     // Cyan mode: similar to JoinWaitlistButton with custom colors
     buttonVariant = 'primary';
