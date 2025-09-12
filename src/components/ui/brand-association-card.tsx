@@ -25,7 +25,7 @@ export function BrandAssociationCard({
     <div className={`bg-ods-bg p-10 relative ${className}`}>
       <div className="space-y-6">
         {/* Icon */}
-        <item.icon size={64} color="currentColor" />
+        <item.icon size={80} color="currentColor" />
         
         {/* Title */}
         <h3 className="font-['Azeret_Mono'] font-semibold text-[28px] md:text-[32px] leading-[1.25] tracking-[-0.64px] text-ods-text-primary">
@@ -40,10 +40,9 @@ export function BrandAssociationCard({
         {/* Browse Button */}
         <Button 
           variant="outline"
-          size="sm"
           href={item.link}
           openInNewTab
-          rightIcon={<ExternalLink  className="h-4 w-4" />}
+          rightIcon={<ExternalLink className="h-4 w-4" />}
         >
           Browse {item.buttonText}
         </Button>
