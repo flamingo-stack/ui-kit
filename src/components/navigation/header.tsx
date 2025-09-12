@@ -134,17 +134,16 @@ export function Header({ config, platform }: HeaderProps) {
               "font-['DM_Sans'] font-bold text-[16px] leading-none tracking-[-0.32px]",
               "hover:bg-ods-bg-hover focus:bg-ods-bg-hover",
               "whitespace-nowrap",
-              item.isActive ? 'text-ods-text-primary' : 'text-ods-text-secondary',
-              isOpen && 'bg-ods-bg-hover',
+              "text-ods-text-primary", // All items use primary text color
+              item.isActive && 'bg-ods-bg-hover', // Active items get gray background
+              isOpen && 'bg-ods-bg-hover', // Open dropdowns get gray background
               item.className
             )}
           >
             {item.label}
           </Button>
           
-          {isOpen && (() => {
-            console.log('🎯 Rendering dropdown for:', item.id, 'with className:', item.dropdownClassName);
-            return (
+          {isOpen && (
             <div
               ref={(el) => { dropdownRefs.current[item.id] = el }}
               className={cn(
@@ -175,7 +174,8 @@ export function Header({ config, platform }: HeaderProps) {
                     className={cn(
                       "flex justify-start w-full",
                       index < (item.children?.length ?? 0) - 1 && "mb-1",
-                      child.isActive ? 'text-ods-text-primary' : 'text-ods-text-secondary'
+                      "text-ods-text-primary", // All dropdown items use primary text color
+                      child.isActive && 'bg-ods-bg-hover' // Active dropdown items get gray background
                     )}
                     {...(child.isExternal && { isExternal: true })}
                   >
@@ -192,8 +192,7 @@ export function Header({ config, platform }: HeaderProps) {
                 </>
               )}
             </div>
-            )
-          })()}
+          )}
         </div>
       )
     }
@@ -213,7 +212,8 @@ export function Header({ config, platform }: HeaderProps) {
             "font-['DM_Sans'] font-bold text-[16px] leading-none tracking-[-0.32px]",
             "hover:bg-ods-bg-hover focus:bg-ods-bg-hover",
             "whitespace-nowrap",
-            item.isActive ? 'text-ods-text-primary' : 'text-ods-text-secondary',
+            "text-ods-text-primary", // All items use primary text color
+            item.isActive && 'bg-ods-bg-secondary', // Active items get gray background
             item.className
           )}
           {...(item.isExternal && { isExternal: true })}
@@ -236,7 +236,8 @@ export function Header({ config, platform }: HeaderProps) {
           "font-['DM_Sans'] font-bold text-[16px] leading-none tracking-[-0.32px]",
           "hover:bg-ods-bg-hover focus:bg-ods-bg-hover",
           "whitespace-nowrap",
-          item.isActive ? 'text-ods-text-primary' : 'text-ods-text-secondary',
+          "text-ods-text-primary", // All items use primary text color
+          item.isActive && 'bg-ods-bg-secondary', // Active items get gray background
           item.className
         )}
       >
