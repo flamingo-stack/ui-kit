@@ -1,7 +1,6 @@
 // Page layout skeletons  
 export {
   AnnouncementBarSkeleton,
-  HeaderSkeleton,
   HeroSkeleton,
   SearchContainerSkeleton,
   CategorySidebarSkeleton,

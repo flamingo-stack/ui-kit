@@ -6,6 +6,7 @@ export { FlamingoLogo } from './flamingo-logo';
 export { ElestioLogo } from './elestio-logo';
 export { MlgLogo } from './mlg-logo';
 export { MiamiCyberGangLogo } from './miami-cyber-gang-logo';
+export { MiamiCyberGangLogoFaceOnly } from './miami-cyber-gang-logo-face-only';
 
 // Navigation and feature icons
 export { VendorsIcon } from './vendors-icon';
