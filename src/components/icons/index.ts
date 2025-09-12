@@ -5,6 +5,7 @@ export { OpenFrameText } from './openframe-text';
 export { FlamingoLogo } from './flamingo-logo';
 export { ElestioLogo } from './elestio-logo';
 export { MlgLogo } from './mlg-logo';
+export { MiamiCyberGangLogo } from './miami-cyber-gang-logo';
 
 // Navigation and feature icons
 export { VendorsIcon } from './vendors-icon';
