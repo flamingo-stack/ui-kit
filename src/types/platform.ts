@@ -1,7 +1,7 @@
 // Unified Platform Types
 // Used across announcements, blog posts, and platform configuration
 
-export type PlatformName = 'openmsp' | 'openframe' | 'flamingo' | 'flamingo-teaser' | 'universal' | 'admin-hub';
+export type PlatformName = 'openmsp' | 'tmcg' | 'flamingo' | 'flamingo-teaser' | 'universal' | 'admin-hub';
 
 // Database Platform Model (from platforms table)
 export interface PlatformRecord {
@@ -35,7 +35,7 @@ export interface PlatformOption {
 export type PlatformFilter = PlatformName | 'all';
 
 // Legacy type aliases for backward compatibility
-export type LegacyPlatform = 'openframe' | 'openmsp' | 'flamingo';
+export type LegacyPlatform = 'tmcg' | 'openmsp' | 'flamingo';
 
 // Platform statistics
 export interface PlatformStats {
