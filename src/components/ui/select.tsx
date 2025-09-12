@@ -25,8 +25,8 @@ const SelectTrigger = React.forwardRef<
       "text-[14px] md:text-[18px] font-medium",
       // Colors and states
       "bg-[#161616] text-ods-text-primary placeholder:text-ods-text-secondary",
-      "hover:border-[#FFC008]/30 focus:border-[#FFC008]",
-      "focus:outline-none focus:ring-1 focus:ring-[#FFC008]/20 focus:ring-offset-0",
+      "hover:border-ods-accent/30 focus:border-ods-accent",
+      "focus:outline-none focus:ring-1 focus:ring-ods-accent/20 focus:ring-offset-0",
       "disabled:cursor-not-allowed disabled:opacity-50",
       "transition-colors duration-200 cursor-pointer",
       "[&>span]:line-clamp-1",
@@ -131,7 +131,7 @@ const SelectItem = React.forwardRef<
       // Match trigger typography
       "text-[14px] md:text-[18px] font-medium",
       // Hover state with visible background change
-      "outline-none hover:bg-[#FFC008]/10 focus:bg-[#FFC008]/10",
+      "outline-none hover:bg-ods-accent/10 focus:bg-ods-accent/10",
       "data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
       "transition-colors duration-150",
       className
@@ -140,7 +140,7 @@ const SelectItem = React.forwardRef<
   >
     <span className="absolute left-2 flex h-5 w-5 items-center justify-center">
       <SelectPrimitive.ItemIndicator>
-        <Check className="h-5 w-5 text-[#FFC008]" />
+        <Check className="h-5 w-5 text-ods-accent" />
       </SelectPrimitive.ItemIndicator>
     </span>
 
