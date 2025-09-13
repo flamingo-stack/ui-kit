@@ -135,7 +135,7 @@ export function Header({ config, platform }: HeaderProps) {
               "hover:bg-ods-bg-hover focus:bg-ods-bg-hover",
               "whitespace-nowrap",
               "text-ods-text-primary", // All items use primary text color
-              item.isActive && 'bg-ods-bg-hover', // Active items get gray background
+              item.isActive && 'bg-ods-bg-hover', // Active items get subtle gray background
               isOpen && 'bg-ods-bg-hover', // Open dropdowns get gray background
               item.className
             )}
@@ -213,7 +213,7 @@ export function Header({ config, platform }: HeaderProps) {
             "hover:bg-ods-bg-hover focus:bg-ods-bg-hover",
             "whitespace-nowrap",
             "text-ods-text-primary", // All items use primary text color
-            item.isActive && 'bg-ods-bg-secondary', // Active items get gray background
+            item.isActive && 'bg-ods-bg-hover', // Active items get subtle gray background
             item.className
           )}
           {...(item.isExternal && { isExternal: true })}
@@ -237,7 +237,7 @@ export function Header({ config, platform }: HeaderProps) {
           "hover:bg-ods-bg-hover focus:bg-ods-bg-hover",
           "whitespace-nowrap",
           "text-ods-text-primary", // All items use primary text color
-          item.isActive && 'bg-ods-bg-secondary', // Active items get gray background
+          item.isActive && 'bg-ods-bg-hover', // Active items get gray background
           item.className
         )}
       >

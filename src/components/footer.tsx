@@ -59,7 +59,7 @@ function UniversalFooter({ config, renderLink }: { config: FooterConfig; renderL
   const linkRenderer = renderLink || defaultRenderLink
   
   return (
-    <footer className="w-full flex flex-col justify-center items-center bg-ods-card px-6 py-10 relative gap-6 md:gap-6 min-h-[auto] md:min-h-[248px] z-50">
+    <footer className="w-full flex flex-col justify-center items-center bg-ods-bg-card px-6 py-10 relative gap-6 md:gap-6 min-h-[auto] md:min-h-[248px] z-50 border-t border-ods-border">
       <div className="w-full grid grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 items-start">
         
         {/* Column 1: Logo and description - full width on mobile and medium, 1 column on large */}
