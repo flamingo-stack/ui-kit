@@ -47,6 +47,7 @@ export * from './unified-filter-logic'
 export * from './unified-pagination'
 export * from './footer'
 export * from './layout/page-container'
+export * from './made-with-love'
 
 // Loading components
 export * from './loading'
