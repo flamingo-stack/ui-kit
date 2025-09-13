@@ -165,6 +165,28 @@
   --color-divider: var(--ods-system-greys-soft-grey);
 }
 
+[data-app-type="tmcg"] {
+  --color-accent-primary: var(--ods-flamingo-pink-base);
+  --color-accent-hover: var(--ods-flamingo-pink-hover);
+  --color-accent-active: var(--ods-flamingo-pink-action);
+  --color-accent-focus: var(--ods-flamingo-pink-base);
+  --color-focus-ring: var(--ods-flamingo-pink-base);
+  --color-focus-visible: var(--ods-flamingo-pink-base);
+  --color-link: var(--ods-flamingo-pink-base);
+  --color-link-hover: var(--ods-flamingo-pink-hover);
+  --color-bg: var(--ods-system-greys-background);
+  --color-bg-card: var(--ods-system-greys-background);
+  --color-bg-overlay: rgba(0, 0, 0, 0.7);
+  --color-bg-hover: var(--ods-system-greys-black-hover);
+  --color-bg-active: var(--ods-system-greys-black-action);
+  --color-text-primary: var(--ods-system-greys-white);
+  --color-text-secondary: var(--ods-system-greys-grey);
+  --color-text-tertiary: var(--ods-system-greys-soft-grey-hover);
+  --color-text-muted: var(--ods-system-greys-grey-action);
+  --color-border-default: var(--ods-system-greys-soft-grey);
+  --color-divider: var(--ods-system-greys-soft-grey);
+}
+
 /* Light Theme Support */
 .theme-light {
   --color-bg: var(--ods-system-greys-white);
