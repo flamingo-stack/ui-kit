@@ -52,6 +52,9 @@ export { RedditIcon } from './reddit-icon';
 export { XLogo } from './x-logo';
 export { HubspotIcon } from './hubspot-icon';
 export { ClaudeIcon } from './claude-icon';
+export { LinkedInIcon } from './linkedin-icon';
+export { LumaIcon } from './luma-icon';
+export { WhatsAppIcon } from './whatsapp-icon';
 
 // X icon with alias to avoid conflict with ui/custom-icons
 export { XIcon as IconsXIcon } from './x-icon';
