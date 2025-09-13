@@ -117,6 +117,7 @@ export { UsersGroupIcon } from './users-group-icon';
 export { FolderShieldIcon } from './folder-shield-icon';
 export { ShieldCheckIcon } from './shield-check-icon';
 export { HotelIcon } from './hotel-icon';
+export { JumpInIcon } from './jump-in-icon';
 
 // Utility exports
 export * from './icon-utils';
