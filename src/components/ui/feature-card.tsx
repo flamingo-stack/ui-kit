@@ -25,6 +25,8 @@ export interface FeatureCardGridProps {
   cardClassName?: string;
   itemClassName?: string;
   showBorders?: boolean;
+  roundedCorners?: boolean;  // Flag to enable rounded corners
+  cardGap?: string;          // Gap between cards (e.g., 'gap-4', 'gap-6')
 }
 
 export function FeatureCardGrid({
@@ -33,7 +35,9 @@ export function FeatureCardGrid({
   className = '',
   cardClassName = 'bg-ods-card border border-ods-border rounded-lg p-0 overflow-hidden',
   itemClassName = 'bg-ods-bg p-10',
-  showBorders = true
+  showBorders = true,
+  roundedCorners = false,
+  cardGap = ''
 }: FeatureCardGridProps) {
   const gridCols = columns === 2 ? 'grid-cols-1 md:grid-cols-2' : 'grid-cols-1 md:grid-cols-3';
   const itemsPerRow = columns;
@@ -79,7 +83,7 @@ export function FeatureCardGrid({
     finalCardClassName = finalCardClassName.replace('bg-ods-card', 'bg-transparent');
   }
   if (allCardsHaveNoBorders) {
-    finalCardClassName = 'bg-transparent p-0 overflow-visible';
+    finalCardClassName = 'bg-transparent p-0 overflow-visible border-0 shadow-none rounded-none';
   }
 
   return (
@@ -90,7 +94,7 @@ export function FeatureCardGrid({
         const isLastRow = rowIndex === rows - 1;
 
         return (
-          <div key={rowIndex} className={`grid ${gridCols}`}>
+          <div key={rowIndex} className={`grid ${gridCols} ${cardGap}`}>
             {rowItems.map((item, itemIndex) => {
               const globalIndex = startIndex + itemIndex;
               const isLastInRow = itemIndex === rowItems.length - 1;
@@ -112,12 +116,18 @@ export function FeatureCardGrid({
                 finalBorderClasses = '';
               }
 
+              // Handle rounded corners
+              if (roundedCorners) {
+                finalItemClassName += ' rounded-lg';
+              }
+
               return (
                 <div
                   key={globalIndex}
                   className={`${finalItemClassName}${finalBorderClasses} relative`}
+                  style={item.customBackground ? { backgroundColor: item.customBackground } : undefined}
                 >
-                  <div className="space-y-6">
+                  <div className={!item.icon && !item.title ? "flex flex-col h-full" : "space-y-6"}>
                     {item.icon && (
                       <div className="flex items-start justify-between">
                         <item.icon size={80} color={item.iconColor} />

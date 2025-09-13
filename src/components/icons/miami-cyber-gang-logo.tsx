@@ -8,16 +8,18 @@ interface MiamiCyberGangLogoProps {
   originalPink?: string;
   /** White color used for text and details. Defaults to ODS text-on-accent color */
   originalWhite?: string;
+  className?: string;
 }
 
 export const MiamiCyberGangLogo: React.FC<MiamiCyberGangLogoProps> = ({
   size = 64,
   originalBlack = "var(--ods-text-primary, #212121)",
   originalPink = "var(--ods-accent, #F357BB)",
-  originalWhite = "var(--ods-text-on-accent, #FAFAFA)"
+  originalWhite = "var(--ods-text-on-accent, #FAFAFA)",
+  className = ""
 }) => {
   return (
-    <svg width={size} height={size} viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg className={className} width={size} height={size} viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path
         d="M113.902 60.0002C113.902 89.7694 89.7694 113.902 60.0002 113.902C30.231 113.902 6.09839 89.7694 6.09839 60.0002C6.09839 30.231 30.231 6.09843 60.0002 6.09843C89.7694 6.09843 113.902 30.231 113.902 60.0002Z"
         fill={originalBlack} />
