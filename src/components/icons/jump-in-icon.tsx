@@ -1,16 +1,16 @@
 import React from 'react';
 
 interface JumpInIconProps {
-  size?: number | 48;
-  color?: string | 'currentColor';
-  className?: string | '';
+  size?: number;
+  color?: string;
+  className?: string;
 }
 
-export function JumpInIcon({
-  size,
-  color,
-  className
-}: JumpInIconProps) {
+export const JumpInIcon: React.FC<JumpInIconProps> = ({
+  size = 48,
+  color = 'currentColor',
+  className = ''
+}) => {
   return (
     <svg
       width={size}
@@ -28,4 +28,4 @@ export function JumpInIcon({
         stroke={color} />
     </svg>
   );
-}
+};

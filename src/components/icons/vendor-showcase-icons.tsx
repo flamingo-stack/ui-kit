@@ -13,7 +13,17 @@ export const VendorShowcaseMainIcon = ({ className }: { className?: string }) =>
   </svg>
 );
 
-export const TransparentTrustedIcon = ({ className, color, size }: { className?: string | undefined; color?: string | "#F357BB"; size?: number | 42 }) => (
+interface TransparentTrustedIconProps {
+  className?: string;
+  color?: string;
+  size?: number;
+}
+
+export const TransparentTrustedIcon: React.FC<TransparentTrustedIconProps> = ({
+  className = '',
+  color = '#F357BB',
+  size = 42
+}) => (
   <svg
     width={size}
     height={size}

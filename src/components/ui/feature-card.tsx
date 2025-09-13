@@ -79,7 +79,7 @@ export function FeatureCardGrid({
     finalCardClassName = finalCardClassName.replace('bg-ods-card', 'bg-transparent');
   }
   if (allCardsHaveNoBorders) {
-    finalCardClassName = finalCardClassName.replace(/border\s+border-ods-border/g, '').replace(/border-ods-border/g, '').replace(/border/g, '').replace('rounded-lg', '').trim();
+    finalCardClassName = 'bg-transparent p-0 overflow-visible';
   }
 
   return (

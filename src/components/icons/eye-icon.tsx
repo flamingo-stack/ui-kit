@@ -6,11 +6,11 @@ interface EyeIconProps {
   color?: string
 }
 
-export function EyeIcon({
+export const EyeIcon: React.FC<EyeIconProps> = ({
   className = '',
   size = 24,
   color = 'currentColor'
-}: EyeIconProps) {
+}) => {
   return (
     <svg
       width={size}
@@ -28,5 +28,5 @@ export function EyeIcon({
         stroke={color} />
 
     </svg>
-  )
-}
+  );
+};

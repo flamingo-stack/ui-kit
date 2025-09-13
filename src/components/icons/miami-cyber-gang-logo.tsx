@@ -1,21 +1,20 @@
-import { original } from 'immer';
 import React from 'react';
 
 interface MiamiCyberGangLogoProps {
-  size?: number | 64;
+  size?: number;
   /** Black color used for main circle. Defaults to ODS text primary color */
-  originalBlack?: string | "var(--ods-text-primary, #212121)";
+  originalBlack?: string;
   /** Pink color used for accent elements. Defaults to ODS accent color */
-  originalPink?: string | "var(--ods-accent, #F357BB)";
+  originalPink?: string;
   /** White color used for text and details. Defaults to ODS text-on-accent color */
-  originalWhite?: string | "var(--ods-text-on-accent, #FAFAFA)";
+  originalWhite?: string;
 }
 
 export const MiamiCyberGangLogo: React.FC<MiamiCyberGangLogoProps> = ({
-  size ,
-  originalBlack,
-  originalPink, 
-  originalWhite
+  size = 64,
+  originalBlack = "var(--ods-text-primary, #212121)",
+  originalPink = "var(--ods-accent, #F357BB)",
+  originalWhite = "var(--ods-text-on-accent, #FAFAFA)"
 }) => {
   return (
     <svg width={size} height={size} viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">

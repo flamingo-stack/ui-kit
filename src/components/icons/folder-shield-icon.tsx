@@ -6,11 +6,11 @@ interface FolderShieldIconProps {
   color?: string
 }
 
-export function FolderShieldIcon({
+export const FolderShieldIcon: React.FC<FolderShieldIconProps> = ({
   className = '',
   size = 24,
   color = 'currentColor'
-}: FolderShieldIconProps) {
+}) => {
   return (
     <svg
       width={size}
@@ -27,5 +27,5 @@ export function FolderShieldIcon({
         d="M40.9269 29.4715L32.9269 25.4715C32.5516 25.2838 32.1097 25.2838 31.7344 25.4715L23.7345 29.4715C23.2827 29.6973 22.9974 30.159 22.9974 30.6641L22.9975 36.3267C22.9974 41.2699 29.6997 45.3753 31.745 46.5131C32.1118 46.7172 32.5495 46.7172 32.9163 46.5131C34.9617 45.3754 41.6641 41.2699 41.6641 36.3267L41.6639 30.664C41.6639 30.159 41.3786 29.6973 40.9269 29.4715Z"
         stroke={color} />
     </svg>
-  )
-}
+  );
+};

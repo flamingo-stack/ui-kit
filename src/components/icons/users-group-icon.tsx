@@ -1,16 +1,16 @@
 import React from 'react'
 
 interface UsersGroupIconProps {
-  className?: string | '';
-  size?: number | 24;
-  color?: string | 'currentColor';
+  className?: string;
+  size?: number;
+  color?: string;
 }
 
-export function UsersGroupIcon({
-  className,
-  size,
-  color
-}: UsersGroupIconProps) {
+export const UsersGroupIcon: React.FC<UsersGroupIconProps> = ({
+  className = '',
+  size = 24,
+  color = 'currentColor'
+}) => {
   return (
     <svg
       width={size}
@@ -27,5 +27,5 @@ export function UsersGroupIcon({
 
 
     </svg>
-  )
-}
+  );
+};
