@@ -1,15 +1,15 @@
 import React from 'react';
 
 interface JumpInIconProps {
-  size?: number;
-  color?: string;
-  className?: string;
+  size?: number | 48;
+  color?: string | 'currentColor';
+  className?: string | '';
 }
 
 export function JumpInIcon({
-  size = 48,
-  color = 'currentColor',
-  className = ''
+  size,
+  color,
+  className
 }: JumpInIconProps) {
   return (
     <svg

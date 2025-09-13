@@ -4,14 +4,18 @@ import React from 'react';
 import { Card } from './card';
 
 export interface FeatureCardItem {
-  icon: React.ComponentType<{ size?: number; color?: string; className?: string }>;
-  iconColor: string;
+  icon?: React.ComponentType<{ size?: number; color?: string; className?: string }>;
+  iconColor?: string;
   title: string;
   badge?: {
     text: string;
     color: string;
   };
   content: React.ReactNode; // Allow any content to be injected
+  // Card-level customization props
+  removeAllBorders?: boolean;  // Remove all borders for this card
+  noBackground?: boolean;      // Remove default background
+  customBackground?: string;   // Custom background color/class
 }
 
 export interface FeatureCardGridProps {
@@ -66,8 +70,20 @@ export function FeatureCardGrid({
     return classes;
   };
 
+  // Check if all cards have noBackground to modify card container
+  const allCardsHaveNoBackground = items.every(item => item.noBackground);
+  const allCardsHaveNoBorders = items.every(item => item.removeAllBorders);
+
+  let finalCardClassName = cardClassName;
+  if (allCardsHaveNoBackground) {
+    finalCardClassName = finalCardClassName.replace('bg-ods-card', 'bg-transparent');
+  }
+  if (allCardsHaveNoBorders) {
+    finalCardClassName = finalCardClassName.replace(/border\s+border-ods-border/g, '').replace(/border-ods-border/g, '').replace(/border/g, '').replace('rounded-lg', '').trim();
+  }
+
   return (
-    <Card className={`${cardClassName} ${className}`}>
+    <Card className={`${finalCardClassName} ${className}`}>
       {Array.from({ length: rows }, (_, rowIndex) => {
         const startIndex = rowIndex * itemsPerRow;
         const rowItems = items.slice(startIndex, startIndex + itemsPerRow);
@@ -80,25 +96,51 @@ export function FeatureCardGrid({
               const isLastInRow = itemIndex === rowItems.length - 1;
               const borderClasses = getBorderClasses(isLastRow, isLastInRow, globalIndex);
 
+              // Apply card-level customizations
+              let finalItemClassName = itemClassName;
+              let finalBorderClasses = borderClasses;
+
+              // Handle background customization
+              if (item.noBackground) {
+                finalItemClassName = finalItemClassName.replace('bg-ods-bg', 'bg-transparent');
+              } else if (item.customBackground) {
+                finalItemClassName = finalItemClassName.replace('bg-ods-bg', item.customBackground);
+              }
+
+              // Handle border removal
+              if (item.removeAllBorders) {
+                finalBorderClasses = '';
+              }
+
               return (
                 <div
                   key={globalIndex}
-                  className={`${itemClassName}${borderClasses} relative`}
+                  className={`${finalItemClassName}${finalBorderClasses} relative`}
                 >
                   <div className="space-y-6">
-                    <div className="flex items-start justify-between">
-                      <item.icon size={64} color={item.iconColor} />
-                      {item.badge && (
+                    {item.icon && (
+                      <div className="flex items-start justify-between">
+                        <item.icon size={80} color={item.iconColor} />
+                        {item.badge && (
+                          <div className={`px-2 py-1 rounded text-sm font-['Azeret_Mono'] font-medium uppercase tracking-wide ${item.badge.color}`}>
+                            {item.badge.text}
+                          </div>
+                        )}
+                      </div>
+                    )}
+
+                    {!item.icon && item.badge && (
+                      <div className="flex items-start justify-end">
                         <div className={`px-2 py-1 rounded text-sm font-['Azeret_Mono'] font-medium uppercase tracking-wide ${item.badge.color}`}>
                           {item.badge.text}
                         </div>
-                      )}
-                    </div>
-                    
+                      </div>
+                    )}
+
                     <h3 className="font-['Azeret_Mono'] font-semibold text-[28px] md:text-[32px] leading-[1.25] tracking-[-0.64px] text-ods-text-primary whitespace-pre-line">
                       {item.title}
                     </h3>
-                    
+
                     {item.content}
                   </div>
                 </div>

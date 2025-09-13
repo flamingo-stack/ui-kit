@@ -1,15 +1,15 @@
 import React from 'react'
 
 interface UsersGroupIconProps {
-  className?: string
-  size?: number
-  color?: string
+  className?: string | '';
+  size?: number | 24;
+  color?: string | 'currentColor';
 }
 
 export function UsersGroupIcon({
-  className = '',
-  size = 24,
-  color = 'currentColor'
+  className,
+  size,
+  color
 }: UsersGroupIconProps) {
   return (
     <svg
