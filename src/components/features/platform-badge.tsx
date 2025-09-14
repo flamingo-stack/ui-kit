@@ -3,6 +3,7 @@ import { cn } from '../../utils/cn';
 import { FlamingoLogo } from '../flamingo-logo';
 import { OpenmspLogo } from '../openmsp-logo';
 import { OpenFrameLogo } from '../icons/openframe-logo';
+import { MiamiCyberGangLogoFaceOnly } from '../icons/miami-cyber-gang-logo-face-only';
 import { Globe } from 'lucide-react';
 
 interface PlatformBadgeProps {
@@ -60,6 +61,11 @@ const platformColors = {
     border: 'border-[#8B5CF6]/30',
     text: 'text-[#8B5CF6]'
   },
+  'tmcg': {
+    bg: 'bg-[#F357BB]/10',
+    border: 'border-[#F357BB]/30',
+    text: 'text-[#F357BB]'
+  },
   'universal': {
     bg: 'bg-[#6B7280]/10',
     border: 'border-[#6B7280]/30',
@@ -68,6 +74,10 @@ const platformColors = {
 };
 
 const PlatformIcon = ({ platform, className }: { platform: string; className: string }) => {
+  // Extract size from className (h-4 w-4 -> 16, h-5 w-5 -> 20, etc.)
+  const sizeMatch = className.match(/h-(\d+)/);
+  const size = sizeMatch ? parseInt(sizeMatch[1]) * 4 : 16; // Convert Tailwind size to pixels
+
   switch (platform) {
     case 'openmsp':
       return <OpenmspLogo className={className} frontBubbleColor="currentColor" innerFrontBubbleColor="#000000" backBubbleColor="currentColor" />;
@@ -76,6 +86,8 @@ const PlatformIcon = ({ platform, className }: { platform: string; className: st
       return <FlamingoLogo className={className} />;
     case 'openframe':
       return <OpenFrameLogo className={className} />;
+    case 'tmcg':
+      return <MiamiCyberGangLogoFaceOnly size={size} className={className} />;
     default:
       return <Globe className={className} />;
   }
