@@ -53,8 +53,8 @@ export function MadeWithLove({
         href={flamingoUrl}
         openInNewTab={true}
         className="p-0 hover:underline hover:bg-transparent font-['Azeret_Mono'] text-sm text-white"
-        leftIcon={<FlamingoLogo size={config.logoSize} color="var(--ods-flamingo-pink-base)" />} >
-        <span style={{ color: 'white', marginLeft: '6px',   textDecoration: 'none !important' }}>Flamingo</span>
+        leftIcon={<FlamingoLogo size={config.logoSize} color="var(--ods-flamingo-pink-base)" className='ml-2'/>} >
+        <span style={{ color: 'white', marginLeft: '4px', textDecoration: 'none !important' }}>Flamingo</span>
       </Button>
     </div>
   );
