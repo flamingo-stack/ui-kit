@@ -47,6 +47,7 @@ export interface HeaderConfig {
   className?: string
   style?: React.CSSProperties
   autoHide?: boolean
+  backgroundColor?: string  // ODS background color (e.g., 'bg-ods-card', 'bg-ods-accent')
 }
 
 /**
