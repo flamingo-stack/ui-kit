@@ -6,6 +6,7 @@ import { Globe } from 'lucide-react';
 import { FlamingoLogo } from '../icons/flamingo-logo';
 import { OpenFrameLogo } from '../icons/openframe-logo';
 import { OpenmspLogo } from '../icons/openmsp-logo';
+import { MiamiCyberGangLogoFaceOnly } from '../icons/miami-cyber-gang-logo-face-only';
 import type { PlatformConfig } from '../../types/platform';
 
 // Small platform icons for buttons with white colors
@@ -14,6 +15,7 @@ const smallPlatformIcons = {
   openmsp: <OpenmspLogo className="h-4 w-4 flex-shrink-0" frontBubbleColor="#f1f1f1" innerFrontBubbleColor="#000000" backBubbleColor="#FFC008" />,
   flamingo: <FlamingoLogo className="h-4 w-4 flex-shrink-0 text-white" />,
   'flamingo-teaser': <FlamingoLogo className="h-4 w-4 flex-shrink-0 text-white" />,
+  tmcg: <MiamiCyberGangLogoFaceOnly className="h-4 w-4 flex-shrink-0" />,
   universal: <Globe className="h-4 w-4 flex-shrink-0" />
 };
 
