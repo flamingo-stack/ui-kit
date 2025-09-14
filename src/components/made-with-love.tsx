@@ -1,6 +1,7 @@
 import React from 'react';
 import { FlamingoLogo } from './flamingo-logo';
 import { getBaseUrl } from '../utils';
+import { Button } from './ui/button';
 
 interface MadeWithLoveProps {
   /** Custom class name for the container */
@@ -47,27 +48,14 @@ export function MadeWithLove({
       className={`${mobileVisibility} flex inline-block items-center ${config.spacing} ${className}`}
     >
       Made with love by{' '}
-      <a
+      <Button
+        variant="ghost"
         href={flamingoUrl}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="flex items-center hover:opacity-80 transition-opacity cursor-pointer"
-        style={{ gap: '5px' }}
-      >
-        <FlamingoLogo
-          size={config.logoSize}
-          color="var(--ods-flamingo-pink-base)"
-        />
-        <span
-          style={{
-            fontFamily: '"Azeret Mono", monospace',
-            fontWeight: 600,
-            fontSize: config.fontSizePx,
-          }}
-        >
-          Flamingo
-        </span>
-      </a>
+        openInNewTab={true}
+        className="p-0 hover:underline hover:bg-transparent font-['Azeret_Mono'] text-sm"
+        leftIcon={<FlamingoLogo size={config.logoSize} color="var(--ods-flamingo-pink-base)" />} >
+        Flamingo
+      </Button>
     </div>
   );
 }
