@@ -8,7 +8,7 @@ const statusBadgeVariants = cva(
     variants: {
       variant: {
         card: "px-3 py-1.5 text-sm",
-        button: "px-2 py-0.5 text-xs",
+        button: "px-2 py-0.5 text-[10px] leading-none",
       },
       colorScheme: {
         cyan: "bg-[var(--ods-flamingo-cyan-base)] text-ods-text-on-accent",
@@ -39,12 +39,27 @@ function StatusBadge({
   className,
   ...props
 }: StatusBadgeProps) {
+  // For button variant, split text into multiple lines for narrow badges
+  const renderText = () => {
+    if (variant === 'button' && text.includes(' ')) {
+      const words = text.split(' ');
+      return (
+        <div className="flex flex-col items-center justify-center text-center gap-0">
+          {words.map((word, index) => (
+            <div key={index}>{word}</div>
+          ))}
+        </div>
+      );
+    }
+    return text;
+  };
+
   return (
     <div
       className={cn(statusBadgeVariants({ variant, colorScheme }), className)}
       {...props}
     >
-      {text}
+      {renderText()}
     </div>
   );
 }
