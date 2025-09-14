@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { Card } from './card';
+import { StatusBadge } from './status-badge';
 
 export interface FeatureCardItem {
   icon?: React.ComponentType<{ size?: number; color?: string; className?: string }>;
@@ -9,7 +10,8 @@ export interface FeatureCardItem {
   title: string;
   badge?: {
     text: string;
-    color: string;
+    variant?: 'card' | 'button';
+    colorScheme?: 'cyan' | 'pink' | 'yellow' | 'green' | 'purple' | 'default';
   };
   content: React.ReactNode; // Allow any content to be injected
   // Card-level customization props
@@ -132,18 +134,22 @@ export function FeatureCardGrid({
                       <div className="flex items-start justify-between">
                         <item.icon size={80} color={item.iconColor} />
                         {item.badge && (
-                          <div className={`px-2 py-1 rounded text-sm font-['Azeret_Mono'] font-medium uppercase tracking-wide ${item.badge.color}`}>
-                            {item.badge.text}
-                          </div>
+                          <StatusBadge
+                            text={item.badge.text}
+                            variant={item.badge.variant || 'card'}
+                            colorScheme={item.badge.colorScheme || 'default'}
+                          />
                         )}
                       </div>
                     )}
 
                     {!item.icon && item.badge && (
                       <div className="flex items-start justify-end">
-                        <div className={`px-2 py-1 rounded text-sm font-['Azeret_Mono'] font-medium uppercase tracking-wide ${item.badge.color}`}>
-                          {item.badge.text}
-                        </div>
+                        <StatusBadge
+                          text={item.badge.text}
+                          variant={item.badge.variant || 'card'}
+                          colorScheme={item.badge.colorScheme || 'default'}
+                        />
                       </div>
                     )}
 
