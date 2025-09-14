@@ -174,6 +174,35 @@ const config: FigmaPrototypeViewerConfig = {
 - **Touch Gesture Detection**: Advanced touch handling for mobile cross-origin iframe interaction
 - **Performance**: Optimized with `useMemo`, `useCallback`, and proper dependency arrays
 
+## Recent Critical Bug Fixes (2025-08-28)
+
+### Profile Image & Upload System Fixes
+- **Google Profile Images**: Fixed net::ERR_BLOCKED_BY_CLIENT errors from ad blockers and privacy extensions
+  - Solution: Use existing `getProxiedImageUrl` pattern from CommentCard for all external images
+  - Applied to admin users page for consistent profile picture handling
+- **API Parameter Consistency**: Fixed admin users API returning 0 results when `isReal` parameter missing
+  - Root cause: `searchParams.get('isReal')` returns `null` not `undefined` for missing URLSearchParams
+  - Fix: Changed parameter parsing to handle `null` values correctly
+- **Upload Route Errors**: Resolved "Cannot read properties of undefined (reading 'from')" across all upload endpoints
+  - Fixed Buffer type: Use `new Uint8Array(arrayBuffer)` not `Buffer.from()` for Supabase compatibility
+  - Fixed client reference: Use `clients.publicClient` not `clients.serviceRoleClient` for authenticated operations
+  - Applied to 6+ upload routes system-wide
+- **Next.js 15 Compatibility**: Updated all dynamic routes for async parameter handling
+  - Changed from `{ params: { id: string } }` to `{ params: Promise<{ id: string }> }`
+  - Added proper `await params` destructuring pattern
+- **SSO Profile Preservation**: Prevented OAuth from overriding manually uploaded profile photos
+  - Only updates profile fields from SSO if they were previously empty/null
+  - Preserves user customizations while importing missing OAuth data
+  - Field-by-field validation with trim() checking
+
+### Developer Guidelines for Bug Fixes
+- **External Images**: Always use `getProxiedImageUrl` pattern from CommentCard, never direct external URLs
+- **URLSearchParams**: Remember `.get()` returns `null` for missing params, not `undefined`
+- **Supabase Uploads**: Use `new Uint8Array()` for file buffers, never Node.js Buffer
+- **Next.js 15 Routes**: All dynamic params must be `Promise<{ param: string }>` with await
+- **SSO Updates**: Only update profile fields if currently empty to preserve user customizations
+- **Client References**: Use `clients.publicClient` for authenticated operations in routes
+
 ## Recent Updates (2025-08-13)
 
 ### Investors Management Feature

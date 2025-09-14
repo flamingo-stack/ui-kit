@@ -49,6 +49,27 @@ This is a **source-only** TypeScript package that provides:
 
 UI-Kit provides **reusable, platform-agnostic components**. Platform-specific business components (like `openmsp-video-stats-section.tsx`) live in the main application and use UI-Kit components and design tokens.
 
+### Recent Critical Bug Fixes (2025-08-28)
+
+- **Profile Image & Upload System Fixes**:
+  - **Google Profile Images**: Fixed net::ERR_BLOCKED_BY_CLIENT errors from ad blockers/privacy extensions
+    - Implemented existing `getProxiedImageUrl` pattern from CommentCard for external images
+    - Consistent profile picture handling across all user display components
+  - **API Parameter Consistency**: Fixed admin users API returning 0 results when `isReal` parameter not provided
+    - Root cause: `searchParams.get('isReal')` returns `null` (not `undefined`) for missing parameters
+    - Fixed parameter parsing logic to handle URLSearchParams behavior correctly
+  - **Profile Photo Upload Errors**: Resolved "Cannot read properties of undefined (reading 'from')" errors
+    - Fixed Buffer type mismatch: changed `Buffer.from()` to `new Uint8Array()` for Supabase compatibility
+    - Corrected client reference: `clients.serviceRoleClient` → `clients.publicClient`
+    - Applied fixes across ALL image upload routes system-wide
+  - **Next.js 15 Compatibility**: Updated dynamic route parameters for async handling
+    - Changed `{ params: { id: string } }` to `{ params: Promise<{ id: string }> }`
+    - Added proper `await` for parameter destructuring in 6+ route files
+  - **SSO Profile Preservation**: Prevented OAuth logins from overriding manually uploaded profile photos
+    - Only updates profile fields from SSO if they were previously empty/null
+    - Preserves user customizations while importing missing data from OAuth providers
+    - Comprehensive field-by-field empty checking with trim() validation
+
 ### Recent Updates (2025-08-17)
 
 - **YouTube Embed Cleanup**: Complete dependency and color token migration
