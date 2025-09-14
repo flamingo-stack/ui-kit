@@ -84,6 +84,8 @@ const PlatformIcon = ({ platform, className }: { platform: string; className: st
     case 'flamingo':
     case 'flamingo-teaser':
       return <FlamingoLogo className={className} />;
+    case 'admin-hub':
+      return <FlamingoLogo className={className} />;
     case 'openframe':
       return <OpenFrameLogo className={className} />;
     case 'tmcg':

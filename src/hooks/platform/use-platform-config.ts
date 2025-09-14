@@ -1,9 +1,12 @@
 import { useState, useEffect } from 'react';
 import type { PlatformConfig, PlatformOption } from '../../types/platform';
+import { transformPlatformConfigsToOptions } from '../../utils/platform-config';
+import type { SelectableOption } from '../../components/features';
 
 export interface UsePlatformConfigResult {
   platforms: PlatformConfig[];
   platformOptions: PlatformOption[];
+  selectableOptions: SelectableOption[];  // Rich options with icons and colors
   isLoading: boolean;
   error: Error | null;
 }
@@ -86,9 +89,13 @@ export function usePlatformConfig(): UsePlatformConfigResult {
     }))
   ];
 
+  // Create rich selectable options with icons and colors
+  const selectableOptions = transformPlatformConfigsToOptions(platforms);
+
   return {
     platforms,
     platformOptions,
+    selectableOptions,
     isLoading,
     error
   };
