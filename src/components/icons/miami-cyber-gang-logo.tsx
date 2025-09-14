@@ -12,7 +12,7 @@ interface MiamiCyberGangLogoProps {
 }
 
 export const MiamiCyberGangLogo: React.FC<MiamiCyberGangLogoProps> = ({
-  size = 64,
+  size = 80,
   originalBlack = "var(--ods-text-primary, #212121)",
   originalPink = "var(--ods-accent, #F357BB)",
   originalWhite = "var(--ods-text-on-accent, #FAFAFA)",
