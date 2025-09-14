@@ -705,6 +705,7 @@ interface HeaderConfig {
 #### `/src/utils/`
 - **cn.ts**: Class name utility using clsx + tailwind-merge
 - **ods-color-utils.ts**: Platform color utilities
+- **platform-config.tsx**: Unified platform configuration system (COMPLETED ✅)
 
 ### TypeScript Configuration
 - Strict mode enabled
@@ -1486,3 +1487,217 @@ import { PageContainer } from '@flamingo/ui-kit/components/ui'
 5. **Max-width constraints** should use `maxWidth` prop for different section requirements
 
 This standardization ensures visual consistency across the entire Flamingo website and provides a maintainable foundation for future component development.
+
+## Platform Configuration Unification System (COMPLETED ✅)
+
+### Overview (2025-08-28)
+Complete unification of platform-related configurations into a single source of truth system within the UI-Kit, eliminating duplicate hardcoded mappings across all consuming applications.
+
+### Problem Solved
+Multiple applications were maintaining their own hardcoded platform mappings, leading to:
+- **Code Duplication**: Same platform logic repeated across components
+- **Maintenance Overhead**: New platforms required updates in multiple files
+- **Display Issues**: Components like platform filters showing incorrect icons/names for admin-hub
+- **Inconsistent Implementation**: Different logic patterns across components
+
+### Solution: Unified Platform Configuration
+Created comprehensive platform configuration system at `src/utils/platform-config.tsx` providing single source of truth for all platform-related data and operations.
+
+### Core Components
+
+#### 1. Platform Display Names
+```typescript
+export const platformDisplayNames: Record<string, string> = {
+  openmsp: 'OpenMSP',
+  openframe: 'OpenFrame',
+  flamingo: 'Flamingo',
+  'flamingo-teaser': 'Flamingo Teaser',
+  'admin-hub': 'Admin Hub',
+  tmcg: 'TMCG',
+  universal: 'Universal'
+}
+```
+
+#### 2. Platform Icon Components
+```typescript
+export function getPlatformIconComponent(
+  platformName: string,
+  className: string = "h-6 w-6"
+): React.ReactNode {
+  switch (platformName) {
+    case 'openframe':
+      return <OpenFrameLogo className={className} />
+    case 'openmsp':
+      return <OpenMSPLogo className={className} />
+    case 'flamingo':
+    case 'flamingo-teaser':
+    case 'admin-hub':
+      return <FlamingoLogo className={className} />
+    case 'tmcg':
+      return <TMCGLogo className={className} />
+    default:
+      return <OpenFrameLogo className={className} />
+  }
+}
+```
+
+#### 3. Small Platform Icons
+```typescript
+export function getSmallPlatformIcon(platformName: string): React.ReactNode {
+  switch (platformName) {
+    case 'openframe':
+      return <OpenFrameIcon className="h-6 w-6" />
+    case 'openmsp':
+      return <OpenMSPIcon className="h-6 w-6" />
+    case 'flamingo':
+    case 'flamingo-teaser':
+    case 'admin-hub':
+      return <FlamingoIcon className="h-6 w-6" />
+    case 'tmcg':
+      return <TMCGIcon className="h-6 w-6" />
+    default:
+      return <OpenFrameIcon className="h-6 w-6" />
+  }
+}
+```
+
+#### 4. Platform Metadata
+```typescript
+export const platformColors: Record<string, string> = {
+  openframe: '#00D4AA', // Cyan
+  openmsp: '#FFD700',   // Gold
+  flamingo: '#FF6B6B',  // Coral
+  'flamingo-teaser': '#FF6B6B',
+  'admin-hub': '#FF6B6B',
+  tmcg: '#8B5CF6',     // Purple
+  universal: '#6B7280'  // Gray
+}
+
+export const platformDescriptions: Record<string, string> = {
+  openframe: 'Open-source IT infrastructure management platform',
+  openmsp: 'MSP knowledge hub and community platform',
+  flamingo: 'AI-driven open-source OS for MSPs',
+  'flamingo-teaser': 'Coming soon landing page for Flamingo',
+  'admin-hub': 'Unified admin interface for all platforms',
+  tmcg: 'Miami cybersecurity community platform',
+  universal: 'Universal content across all platforms'
+}
+```
+
+### Helper Functions API
+Complete utility function suite for platform operations:
+
+```typescript
+// Display and metadata
+export function getPlatformDisplayName(platformName: string): string
+export function getPlatformDescription(platformName: string): string
+export function getPlatformColor(platformName: string): string
+
+// Validation and utilities
+export function isValidPlatform(platformName: string): boolean
+export function getAllPlatformNames(): string[]
+export function getPlatformCount(): number
+
+// Icon retrieval (both large and small variants)
+export function getPlatformIconComponent(platformName: string, className?: string): React.ReactNode
+export function getSmallPlatformIcon(platformName: string): React.ReactNode
+```
+
+### Migration Impact
+
+#### Component Updates
+1. **AnnouncementManagementDashboard**
+   - **Before**: Hardcoded `platformIcons` object with 6 platform mappings
+   - **After**: Uses `getPlatformIconComponent()` from unified system
+   - **Benefit**: 15 lines of code eliminated, admin-hub icons now display correctly
+
+2. **TrustOpensourceCard**
+   - **Before**: Hardcoded `platformLogos` object with custom mappings
+   - **After**: Uses `getSmallPlatformIcon()` from unified system
+   - **Benefit**: Consistent with rest of application, no duplicate logic
+
+3. **Future Components**
+   - All new components automatically support all platforms without additional code
+   - Platform additions require changes in only one file
+   - Type-safe platform handling with IntelliSense support
+
+### Usage Patterns
+
+#### Old Way (Eliminated)
+```typescript
+// REMOVED: Duplicate platform mappings in components
+const platformIcons = {
+  'admin-hub': <FlamingoLogo className="h-8 w-8" />,
+  'openmsp': <OpenMSPLogo className="h-8 w-8" />,
+  'flamingo': <FlamingoLogo className="h-8 w-8" />
+  // ...duplicate definitions across components
+}
+```
+
+#### New Way (Unified)
+```typescript
+// CURRENT: Unified system usage
+import {
+  getPlatformIconComponent,
+  getPlatformDisplayName,
+  getPlatformColor,
+  getPlatformDescription
+} from '@/utils/platform-config'
+
+// Dynamic platform handling
+{getPlatformIconComponent(platform?.name || 'universal', 'h-8 w-8')}
+<span className="font-medium">{getPlatformDisplayName(platform?.name || 'universal')}</span>
+<span style={{ color: getPlatformColor(platform?.name || 'universal') }}>
+  {getPlatformDescription(platform?.name || 'universal')}
+</span>
+```
+
+### Import Structure
+```typescript
+// Import all utilities from single location
+import {
+  getPlatformIconComponent,
+  getSmallPlatformIcon,
+  getPlatformDisplayName,
+  getPlatformDescription,
+  getPlatformColor,
+  isValidPlatform,
+  getAllPlatformNames,
+  platformDisplayNames,
+  platformColors,
+  platformDescriptions
+} from '@flamingo/ui-kit/utils/platform-config'
+```
+
+### Benefits Achieved
+1. **Single Source of Truth**: All platform data centralized in one file
+2. **Zero Code Duplication**: Eliminated duplicate mappings across components
+3. **Admin-Hub Fixed**: Platform filters and badges now display admin-hub correctly
+4. **Type Safety**: Full TypeScript interfaces for all platform operations
+5. **Future-Proofing**: New platforms automatically supported across all components
+6. **Maintainability**: Changes require updates in only one location
+7. **Consistency**: All components use identical platform handling logic
+8. **Performance**: Optimized with proper React patterns and minimal re-renders
+
+### Database Preparation
+The unified system is architecturally ready for future database-driven platform management:
+
+```typescript
+// Future evolution: database-driven platforms
+export async function getPlatformsFromDatabase() {
+  // Will replace static configuration with dynamic database queries
+  const platforms = await supabase
+    .from('platforms')
+    .select('name, display_name, description, color, icon_component')
+  return platforms.data
+}
+```
+
+### Integration Status
+- **UI-Kit Location**: `src/utils/platform-config.tsx`
+- **Export Status**: All functions properly exported through main UI-Kit index
+- **Component Adoption**: Gradually being adopted across all consuming applications
+- **TypeScript Support**: Full type definitions with zero compilation errors
+- **Cross-Platform**: Works seamlessly across all platforms (OpenMSP, Flamingo, Admin-Hub, etc.)
+
+This unified platform configuration system establishes the foundation for scalable, maintainable platform management across the entire multi-platform ecosystem.

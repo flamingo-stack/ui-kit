@@ -374,13 +374,30 @@ function MyComponent() {
 
 ```tsx
 import { cn, getPlatformAccentColor, formatDate } from '@flamingo/ui-kit/utils'
+import {
+  getPlatformIconComponent,
+  getPlatformDisplayName,
+  getPlatformColor,
+  getPlatformDescription,
+  isValidPlatform,
+  getAllPlatformNames
+} from '@flamingo/ui-kit/utils/platform-config'
 
-function MyComponent({ className }) {
+function MyComponent({ className, platformName }) {
   return (
     <div className={cn('base-styles', className)}>
       <span style={{ color: getPlatformAccentColor() }}>
         {formatDate(new Date())}
       </span>
+
+      {/* Platform-specific elements */}
+      <div className="flex items-center gap-2">
+        {getPlatformIconComponent(platformName, 'h-6 w-6')}
+        <span className="font-medium">{getPlatformDisplayName(platformName)}</span>
+        <span className="text-sm text-ods-text-secondary">
+          {getPlatformDescription(platformName)}
+        </span>
+      </div>
     </div>
   )
 }
@@ -628,6 +645,135 @@ When `NEXT_PUBLIC_FIGMA_DEBUG=true`, shows:
 - **Mobile**: Optimized layout with touch-friendly interactions  
 - **Touch Devices**: Revolutionary touch handling for iframe interaction
 
+## Platform Configuration Unification System (COMPLETED ✅)
+
+### Overview
+The UI-Kit provides a comprehensive platform configuration system that eliminates duplicate hardcoded mappings across all consuming applications. This system serves as the single source of truth for all platform-related data and operations.
+
+### Key Features
+- **Single Source of Truth**: All platform data centralized in `src/utils/platform-config.tsx`
+- **Zero Code Duplication**: Eliminates duplicate platform mappings across components
+- **Type Safety**: Full TypeScript interfaces for all platform operations
+- **Future-Proofing**: New platforms automatically supported across all components
+- **Admin-Hub Fixed**: Platform filters and badges display correctly for all platforms
+
+### Usage
+
+#### Platform Icons & Display Names
+```tsx
+import {
+  getPlatformIconComponent,
+  getSmallPlatformIcon,
+  getPlatformDisplayName,
+  getPlatformDescription,
+  getPlatformColor,
+  isValidPlatform
+} from '@flamingo/ui-kit/utils/platform-config'
+
+// Component rendering with dynamic platform support
+function PlatformCard({ platformName }) {
+  if (!isValidPlatform(platformName)) {
+    return null
+  }
+
+  return (
+    <div className="flex items-center gap-3 p-4 border rounded-lg">
+      {/* Large platform icon */}
+      {getPlatformIconComponent(platformName, 'h-8 w-8')}
+
+      <div>
+        <h3 className="font-medium">{getPlatformDisplayName(platformName)}</h3>
+        <p className="text-sm text-ods-text-secondary">
+          {getPlatformDescription(platformName)}
+        </p>
+      </div>
+
+      {/* Small platform icon for badges */}
+      <div className="ml-auto">
+        {getSmallPlatformIcon(platformName)}
+      </div>
+    </div>
+  )
+}
+
+// Filter components with platform awareness
+function PlatformFilter({ selectedPlatforms, onPlatformChange }) {
+  const allPlatforms = getAllPlatformNames()
+
+  return (
+    <div className="flex flex-wrap gap-2">
+      {allPlatforms.map(platform => (
+        <button
+          key={platform}
+          className="flex items-center gap-2 px-3 py-2 border rounded"
+          style={{
+            borderColor: selectedPlatforms.includes(platform)
+              ? getPlatformColor(platform)
+              : 'transparent'
+          }}
+          onClick={() => onPlatformChange(platform)}
+        >
+          {getPlatformIconComponent(platform, 'h-4 w-4')}
+          {getPlatformDisplayName(platform)}
+        </button>
+      ))}
+    </div>
+  )
+}
+```
+
+#### Available Utilities
+```tsx
+// Display and metadata functions
+getPlatformDisplayName('admin-hub') // Returns: 'Admin Hub'
+getPlatformDescription('openmsp') // Returns: 'MSP knowledge hub...'
+getPlatformColor('flamingo') // Returns: '#FF6B6B'
+
+// Validation and enumeration
+isValidPlatform('admin-hub') // Returns: true
+getAllPlatformNames() // Returns: ['openmsp', 'openframe', ...]
+getPlatformCount() // Returns: 7
+
+// Icon components (React elements)
+getPlatformIconComponent('flamingo', 'h-6 w-6') // Returns: <FlamingoLogo />
+getSmallPlatformIcon('tmcg') // Returns: <TMCGIcon className="h-6 w-6" />
+```
+
+#### Supported Platforms
+- **OpenFrame** (`openframe`) - Open-source IT infrastructure platform
+- **OpenMSP** (`openmsp`) - MSP knowledge hub and community
+- **Flamingo** (`flamingo`) - AI-driven open-source OS for MSPs
+- **Flamingo Teaser** (`flamingo-teaser`) - Coming soon landing page
+- **Admin Hub** (`admin-hub`) - Unified admin interface
+- **TMCG** (`tmcg`) - Miami cybersecurity community
+- **Universal** (`universal`) - Cross-platform content
+
+### Migration Benefits
+Before the unified system, components had duplicate hardcoded mappings:
+
+```tsx
+// OLD WAY (eliminated) - duplicate across components
+const platformIcons = {
+  'admin-hub': <FlamingoLogo className="h-8 w-8" />,
+  'openmsp': <OpenMSPLogo className="h-8 w-8" />
+  // ...repeated in every component
+}
+```
+
+```tsx
+// NEW WAY (unified) - single source of truth
+import { getPlatformIconComponent } from '@flamingo/ui-kit/utils/platform-config'
+
+// Dynamic, consistent handling across all components
+{getPlatformIconComponent(platform?.name || 'universal', 'h-8 w-8')}
+```
+
+### Integration Status
+- **UI-Kit Location**: `src/utils/platform-config.tsx`
+- **Component Adoption**: Successfully adopted by AnnouncementManagementDashboard, TrustOpensourceCard
+- **Future-Ready**: Architecture prepared for database-driven platform management
+- **Cross-Platform**: Works seamlessly across all platforms and consuming applications
+
 ## Contributing
 
 When adding new components or utilities:
@@ -643,6 +789,7 @@ When adding new components or utilities:
 9. Verify button variants work across all themes
 10. Test form integrations and API data binding
 11. Validate component behavior in production and staging environments
+12. **Use unified platform configuration system** - Never hardcode platform mappings in components
 
 ## License
 

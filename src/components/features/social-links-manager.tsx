@@ -125,10 +125,17 @@ export function SocialLinksManager({
                 placeholder={platform?.placeholder || "Profile URL"}
                 value={link.url}
                 onChange={(e) => updateLink(index, 'url', e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    e.preventDefault()
+                    e.stopPropagation()
+                  }
+                }}
               />
             </div>
 
             <Button
+              type="button"
               variant="ghost"
               size="icon"
               onClick={() => removeLink(index)}
