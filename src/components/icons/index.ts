@@ -56,6 +56,14 @@ export { LinkedInIcon } from './linkedin-icon';
 export { LumaIcon } from './luma-icon';
 export { WhatsAppIcon } from './whatsapp-icon';
 
+// Social platform icons
+export { GlobeIcon } from './globe-icon';
+export { MessageCircleIcon } from './message-circle-icon';
+export { TelegramIcon } from './telegram-icon';
+export { YouTubeIcon } from './youtube-icon';
+export { InstagramIcon } from './instagram-icon';
+export { FacebookIcon } from './facebook-icon';
+
 // X icon with alias to avoid conflict with ui/custom-icons
 export { XIcon as IconsXIcon } from './x-icon';
 
