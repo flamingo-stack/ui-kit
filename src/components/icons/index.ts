@@ -20,7 +20,10 @@ export { UserIcon } from './user-icon';
 export { HamburgerIcon } from './hamburger-icon';
 export { MenuIcon } from './menu-icon';
 export { ExploreCategoriesIcon } from './explore-categories-icon';
-export { FilterIcon } from './filter-icon'
+export { FilterIcon } from './filter-icon';
+export { ScriptIcon } from './script-icon';
+export { RemoteControlIcon } from './remote-control-icon';
+export { ShellIcon } from './shell-icon'; 
 
 // UI state icons
 export { CheckCircleIcon } from './check-circle-icon';
@@ -107,6 +110,10 @@ export { LinuxIcon } from './linux-icon';
 
 // Arrow Icons
 export { DoubleChevronIcon } from './double-chevron-icon';
+
+// View Toggle Icons
+export { GridViewIcon } from './grid-view-icon';
+export { TableViewIcon } from './table-view-icon';
 
 // Trust page icons (recovered after build script deletion)
 export { ShieldLockIcon } from './shield-lock-icon';

@@ -1,62 +1,111 @@
 import React from 'react'
 import { MoreHorizontal, Monitor } from 'lucide-react'
 import { cn } from '../../utils/cn'
-import { Button } from './button'
-import { Tag } from './tag'
 import { WindowsIcon, MacOSIcon, LinuxIcon } from '../icons'
 
-export interface DeviceCardProps extends React.HTMLAttributes<HTMLDivElement> {
-  deviceName: string
-  deviceType?: 'desktop' | 'laptop' | 'mobile' | 'tablet' | 'server'
+export interface Device {
+  id?: string
+  name: string
+  type?: 'desktop' | 'laptop' | 'mobile' | 'tablet' | 'server'
   operatingSystem?: 'windows' | 'macos' | 'linux' | 'ios' | 'android'
   organization?: string
-  status?: {
-    label: string
-    variant?: 'active' | 'inactive' | 'offline' | 'warning' | 'error'
-  }
-  lastSeen?: string
+  status?: 'active' | 'inactive' | 'offline' | 'warning' | 'error'
+  lastSeen?: string | Date
   tags?: string[]
-  onMoreClick?: () => void
+  // Additional device properties
+  ipAddress?: string
+  macAddress?: string
+  version?: string
+  location?: string
 }
 
-// Status badge component
-const StatusBadge = ({ label, variant = 'active' }: { label: string; variant?: string }) => {
-  const variantStyles = {
-    active: 'bg-[#2e461f] text-[#5ea62e]',
-    inactive: 'bg-[#3a3a3a] text-[#888888]',
-    offline: 'bg-[#461f1f] text-[#ea2e2e]',
-    warning: 'bg-[#7f6004] text-[#ffc008]',
-    error: 'bg-[#461f1f] text-[#ea2e2e]',
+// Action button configuration
+export interface ActionButton {
+  label: string
+  onClick?: () => void
+  variant?: 'default' | 'outline' | 'secondary'
+  visible?: boolean
+}
+
+export interface DeviceCardProps extends React.HTMLAttributes<HTMLDivElement> {
+  device: Device
+  actions?: {
+    moreButton?: {
+      visible?: boolean
+      onClick?: () => void
+    }
+    detailsButton?: {
+      visible?: boolean
+      label?: string
+      onClick?: () => void
+    }
+    customActions?: ActionButton[]
+  }
+}
+
+// Status badge
+const StatusBadge = ({ status }: { status?: string }) => {
+  const statusConfig = {
+    active: {
+      bg: 'bg-[#2e461f]',
+      text: 'text-[#5ea62e]',
+      label: 'ACTIVE'
+    },
+    inactive: {
+      bg: 'bg-[#3a3a3a]',
+      text: 'text-[#888888]',
+      label: 'INACTIVE'
+    },
+    offline: {
+      bg: 'bg-[#461f1f]',
+      text: 'text-[#ea2e2e]',
+      label: 'OFFLINE'
+    },
+    warning: {
+      bg: 'bg-[#7f6004]',
+      text: 'text-[#ffc008]',
+      label: 'WARNING'
+    },
+    error: {
+      bg: 'bg-[#461f1f]',
+      text: 'text-[#ea2e2e]',
+      label: 'ERROR'
+    }
   }
 
+  const config = statusConfig[status as keyof typeof statusConfig] || statusConfig.active
+
   return (
-    <div className={cn(
-      "inline-flex items-center justify-center h-8 px-2 rounded-[6px]",
-      variantStyles[variant as keyof typeof variantStyles] || variantStyles.active
-    )}>
-      <span className="font-['Azeret_Mono'] font-medium text-[14px] leading-[20px] tracking-[-0.28px] uppercase">
-        {label}
+    <div 
+      className={cn(
+        "flex items-center justify-center h-8 px-2 rounded-[6px]",
+        config.bg
+      )}
+    >
+      <span 
+        className={cn(
+          "font-['Azeret_Mono'] font-medium text-[14px] leading-[20px] tracking-[-0.28px] uppercase",
+          config.text
+        )}
+      >
+        {config.label}
       </span>
     </div>
   )
 }
 
-
 export function DeviceCard({
-  deviceName,
-  deviceType = 'desktop',
-  operatingSystem = 'windows',
-  organization,
-  status = { label: 'Active', variant: 'active' },
-  lastSeen,
-  tags = [],
-  onMoreClick,
+  device,
+  actions = {
+    moreButton: { visible: true },
+    detailsButton: { visible: true, label: 'Details' }
+  },
   className,
   ...props
 }: DeviceCardProps) {
   // Get OS icon
   const getOSIcon = () => {
-    switch (operatingSystem) {
+    switch (device.operatingSystem) {
       case 'windows':
         return <WindowsIcon className="w-4 h-4 text-[#888888]" />
       case 'macos':
@@ -68,70 +117,128 @@ export function DeviceCard({
     }
   }
 
+  // Format date for last seen
+  const formatLastSeen = (lastSeen?: string | Date) => {
+    if (!lastSeen) return null
+    
+    const date = typeof lastSeen === 'string' ? new Date(lastSeen) : lastSeen
+    const year = date.getFullYear()
+    const month = String(date.getMonth() + 1).padStart(2, '0')
+    const day = String(date.getDate()).padStart(2, '0')
+    const hours = String(date.getHours()).padStart(2, '0')
+    const minutes = String(date.getMinutes()).padStart(2, '0')
+    
+    return `${year}/${month}/${day}, ${hours}:${minutes}`
+  }
+
   return (
     <div 
       className={cn(
-        "relative rounded-[6px] bg-[#212121] border border-[#3a3a3a] overflow-hidden",
+        "bg-[#212121] relative rounded-[6px] size-full border border-[#3a3a3a]",
         className
       )}
       {...props}
     >
-      {/* Main row with device info and actions */}
-      <div className="flex items-center justify-between px-4 py-0 h-20 bg-[#212121]">
-        {/* Device type icon */}
-        <div className="flex items-center gap-2 shrink-0">
-          <div className="flex items-center justify-center h-8 w-8 p-2 rounded-[6px] bg-[#212121] border border-[#3a3a3a]">
-            <Monitor className="w-4 h-4 text-[#888888]" />
+      <div className="content-stretch flex flex-col items-start justify-start overflow-clip relative size-full">
+        {/* Main row with device info and actions */}
+        <div className="bg-[#212121] box-border content-stretch flex gap-4 h-20 items-center justify-start px-4 py-0 relative shrink-0 w-full">
+          {/* Device type icon section */}
+          <div className="content-stretch flex gap-2 h-20 items-center justify-start overflow-clip relative shrink-0">
+            <div className="content-stretch flex flex-col items-start justify-center relative shrink-0">
+              <div className="content-stretch flex gap-1 items-center justify-start relative shrink-0 w-full">
+                <div className="bg-[#212121] box-border content-stretch flex gap-2 h-8 items-center justify-center p-2 relative rounded-[6px] shrink-0 border border-[#3a3a3a]">
+                  <Monitor className="relative shrink-0 size-4 text-[#888888]" />
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
 
-        {/* Device name and organization */}
-        <div className="flex-1 flex flex-col justify-center min-w-0 px-2">
-          <div className="flex items-center gap-1">
-            <span className="font-['DM_Sans'] font-medium text-[18px] leading-[24px] text-[#fafafa] truncate">
-              {deviceName}
-            </span>
-            {getOSIcon()}
+          {/* Device name and organization section */}
+          <div className="basis-0 content-stretch flex gap-2 grow h-20 items-center justify-start min-h-px min-w-px overflow-clip relative shrink-0">
+            <div className="basis-0 content-stretch flex flex-col grow items-start justify-center min-h-px min-w-px relative shrink-0">
+              <div className="content-stretch flex gap-1 items-center justify-start relative shrink-0 w-full">
+                <div className="font-['DM_Sans'] font-medium leading-[0] overflow-ellipsis overflow-hidden relative shrink-0 text-[18px] text-[#fafafa] text-nowrap">
+                  <p className="leading-[24px] overflow-ellipsis overflow-hidden whitespace-pre">
+                    {device.name}
+                  </p>
+                </div>
+                {getOSIcon()}
+              </div>
+              {device.organization && (
+                <div className="font-['DM_Sans'] font-medium h-5 leading-[0] overflow-ellipsis overflow-hidden relative shrink-0 text-[#888888] text-[14px] text-nowrap w-full">
+                  <p className="leading-[20px] overflow-ellipsis overflow-hidden">
+                    {device.organization}
+                  </p>
+                </div>
+              )}
+            </div>
           </div>
-          {organization && (
-            <span className="font-['DM_Sans'] font-medium text-[14px] leading-[20px] text-[#888888] truncate">
-              {organization}
-            </span>
+
+          {/* Action buttons section */}
+          {actions.moreButton?.visible !== false && (
+            <div 
+              className="bg-[#212121] box-border content-stretch flex gap-2 items-center justify-center p-3 relative rounded-[6px] shrink-0 border border-[#3a3a3a] cursor-pointer hover:bg-[#2a2a2a] transition-colors"
+              onClick={actions.moreButton?.onClick}
+            >
+              <MoreHorizontal className="relative shrink-0 size-6 text-[#fafafa]" />
+            </div>
+          )}
+          
+          {actions.detailsButton?.visible !== false && (
+            <div 
+              className="bg-[#212121] box-border content-stretch flex gap-2 items-center justify-center px-4 py-3 relative rounded-[6px] shrink-0 border border-[#3a3a3a] cursor-pointer hover:bg-[#2a2a2a] transition-colors"
+              onClick={actions.detailsButton?.onClick}
+            >
+              <div className="font-['DM_Sans'] font-bold leading-[0] relative shrink-0 text-[18px] text-[#fafafa] text-nowrap tracking-[-0.36px]">
+                <p className="leading-[24px] whitespace-pre">{actions.detailsButton?.label || 'Details'}</p>
+              </div>
+            </div>
+          )}
+
+          {/* Custom action buttons */}
+          {actions.customActions?.map((action, index) => 
+            action.visible !== false && (
+              <div 
+                key={index}
+                className="bg-[#212121] box-border content-stretch flex gap-2 items-center justify-center px-4 py-3 relative rounded-[6px] shrink-0 border border-[#3a3a3a] cursor-pointer hover:bg-[#2a2a2a] transition-colors"
+                onClick={action.onClick}
+              >
+                <div className="font-['DM_Sans'] font-bold leading-[0] relative shrink-0 text-[18px] text-[#fafafa] text-nowrap tracking-[-0.36px]">
+                  <p className="leading-[24px] whitespace-pre">{action.label}</p>
+                </div>
+              </div>
+            )
           )}
         </div>
 
-        {/* Action buttons */}
-        <div className="flex items-center gap-2 shrink-0">
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={onMoreClick}
-            className="bg-[#212121] border-[#3a3a3a] hover:bg-[#2a2a2a] h-12 w-12"
-            aria-label="More actions"
-          >
-            <MoreHorizontal className="h-6 w-6 text-[#fafafa]" />
-          </Button>
+        {/* Status and last seen row */}
+        <div className="bg-[#212121] box-border content-stretch flex gap-4 items-center justify-start px-4 py-2 relative shrink-0 w-full">
+          <div className="basis-0 content-stretch flex gap-2 grow items-center justify-start min-h-px min-w-px relative shrink-0">
+            <StatusBadge status={device.status} />
+            {device.lastSeen && (
+              <div className="basis-0 font-['DM_Sans'] font-medium grow leading-[0] min-h-px min-w-px relative shrink-0 text-[#888888] text-[14px]">
+                <p className="leading-[20px]">Last Seen: {formatLastSeen(device.lastSeen)}</p>
+              </div>
+            )}
+          </div>
         </div>
-      </div>
 
-      {/* Status and last seen row */}
-      <div className="flex items-center gap-4 px-4 py-0 bg-[#212121]">
-        <StatusBadge label={status.label} variant={status.variant} />
-        {lastSeen && (
-          <span className="font-['DM_Sans'] font-medium text-[14px] leading-[20px] text-[#888888]">
-            Last Seen: {lastSeen}
-          </span>
+        {/* Tags section */}
+        {device.tags && device.tags.length > 0 && (
+          <div className="bg-[#212121] box-border content-stretch flex gap-2 items-center justify-start p-4 pt-3 relative shrink-0 w-full">
+            {device.tags.map((tag, index) => (
+              <div 
+                key={index} 
+                className="bg-[#212121] box-border content-stretch flex gap-2 h-8 items-center justify-center p-2 relative rounded-[6px] shrink-0 border border-[#3a3a3a]"
+              >
+                <div className="font-['Azeret_Mono'] font-medium leading-[0] relative shrink-0 text-[14px] text-[#fafafa] text-nowrap tracking-[-0.28px] uppercase">
+                  <p className="leading-[20px] whitespace-pre">{tag}</p>
+                </div>
+              </div>
+            ))}
+          </div>
         )}
       </div>
-
-      {/* Tags section */}
-      {tags.length > 0 && (
-        <div className="flex items-center gap-2 px-4 py-4 bg-[#212121] border-t border-[#3a3a3a]">
-          {tags.map((tag, index) => (
-            <Tag key={index} label={tag} />
-          ))}
-        </div>
-      )}
     </div>
   )
 }
