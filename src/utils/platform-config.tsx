@@ -7,7 +7,7 @@ import type { PlatformConfig } from '../types/platform';
 // Platform icons mapping with consistent colors matching app theme
 export const platformIcons = {
   openframe: <OpenFrameLogo className="h-5 w-5" />,
-  openmsp: <OpenmspLogo />,
+  openmsp: <OpenmspLogo className="h-5 w-5" />,
   flamingo: <FlamingoLogo className="h-5 w-5" fill="#EC4899" />,
   'flamingo-teaser': <FlamingoLogo className="h-5 w-5" fill="#EC4899" />,
   'admin-hub': <FlamingoLogo className="h-5 w-5" fill="#FFC008" />,
@@ -65,7 +65,7 @@ export const platformHexColors = {
   openframe: '#FFC008',
   flamingo: '#FF6B9D',
   universal: '#FFC008',
-  'admin-hub': '#FF6B9D',
+  'admin-hub': '#FFC008',
   'flamingo-teaser': '#F59E0B',
   tmcg: '#FF6B6B'
 };
