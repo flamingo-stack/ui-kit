@@ -12,6 +12,7 @@ export interface TMCGMember {
   id: string
   full_name: string
   avatar_url?: string | null
+  company?: string | null
   about?: string | null
   job_title?: string | null
   tmcg_roles: string[]
