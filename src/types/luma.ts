@@ -112,3 +112,17 @@ export interface EventLocationInfo {
   meetingUrl?: string;
   address?: string;
 }
+
+// Event Media Types
+export interface EventMedia {
+  id: string;
+  event_id: string;
+  media_type: 'image' | 'video';
+  media_url: string;
+  display_order: number;
+  title?: string;
+  description?: string;
+  created_at: string;
+  updated_at: string;
+  created_by: string;
+}
