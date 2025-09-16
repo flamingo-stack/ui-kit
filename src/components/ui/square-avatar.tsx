@@ -16,10 +16,11 @@ interface SquareAvatarProps extends React.HTMLAttributes<HTMLDivElement> {
   alt?: string;
   size?: 'sm' | 'md' | 'lg' | 'xl';
   fallback?: string;
+  variant?: 'square' | 'round';
 }
 
 const SquareAvatar = React.forwardRef<HTMLDivElement, SquareAvatarProps>(
-  ({ className, src, alt, size = 'md', fallback, ...props }, ref) => {
+  ({ className, src, alt, size = 'md', fallback, variant = 'square', ...props }, ref) => {
     const sizeClasses = {
       sm: 'h-8 w-8',
       md: 'h-10 w-10',
@@ -27,11 +28,17 @@ const SquareAvatar = React.forwardRef<HTMLDivElement, SquareAvatarProps>(
       xl: 'h-16 w-16'
     };
 
+    const variantClasses = {
+      square: 'rounded-md',
+      round: 'rounded-full'
+    };
+
     return (
       <div
         className={cn(
-          "relative flex shrink-0 overflow-hidden rounded-md",
+          "relative flex shrink-0 overflow-hidden",
           sizeClasses[size],
+          variantClasses[variant],
           className
         )}
         ref={ref}
