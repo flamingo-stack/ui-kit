@@ -72,7 +72,7 @@ export function MadeWithLove({
   const linkStyle: React.CSSProperties = {
     display: 'inline-flex',
     alignItems: 'center',
-    gap: '4px',
+    gap: '2px',
     padding: 0,
     margin: 0,
     background: 'transparent',
@@ -88,7 +88,7 @@ export function MadeWithLove({
 
   // Logo container styles
   const logoStyle: React.CSSProperties = {
-    marginLeft: '8px',
+    marginLeft: '2px',
     flexShrink: 0,
     display: 'flex',
     alignItems: 'center'
@@ -106,7 +106,7 @@ export function MadeWithLove({
       style={containerStyle}
       className={className}
     >
-      Made with love by{' '}
+      Made with love by
       <a
         href={flamingoUrl}
         target="_blank"
