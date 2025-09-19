@@ -11,6 +11,8 @@ interface SquareAvatarProps {
   fallbackName?: string;
   /** Size in px (applied to width & height). Defaults to 56 (Tailwind w-14 h-14). */
   size?: number;
+  /** If true, avatar takes full width with square aspect ratio */
+  fullWidth?: boolean;
   className?: string;
 }
 
@@ -18,7 +20,7 @@ interface SquareAvatarProps {
  * Square avatar with rounded edges used across cards / dashboards.
  * Automatically shows image (via proxied URL) or initials fallback.
  */
-export function SquareAvatar({ src, fallbackName = '', size = 56, className }: SquareAvatarProps) {
+export function SquareAvatar({ src, fallbackName = '', size = 56, fullWidth = false, className }: SquareAvatarProps) {
   const initials = React.useMemo(() => {
     if (!fallbackName) return '';
     return fallbackName
@@ -29,12 +31,13 @@ export function SquareAvatar({ src, fallbackName = '', size = 56, className }: S
       .toUpperCase();
   }, [fallbackName]);
 
-  const style: React.CSSProperties = { width: size, height: size };
+  const style: React.CSSProperties = fullWidth ? {} : { width: size, height: size };
 
   return (
     <div
       className={cn(
-        'rounded-lg border border-ods-border flex items-center justify-center overflow-hidden flex-shrink-0 bg-[#161616]',
+        'rounded-lg border border-ods-border flex items-center justify-center overflow-hidden bg-ods-bg-secondary',
+        fullWidth ? 'w-full aspect-square' : 'flex-shrink-0',
         className,
       )}
       style={style}
@@ -43,7 +46,12 @@ export function SquareAvatar({ src, fallbackName = '', size = 56, className }: S
         // eslint-disable-next-line @next/next/no-img-element
         <img src={getProxiedImageUrl(src) || src} alt="Avatar" className="object-cover w-full h-full" />
       ) : (
-        <span className="font-['DM_Sans'] text-ods-text-primary text-lg font-bold">{initials}</span>
+        <span className={cn(
+          "font-['DM_Sans'] text-ods-text-primary font-bold",
+          fullWidth ? 'text-4xl' : 'text-lg'
+        )}>
+          {initials}
+        </span>
       )}
     </div>
   );

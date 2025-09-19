@@ -16,6 +16,7 @@ export * from './auth'
 
 // Content types
 export * from './blog'
+export * from './luma'
 export * from './vendor'
 export * from './vendor-links'
 

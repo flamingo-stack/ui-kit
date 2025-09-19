@@ -24,6 +24,9 @@ export { FilterIcon } from './filter-icon';
 export { ScriptIcon } from './script-icon';
 export { RemoteControlIcon } from './remote-control-icon';
 export { ShellIcon } from './shell-icon'; 
+export { MingoIcon } from './mingo-icon';
+export { PoliciesIcon } from './policies-icon';
+export { QueriesIcon } from './queries-icon'
 
 // UI state icons
 export { CheckCircleIcon } from './check-circle-icon';
@@ -58,6 +61,14 @@ export { ClaudeIcon } from './claude-icon';
 export { LinkedInIcon } from './linkedin-icon';
 export { LumaIcon } from './luma-icon';
 export { WhatsAppIcon } from './whatsapp-icon';
+
+// Social platform icons
+export { GlobeIcon } from './globe-icon';
+export { MessageCircleIcon } from './message-circle-icon';
+export { TelegramIcon } from './telegram-icon';
+export { YouTubeIcon } from './youtube-icon';
+export { InstagramIcon } from './instagram-icon';
+export { FacebookIcon } from './facebook-icon';
 
 // X icon with alias to avoid conflict with ui/custom-icons
 export { XIcon as IconsXIcon } from './x-icon';

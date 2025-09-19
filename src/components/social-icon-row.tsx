@@ -1,8 +1,8 @@
 import { Button } from './ui/button';
-import { GitHubIcon, RedditIcon, XLogo, LinkedInIcon, LumaIcon, WhatsAppIcon } from './icons';
+import { GitHubIcon, RedditIcon, XLogo, LinkedInIcon, LumaIcon, WhatsAppIcon, GlobeIcon, MessageCircleIcon, TelegramIcon, YouTubeIcon, InstagramIcon, FacebookIcon } from './icons';
 
 interface SocialLink {
-  platform: 'github' | 'twitter' | 'reddit' | 'linkedin' | 'luma' | 'whatsapp';
+  platform: string;
   href: string;
   label?: string;
 }
@@ -10,7 +10,7 @@ interface SocialLink {
 interface SocialIconRowProps {
   className?: string;
   links?: SocialLink[];
-  variant?: 'default' | 'destructive' | 'outline' | 'secondary' | 'ghost' | 'link';
+  variant?: "destructive" | "outline" | "secondary" | "ghost" | "link" | "search" | "primary" | "white" | "transparent" | "ghost-nav" | "submit" | "success" | "warning" | "info" | "flamingo-primary" | "flamingo-secondary" | "footer-link" | "filter" | "filter-active" | "section" | "section-active" | null | undefined;
 }
 
 const defaultLinks: SocialLink[] = [
@@ -19,11 +19,14 @@ const defaultLinks: SocialLink[] = [
   { platform: 'reddit', href: 'https://www.reddit.com/user/rishi_elle/', label: 'Reddit' }
 ];
 
-function renderSocialIcon(platform: SocialLink['platform']) {
-  switch (platform) {
+function renderSocialIcon(platform: string) {
+  const normalizedPlatform = platform.toLowerCase().trim();
+
+  switch (normalizedPlatform) {
     case 'github':
       return <GitHubIcon className="w-5 h-5" />;
     case 'twitter':
+    case 'x':
       return <XLogo className="w-5 h-5" />;
     case 'reddit':
       return <RedditIcon className="w-5 h-5" variant="white" />;
@@ -33,8 +36,26 @@ function renderSocialIcon(platform: SocialLink['platform']) {
       return <LumaIcon className="w-5 h-5" />;
     case 'whatsapp':
       return <WhatsAppIcon className="w-5 h-5" />;
+    case 'website':
+    case 'web':
+    case 'url':
+      return <GlobeIcon className="w-5 h-5" />;
+    case 'discord':
+    case 'slack':
+      return <MessageCircleIcon className="w-5 h-5" />;
+    case 'telegram':
+      return <TelegramIcon className="w-5 h-5" />;
+    case 'youtube':
+    case 'yt':
+      return <YouTubeIcon className="w-5 h-5" />;
+    case 'instagram':
+    case 'ig':
+      return <InstagramIcon className="w-5 h-5" />;
+    case 'facebook':
+    case 'fb':
+      return <FacebookIcon className="w-5 h-5" />;
     default:
-      return null;
+      return <GlobeIcon className="w-5 h-5" />;
   }
 }
 
