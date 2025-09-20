@@ -16,7 +16,7 @@ export function TableSkeleton({
         <div
           key={index}
           className={cn(
-            'relative rounded-[6px] bg-[#212121] border border-[#3a3a3a] overflow-hidden animate-pulse',
+            'relative rounded-[6px] bg-bg-card border border-border-primary overflow-hidden animate-pulse',
             className
           )}
         >
@@ -30,10 +30,10 @@ export function TableSkeleton({
                   column.width || 'flex-1'
                 )}
               >
-                <div className="h-5 bg-[#3a3a3a] rounded w-3/4 mb-1" />
+                <div className="h-5 bg-bg-surface rounded w-3/4 mb-1" />
                 {/* Add second line for some columns to simulate multi-line content */}
                 {index % 2 === 0 && column.key === columns[0].key && (
-                  <div className="h-4 bg-[#3a3a3a] rounded w-1/2 opacity-60" />
+                  <div className="h-4 bg-bg-surface rounded w-1/2 opacity-60" />
                 )}
               </div>
             ))}
@@ -41,8 +41,8 @@ export function TableSkeleton({
             {/* Actions skeleton */}
             {hasActions && (
               <div className="flex gap-2 items-center shrink-0 ml-auto">
-                <div className="h-12 w-12 bg-[#3a3a3a] rounded" />
-                <div className="h-12 w-24 bg-[#3a3a3a] rounded" />
+                <div className="h-12 w-12 bg-bg-surface rounded" />
+                <div className="h-12 w-24 bg-bg-surface rounded" />
               </div>
             )}
           </div>
@@ -50,11 +50,11 @@ export function TableSkeleton({
           {/* Mobile Skeleton */}
           <div className="flex md:hidden gap-3 items-center justify-start px-3 py-0 min-h-[80px]">
             <div className="flex-1 flex flex-col justify-center min-w-0 py-3">
-              <div className="h-4 bg-[#3a3a3a] rounded w-3/4 mb-2" />
-              <div className="h-3 bg-[#3a3a3a] rounded w-1/2 opacity-60" />
+              <div className="h-4 bg-bg-surface rounded w-3/4 mb-2" />
+              <div className="h-3 bg-bg-surface rounded w-1/2 opacity-60" />
             </div>
             {hasActions && (
-              <div className="h-12 w-12 bg-[#3a3a3a] rounded shrink-0" />
+              <div className="h-12 w-12 bg-bg-surface rounded shrink-0" />
             )}
           </div>
         </div>
