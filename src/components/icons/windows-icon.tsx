@@ -13,10 +13,7 @@ export function WindowsIcon({ className, ...props }: WindowsIconProps) {
       className={className}
       {...props}
     >
-      <path d="M2 3.5L7 2.5V7.5H2V3.5Z" fill="currentColor"/>
-      <path d="M8 2.25L14 1V7.5H8V2.25Z" fill="currentColor"/>
-      <path d="M2 8.5H7V13.5L2 12.5V8.5Z" fill="currentColor"/>
-      <path d="M8 8.5H14V15L8 13.75V8.5Z" fill="currentColor"/>
+      <path d="M0.833374 2.22562L6.28233 1.48656L6.28468 6.72147L0.838322 6.75234L0.833374 2.22567V2.22562ZM6.27973 7.32457L6.2839 12.564L0.837593 11.8182L0.83728 7.28945L6.27973 7.32457ZM6.94025 1.38981L14.165 0.3396V6.65486L6.94025 6.71192V1.38981ZM14.1667 7.37385L14.165 13.6606L6.9402 12.645L6.93009 7.36207L14.1667 7.37385Z" fill="currentColor"/>
     </svg>
   )
 }

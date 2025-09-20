@@ -721,7 +721,7 @@ export const FigmaPrototypeViewer: React.FC<FigmaPrototypeViewerProps> = ({
       {renderUnifiedUI(unifiedState, {
         onSectionClick: handleSectionClick,
         onTouchStart: handleTouchStart
-      }, config, iframeRef)}
+      }, config, iframeRef as React.RefObject<HTMLIFrameElement>)}
       
       {/* Debug Panel */}
       {showDebugPanel && (

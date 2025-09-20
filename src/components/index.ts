@@ -46,11 +46,10 @@ export * from './persistent-pagination'
 export * from './unified-filter-logic'
 export * from './unified-pagination'
 export * from './footer'
-export * from './layout/page-container'
+// Removed duplicate PageContainer export - already exported from './ui/page-container'
 export * from './made-with-love'
 
-// Loading components
-export * from './loading'
+// Loading components - removed duplicate exports (already in './ui')
 
 // Auth-related exports
 export * from './auth-stub'
