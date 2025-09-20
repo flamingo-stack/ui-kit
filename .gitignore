@@ -67,3 +67,5 @@ package-lock.json
 *.tsbuildinfo
 package-lock.json
 package-lock.json
+package-lock.json
+pnpm-lock.yaml

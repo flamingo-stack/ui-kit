@@ -36,6 +36,7 @@ export { SunIcon } from './sun-icon';
 export { MoonIcon } from './moon-icon';
 export { CoinsIcon } from './coins-icon';
 export { DonutIcon } from './donut-icon';
+export { HandDollarIcon } from './hand-dollar-icon';
 export { SendIcon } from './send-icon';
 export { EditProfileIcon } from './edit-profile-icon';
 export { EmptyVendorIcon } from './empty-vendor-icon';
