@@ -45,7 +45,7 @@ export function BulletList({
         <div key={item.id || index} className={itemClassName}>
           {/* <div className="flex-shrink-0 mt-[0.75rem]"> */}
           <div className="flex-shrink-0 mt-1">
-            <BulletIcon size={bulletSize} color={bulletColor} full={true} />
+            <BulletIcon size={bulletSize} color={bulletColor} />
           </div>
           {/* </div> */}
           <p className={textClassName}>

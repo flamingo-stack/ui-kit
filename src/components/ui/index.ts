@@ -1,6 +1,8 @@
 // UI Components exports
 export * from './button'
 export * from './card'
+export * from './content-loader'
+export * from './error-state'
 export * from './input'
 export * from './label'
 export * from './textarea'
@@ -10,6 +12,9 @@ export * from './switch'
 export * from './radio-group'
 export * from './media-type-selector'
 export * from './tags-input'
+export * from './info-row'
+export * from './info-card'
+export * from './progress-bar'
 // Layout components
 export * from './dialog'
 export * from './alert-dialog'
@@ -53,3 +58,24 @@ export * from './feature-card'
 export * from './highlight-card'
 export * from './brand-association-card'
 export * from './brand-association-grid'
+
+// Table components
+export {
+  Table,
+  TableHeader,
+  TableRow,
+  TableCell,
+  TableCardSkeleton,
+  TableEmptyState
+} from './table'
+
+export type {
+  TableProps,
+  TableColumn,
+  RowAction,
+  TableHeaderProps,
+  TableRowProps,
+  TableCellProps,
+  TableCardSkeletonProps,
+  TableEmptyStateProps
+} from './table'
