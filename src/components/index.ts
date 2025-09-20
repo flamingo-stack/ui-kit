@@ -49,7 +49,8 @@ export * from './footer'
 // Removed duplicate PageContainer export - already exported from './ui/page-container'
 export * from './made-with-love'
 
-// Loading components - removed duplicate exports (already in './ui')
+// Loading components
+export * from './loading'
 
 // Auth-related exports
 export * from './auth-stub'

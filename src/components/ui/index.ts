@@ -65,7 +65,7 @@ export {
   TableHeader,
   TableRow,
   TableCell,
-  TableSkeleton,
+  TableCardSkeleton,
   TableEmptyState
 } from './table'
 
@@ -76,6 +76,6 @@ export type {
   TableHeaderProps,
   TableRowProps,
   TableCellProps,
-  TableSkeletonProps,
+  TableCardSkeletonProps,
   TableEmptyStateProps
 } from './table'

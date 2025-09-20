@@ -147,7 +147,7 @@ export interface TableCellProps {
   width?: string
 }
 
-export interface TableSkeletonProps {
+export interface TableCardSkeletonProps {
   columns: TableColumn[]
   rows?: number
   hasActions?: boolean

@@ -2,14 +2,14 @@
 
 import React from 'react'
 import { cn } from '../../../utils/cn'
-import type { TableSkeletonProps } from './types'
+import type { TableCardSkeletonProps } from './types'
 
-export function TableSkeleton({
+export function TableCardSkeleton({
   columns,
   rows = 6,
   hasActions = false,
   className
-}: TableSkeletonProps) {
+}: TableCardSkeletonProps) {
   return (
     <>
       {Array.from({ length: rows }).map((_, index) => (

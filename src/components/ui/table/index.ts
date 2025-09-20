@@ -2,7 +2,7 @@ export { Table } from './table'
 export { TableHeader } from './table-header'
 export { TableRow } from './table-row'
 export { TableCell } from './table-cell'
-export { TableSkeleton } from './table-skeleton'
+export { TableCardSkeleton } from './table-skeleton'
 export { TableEmptyState } from './table-empty-state'
 
 export type {
@@ -16,6 +16,6 @@ export type {
   TableHeaderProps,
   TableRowProps,
   TableCellProps,
-  TableSkeletonProps,
+  TableCardSkeletonProps,
   TableEmptyStateProps
 } from './types'

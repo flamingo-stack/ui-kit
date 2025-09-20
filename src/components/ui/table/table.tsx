@@ -4,7 +4,7 @@ import React from 'react'
 import { cn } from '../../../utils/cn'
 import { TableHeader } from './table-header'
 import { TableRow } from './table-row'
-import { TableSkeleton } from './table-skeleton'
+import { TableCardSkeleton } from './table-skeleton'
 import { TableEmptyState } from './table-empty-state'
 import type { TableProps } from './types'
 
@@ -129,7 +129,7 @@ export function Table<T = any>({
       {/* Table Body */}
       <div className={cn('flex flex-col gap-1 w-full', className)}>
         {loading ? (
-          <TableSkeleton 
+          <TableCardSkeleton 
             columns={columns} 
             rows={6}
             hasActions={!!rowActions && rowActions.length > 0}
