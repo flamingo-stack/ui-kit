@@ -31,7 +31,7 @@ export function getPlatformAccentColor(platform?: Platform): string {
   const platformColors = {
     'openmsp': 'var(--ods-open-yellow-base)',         // CSS variable instead of hex
     'admin-hub': 'var(--ods-flamingo-pink-base)',     // CSS variable instead of hex
-    'openframe': 'var(--ods-flamingo-cyan-base)',     // CSS variable instead of hex
+    'openframe': 'var(--ods-open-yellow-base)',       // CSS variable instead of hex
     'flamingo': 'var(--ods-flamingo-pink-base)'       // CSS variable instead of hex
   };
   
