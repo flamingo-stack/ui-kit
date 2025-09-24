@@ -71,6 +71,18 @@ export { YouTubeIcon } from './youtube-icon';
 export { InstagramIcon } from './instagram-icon';
 export { FacebookIcon } from './facebook-icon';
 
+// Tab navigation icons
+export { ArchiveIcon } from './archive-icon';
+export { CpuIcon } from './cpu-icon';
+export { NetworkIcon } from './network-icon';
+export { ShieldIcon } from './shield-icon';
+export { FileCheckIcon } from './file-check-icon';
+export { BotIcon } from './bot-icon';
+export { UsersIcon } from './users-icon';
+export { PackageIcon } from './package-icon';
+export { AlertTriangleIcon } from './alert-triangle-icon';
+export { FileTextIcon } from './file-text-icon';
+
 // X icon with alias to avoid conflict with ui/custom-icons
 export { XIcon as IconsXIcon } from './x-icon';
 
