@@ -29,6 +29,8 @@ export * from './accordion'
 export * from './breadcrumb'
 export * from './menubar'
 export * from './navigation-menu'
+export * from './tab-navigation'
+export * from './tab-content'
 // Feedback components
 export * from './alert'
 export * from './badge'
