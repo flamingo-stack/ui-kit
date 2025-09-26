@@ -13,6 +13,8 @@ export function TableRow<T = any>({
   columns,
   rowKey,
   rowActions,
+  renderRowActions,
+  actionsWidth,
   onClick,
   className,
   index,
@@ -103,33 +105,41 @@ export function TableRow<T = any>({
         ))}
         
         {/* Row Actions */}
-        {rowActions && rowActions.length > 0 && (
-          <div className="flex gap-2 items-center shrink-0 ml-auto" data-no-row-click>
-            {rowActions.map((action, actionIndex) => (
-              <Button
-                key={actionIndex}
-                variant={action.variant || 'outline'}
-                size={action.icon && !action.label ? 'icon' : 'default'}
-                onClick={(e) => {
-                  e.stopPropagation()
-                  action.onClick(item)
-                }}
-                className={cn(
-                  'bg-[#212121] border-[#3a3a3a] hover:bg-[#2a2a2a]',
-                  action.className
-                )}
-                aria-label={action.label}
-              >
-                {action.icon && !action.label ? (
-                  action.icon
-                ) : (
-                  <>
-                    {action.icon}
-                    {action.label}
-                  </>
-                )}
-              </Button>
-            ))}
+        {(renderRowActions || (rowActions && rowActions.length > 0)) && (
+          <div
+            className="flex gap-2 items-center ml-auto shrink-0"
+            style={{ width: actionsWidth ? `${actionsWidth}px` : undefined, minWidth: actionsWidth ? `${actionsWidth}px` : '3rem' }}
+            data-no-row-click
+          >
+            {renderRowActions ? (
+              renderRowActions(item)
+            ) : (
+              rowActions!.map((action, actionIndex) => (
+                <Button
+                  key={actionIndex}
+                  variant={action.variant || 'outline'}
+                  size={action.icon && !action.label ? 'icon' : 'default'}
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    action.onClick(item)
+                  }}
+                  className={cn(
+                    'bg-[#212121] border-[#3a3a3a] hover:bg-[#2a2a2a]',
+                    action.className
+                  )}
+                  aria-label={action.label}
+                >
+                  {action.icon && !action.label ? (
+                    action.icon
+                  ) : (
+                    <>
+                      {action.icon}
+                      {action.label}
+                    </>
+                  )}
+                </Button>
+              ))
+            )}
           </div>
         )}
       </div>
