@@ -20,6 +20,9 @@ export function Table<T = any>({
   rowClassName,
   onRowClick,
   rowActions,
+  renderRowActions,
+  actionsWidth,
+  actionsMinWidth = 48,
   sortBy,
   sortDirection,
   onSort,
@@ -113,7 +116,8 @@ export function Table<T = any>({
       <TableHeader 
         columns={columns} 
         className={headerClassName}
-        hasActions={!!rowActions && rowActions.length > 0}
+        hasActions={!!renderRowActions || (!!rowActions && rowActions.length > 0)}
+        actionsWidth={actionsWidth || actionsMinWidth}
         sortBy={sortBy}
         sortDirection={sortDirection}
         onSort={onSort}
@@ -144,6 +148,8 @@ export function Table<T = any>({
               columns={columns}
               rowKey={rowKey}
               rowActions={rowActions}
+            renderRowActions={renderRowActions}
+            actionsWidth={actionsWidth || actionsMinWidth}
               onClick={onRowClick}
               className={getRowClassName(item, index)}
               index={index}

@@ -21,16 +21,10 @@ export function TableCell({
     }
   }
 
-  // If children is a complex element (renderCell output), render it directly
-  // without wrapping in additional styling
-  if (React.isValidElement(children)) {
-    return children
-  }
-
   return (
     <div
       className={cn(
-        'flex flex-col shrink-0 overflow-hidden',
+        'flex flex-col overflow-hidden',
         getAlignment(),
         width || 'flex-1 min-w-0',
         className

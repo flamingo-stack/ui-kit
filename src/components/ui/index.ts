@@ -62,6 +62,8 @@ export * from './feature-card'
 export * from './highlight-card'
 export * from './brand-association-card'
 export * from './brand-association-grid'
+export * from './service-card'
+export * from './more-actions-menu'
 
 // Table components
 export {

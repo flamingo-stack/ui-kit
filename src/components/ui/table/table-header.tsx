@@ -12,6 +12,7 @@ export function TableHeader<T = any>({
   columns,
   className,
   hasActions = false,
+  actionsWidth,
   sortBy,
   sortDirection,
   onSort,
@@ -150,9 +151,9 @@ export function TableHeader<T = any>({
           <div
             key={column.key}
             className={cn(
-              'flex gap-2 items-center shrink-0',
+              'flex gap-2 items-center',
               getAlignment(column.align),
-              column.width || 'flex-1',
+              column.width || 'flex-1 min-w-0',
               column.className
             )}
           >
@@ -228,7 +229,10 @@ export function TableHeader<T = any>({
         
         {/* Space for actions - matches row actions container */}
         {hasActions && (
-          <div className="flex gap-2 items-center shrink-0 ml-auto" />
+          <div
+            className="flex gap-2 items-center ml-auto shrink-0"
+            style={{ width: actionsWidth ? `${actionsWidth}px` : undefined, minWidth: actionsWidth ? `${actionsWidth}px` : '3rem' }}
+          />
         )}
       </div>
     </>
