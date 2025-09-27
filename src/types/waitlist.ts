@@ -24,6 +24,10 @@ export interface WaitlistEntry {
   hubspot_company_id?: string | null;
   hubspot_sync_status?: 'success' | 'error' | 'missing' | null;
   hubspot_contact_url?: string | null;
+  // HubSpot enriched data (populated server-side from HubSpot API)
+  hubspot_name?: string | null;
+  hubspot_company?: string | null;
+  hubspot_company_logo_url?: string | null;
   // Platform relationship data (populated via join)
   platforms?: {
     id: string;
