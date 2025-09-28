@@ -4,4 +4,5 @@ export { getPlatformAccentColor, getCurrentPlatform, type ColorCategory } from '
 export { delay, generateRandomString, truncateString, deepClone, getSlackCommunityJoinUrl, getBaseUrl } from './common'
 export * from './platform-config'
 export * from './os-platforms'
+export * from './access-code-client'
 // Note: format and date-utils are imported via cn.ts to avoid duplicates
