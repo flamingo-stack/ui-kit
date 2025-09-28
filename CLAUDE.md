@@ -812,6 +812,144 @@ import { StartWithOpenFrameButton } from '@flamingo/ui-kit/components/features'
 - **Pink mode**: Uses `text-ods-text-primary` (white) for good contrast with pink background
 - **OpenFrame logo colors**: Automatically adjusted per mode for optimal visibility
 
+## Access Code System Integration (NEW ✅)
+
+### Client Utilities for Access Code Management
+Complete client-side integration utilities for the access code system:
+
+**Location**: `src/utils/access-code-client.ts`
+
+**Core Functions**:
+```typescript
+// Validation only (check without consuming)
+export async function validateAccessCode(
+  email: string,
+  code: string
+): Promise<AccessCodeValidationResponse>
+
+// Consumption after successful registration
+export async function consumeAccessCode(
+  email: string,
+  code: string
+): Promise<AccessCodeConsumptionResponse>
+
+// Combined validation + consumption in one step
+export async function validateAndConsumeAccessCode(
+  email: string,
+  code: string
+): Promise<AccessCodeValidationResponse & AccessCodeConsumptionResponse>
+```
+
+**React Hook Integration**:
+```typescript
+// Complete React hook for access code workflows
+export function useAccessCodeIntegration() {
+  return {
+    validate: (email: string, code: string) => Promise<AccessCodeValidationResponse>,
+    consume: (email: string, code: string) => Promise<AccessCodeConsumptionResponse>,
+    validateAndConsume: (email: string, code: string) => Promise<Combined>,
+    isValidating: boolean,
+    isConsuming: boolean,
+    isProcessing: boolean // Combined loading state
+  }
+}
+```
+
+**TypeScript Types** (Location: `src/types/access-code-cohorts.ts`):
+```typescript
+interface AccessCodeValidation {
+  email: string
+  code: string
+}
+
+interface AccessCodeValidationResponse {
+  valid: boolean
+  message: string
+  cohort_name: string | null
+}
+
+interface AccessCodeConsumptionResponse {
+  consumed: boolean
+  message: string
+  cohort_name: string | null
+}
+
+interface CohortWithStats {
+  id: string
+  name: string
+  description: string | null
+  capacity: number
+  launch_date: string | null
+  created_at: string
+  member_count: number
+  codes_generated: number
+  codes_used: number
+}
+```
+
+**Usage Examples**:
+
+**Basic Validation**:
+```typescript
+import { validateAccessCode } from '@flamingo/ui-kit/utils/access-code-client'
+
+const result = await validateAccessCode('user@example.com', 'ABC123XY')
+if (result.valid) {
+  console.log(`Welcome to ${result.cohort_name}!`)
+} else {
+  console.error(result.message)
+}
+```
+
+**React Hook Integration**:
+```typescript
+import { useAccessCodeIntegration } from '@flamingo/ui-kit/utils/access-code-client'
+
+function RegistrationForm() {
+  const { validateAndConsume, isProcessing } = useAccessCodeIntegration()
+
+  const handleSubmit = async (email: string, code: string) => {
+    const result = await validateAndConsume(email, code)
+    if (result.valid && result.consumed) {
+      // Registration successful!
+      redirectToWelcome()
+    } else {
+      setError(result.message)
+    }
+  }
+
+  return (
+    <form onSubmit={handleSubmit}>
+      {/* Form fields */}
+      <button disabled={isProcessing}>
+        {isProcessing ? 'Processing...' : 'Register'}
+      </button>
+    </form>
+  )
+}
+```
+
+**API Integration**:
+The client utilities automatically handle communication with the access code API endpoints:
+- `POST /api/validate-access-code` - Validation without consumption
+- `POST /api/consume-access-code` - Mark code as used after registration
+- Automatic error handling and response formatting
+- Consistent API response structure across all operations
+
+**Security Features**:
+- Server-side validation prevents race conditions
+- One-time use enforcement (codes marked as used after consumption)
+- Email validation and case-insensitive code handling
+- Comprehensive error messages for user feedback
+
+**Integration Workflow**:
+1. **Validate First**: Check if access code is valid before processing registration
+2. **Register User**: Complete your application's user registration process
+3. **Consume After Success**: Only mark code as used after successful registration
+4. **Handle Errors**: Provide clear error messages for invalid or used codes
+
+This access code system provides complete cohort-based early access management with unified client utilities, React hooks, and server-side validation for production-ready implementation across all platforms.
+
 ## Component Migration Status (COMPLETED ✅)
 
 ### Successfully Migrated Components
@@ -824,6 +962,7 @@ All major UI components have been successfully migrated from the main project to
 - ✅ **Form Components** - Input, Textarea, Checkbox, Switch with full validation support
 - ✅ **Card Components** - Basic card layouts with ODS theming
 - ✅ **Tooltip Component** - Radix-based tooltip with proper z-index management
+- ✅ **Access Code System** - Complete client utilities for cohort-based early access management
 
 **Business Components (✅ COMPLETED)**:
 - ✅ **CommentCard** - Full MSP display functionality with working deletion logic and auth integration

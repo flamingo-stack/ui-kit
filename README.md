@@ -24,6 +24,7 @@ This is a **source-only** TypeScript package that provides:
 - 💀 **Loading Skeletons** - Comprehensive skeleton components preventing double-loading issues
 - 🔗 **Button onClick Fix** - Proper onClick support with href for dropdown menu closing
 - 💰 **Investors System** - Complete CRUD with modal-based admin and Supabase integration
+- 🎫 **Access Code System** - Complete client utilities for cohort-based early access management with React hooks and server-side validation ✅
 - 🎬 **ParallaxImageShowcase** - Advanced parallax effects with global mouse tracking, scroll animations, and OpenMSP layout variant
   - **Default Layout**: Three-layer depth parallax for hero sections
   - **OpenMSP Layout**: Two-row structure (logo + images) with edge positioning
@@ -120,6 +121,9 @@ import { SSOModal, ErrorBoundary, YouTubeEmbed } from '@flamingo/ui-kit/componen
 import { GitHubIcon, XLogo, OpenFrameLogo } from '@flamingo/ui-kit/components/icons'
 import { FlamingoLogo, OpenMSPLogo } from '@flamingo/ui-kit/components' // Legacy individual imports
 import { useToast } from '@flamingo/ui-kit/hooks'
+// Access Code System
+import { validateAccessCode, consumeAccessCode, validateAndConsumeAccessCode, useAccessCodeIntegration } from '@flamingo/ui-kit/utils/access-code-client'
+import { AccessCodeValidation, AccessCodeValidationResponse, AccessCodeConsumptionResponse } from '@flamingo/ui-kit/types/access-code-cohorts'
 import { Info } from 'lucide-react'
 
 function MyComponent() {
@@ -576,6 +580,132 @@ The `FigmaPrototypeViewer` component (`src/components/features/figma-prototype-v
 - **Gesture Detection**: Distinguishes between scroll intent and click intent
 - **Natural UX**: Both page scrolling AND iframe interaction work seamlessly
 - **Technical Innovation**: 500ms interaction window for natural human behavior
+
+### Access Code System
+
+Complete client-side utilities for cohort-based early access management:
+
+```tsx
+import {
+  validateAccessCode,
+  consumeAccessCode,
+  validateAndConsumeAccessCode,
+  useAccessCodeIntegration
+} from '@flamingo/ui-kit/utils/access-code-client'
+
+// Basic validation workflow
+async function checkAccessCode(email: string, code: string) {
+  const result = await validateAccessCode(email, code)
+
+  if (result.valid) {
+    console.log(`Welcome to ${result.cohort_name}!`)
+    // Proceed with registration
+  } else {
+    console.error(result.message)
+    // Show error to user
+  }
+}
+
+// React Hook integration
+function RegistrationForm() {
+  const { validateAndConsume, isProcessing } = useAccessCodeIntegration()
+  const [formData, setFormData] = useState({ email: '', code: '' })
+  const [error, setError] = useState('')
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    setError('')
+
+    const result = await validateAndConsume(formData.email, formData.code)
+
+    if (result.valid && result.consumed) {
+      // Registration successful - access code validated and marked as used
+      window.location.href = '/welcome'
+    } else {
+      setError(result.message || 'Invalid access code')
+    }
+  }
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <div>
+        <label>Email:</label>
+        <input
+          type="email"
+          value={formData.email}
+          onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
+          required
+        />
+      </div>
+
+      <div>
+        <label>Access Code:</label>
+        <input
+          type="text"
+          value={formData.code}
+          onChange={(e) => setFormData(prev => ({ ...prev, code: e.target.value }))}
+          placeholder="Enter your access code"
+          required
+        />
+      </div>
+
+      {error && <div className="text-red-500 text-sm">{error}</div>}
+
+      <button type="submit" disabled={isProcessing}>
+        {isProcessing ? 'Processing...' : 'Register'}
+      </button>
+    </form>
+  )
+}
+
+// Advanced workflow - separate validation and consumption
+async function advancedRegistrationFlow(userData) {
+  // Step 1: Validate access code before processing
+  const validation = await validateAccessCode(userData.email, userData.accessCode)
+
+  if (!validation.valid) {
+    throw new Error(validation.message)
+  }
+
+  // Step 2: Process user registration
+  try {
+    const user = await registerUser(userData)
+
+    // Step 3: Consume access code only after successful registration
+    const consumption = await consumeAccessCode(userData.email, userData.accessCode)
+
+    if (!consumption.consumed) {
+      console.warn('Warning: Registration succeeded but access code could not be marked as used')
+    }
+
+    return user
+  } catch (error) {
+    // Registration failed - access code remains unused
+    throw error
+  }
+}
+```
+
+**Features:**
+- **Server-Side Validation**: All validation happens on the server to prevent race conditions
+- **One-Time Use**: Codes are automatically marked as used after consumption
+- **React Hook Integration**: `useAccessCodeIntegration()` hook with loading states
+- **TypeScript Support**: Complete type definitions for all interfaces
+- **Security Features**: Email validation, case-insensitive code handling, comprehensive error messages
+- **Flexible Workflows**: Support for validate-only, consume-only, or combined operations
+- **Production Ready**: Comprehensive error handling and user feedback systems
+
+**API Endpoints Used:**
+- `POST /api/validate-access-code` - Check code validity without consuming
+- `POST /api/consume-access-code` - Mark code as used after successful registration
+
+**Usage Workflow:**
+1. **Validate First**: Always check if access code is valid before processing registration
+2. **Register User**: Complete your application's user registration process
+3. **Consume After Success**: Only mark code as used after successful registration
+4. **Handle Errors**: Provide clear error messages for invalid, expired, or already-used codes
+
+This system provides complete cohort-based early access management with unified client utilities, React hooks, and server-side validation for production-ready implementation across all platforms.
 
 **🏗️ Technical Architecture (2025 Standards):**
 - **Event-Driven**: No setTimeout usage, pure React event handling
