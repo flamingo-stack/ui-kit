@@ -4,7 +4,6 @@ export interface AccessCodeCohort {
   description?: string;
   launch_date: string;
   capacity?: number;
-  status: 'draft' | 'active' | 'launched' | 'closed';
   created_at: string;
   updated_at: string;
 }
@@ -21,7 +20,6 @@ export interface UpdateAccessCodeCohort {
   description?: string;
   launch_date?: string;
   capacity?: number;
-  status?: 'draft' | 'active' | 'launched' | 'closed';
 }
 
 export interface AccessCode {
