@@ -34,6 +34,33 @@ export interface WaitlistEntry {
     name: string;
     display_name: string;
   };
+  // Cohort membership data (populated via join) - array but limited to 1 due to business rule
+  cohort_memberships?: Array<{
+    id: string;
+    status: string;
+    created_at: string;
+    access_code_cohorts?: {
+      id: string;
+      name: string;
+      launch_date: string;
+      status: string;
+    };
+    access_codes?: {
+      code: string;
+      used_at: string | null;
+    };
+  }>;
+  // Enriched cohort data (populated server-side from cohort_memberships)
+  cohort?: {
+    cohort_id: string;
+    cohort_name: string;
+    cohort_status: string;
+    cohort_launch_date: string;
+    access_code: string;
+    access_code_used: boolean;
+    membership_status: string;
+    membership_created_at: string;
+  } | null;
 }
 
 export interface CreateWaitlistEntry {

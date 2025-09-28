@@ -45,6 +45,7 @@ export * from './pagination'
 export * from './persistent-pagination'
 export * from './unified-filter-logic'
 export * from './unified-pagination'
+export * from './sliding-panel'
 export * from './footer'
 // Removed duplicate PageContainer export - already exported from './ui/page-container'
 export * from './made-with-love'
@@ -54,6 +55,9 @@ export * from './loading'
 
 // Auth-related exports
 export * from './auth-stub'
+
+// Date/Time components
+export * from './date-time-picker'
 
 // Priority UI components that exist in main components directory
 // Note: These are re-exported from ./ui already, no need to duplicate
