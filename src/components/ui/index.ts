@@ -2,6 +2,7 @@
 export * from './button'
 export * from './card'
 export * from './content-loader'
+export * from './page-loader'
 export * from './error-state'
 export * from './input'
 export * from './label'
