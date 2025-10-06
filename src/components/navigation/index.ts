@@ -20,6 +20,9 @@ export type { StickyNavSection } from './sticky-section-nav'
 export { NavigationSidebar } from './navigation-sidebar'
 export type { NavigationSidebarProps } from './navigation-sidebar'
 
+export { AppHeader } from './app-header'
+export type { AppHeaderProps } from './app-header'
+
 // Re-export types from navigation types
 export type { 
   NavigationItem, 

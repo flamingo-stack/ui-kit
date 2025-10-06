@@ -68,6 +68,8 @@ export * from './brand-association-card'
 export * from './brand-association-grid'
 export * from './service-card'
 export * from './more-actions-menu'
+export * from './dashboard-info-card'
+export * from './circular-progress'
 
 // Table components
 export {

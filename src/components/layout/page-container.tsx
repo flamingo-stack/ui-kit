@@ -186,8 +186,7 @@ function renderAdvancedPageContainer({
     if (headerContent) {
       return (
         <div className={cn(
-          "flex items-end justify-between gap-4",
-          variant === 'detail' ? 'pl-6 pr-6' : ''
+          "flex items-end justify-between gap-4"
         )}>
           {headerContent}
         </div>
@@ -196,7 +195,7 @@ function renderAdvancedPageContainer({
 
     if (variant === 'detail') {
       return (
-        <div className="flex items-end justify-between gap-4 pl-6 pr-6">
+        <div className="flex items-end justify-between gap-4">
           <div className="flex flex-col gap-2 flex-1">
             {/* Back Button */}
             {backButton && (

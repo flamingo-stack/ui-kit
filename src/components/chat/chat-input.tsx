@@ -5,10 +5,11 @@ import { Send } from "lucide-react"
 export interface ChatInputProps extends Omit<React.TextareaHTMLAttributes<HTMLTextAreaElement>, 'onSubmit'> {
   onSend?: (message: string) => void
   sending?: boolean
+  reserveAvatarOffset?: boolean
 }
 
 const ChatInput = React.forwardRef<HTMLTextAreaElement, ChatInputProps>(
-  ({ className, onSend, sending = false, placeholder = "Enter your request here...", ...props }, ref) => {
+  ({ className, onSend, sending = false, placeholder = "Enter your request here...", reserveAvatarOffset = true, ...props }, ref) => {
     const [value, setValue] = React.useState('')
     const textareaRef = React.useRef<HTMLTextAreaElement>(null)
     
@@ -19,7 +20,7 @@ const ChatInput = React.forwardRef<HTMLTextAreaElement, ChatInputProps>(
       if (message && !sending && onSend) {
         onSend(message)
         setValue('')
-        // Reset textarea height
+
         if (textareaRef.current) {
           textareaRef.current.style.height = 'auto'
         }
@@ -35,7 +36,7 @@ const ChatInput = React.forwardRef<HTMLTextAreaElement, ChatInputProps>(
     
     const handleChange = React.useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
       setValue(e.target.value)
-      // Auto-resize textarea
+
       if (textareaRef.current) {
         textareaRef.current.style.height = 'auto'
         textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`
@@ -45,18 +46,21 @@ const ChatInput = React.forwardRef<HTMLTextAreaElement, ChatInputProps>(
     return (
       <div
         className={cn(
-          "mx-auto grid w-full max-w-3xl grid-cols-[32px_1fr] items-end gap-4",
+          "mx-auto w-full max-w-3xl items-end gap-6",
+          reserveAvatarOffset ? "grid grid-cols-[32px_1fr]" : "grid grid-cols-[1fr]",
+          "flex-shrink-0",
           className
         )}
       >
-        <div className="invisible h-8 w-8" aria-hidden />
+        {reserveAvatarOffset && <div className="invisible h-8 w-8" aria-hidden />}
         <div
           className={cn(
-            "relative flex items-end gap-3",
-            "rounded-2xl bg-[#212121] px-5 py-4",
-            "border border-white/5 focus-within:border-white/15",
-            "shadow-[0_18px_48px_rgba(0,0,0,0.45)]",
-            "transition-colors"
+            "relative flex items-center gap-2",
+            "rounded-lg bg-ods-bg-card border border-ods-border",
+            "px-3 py-1.5",
+            "transition-colors",
+            "bg-ods-bg-card border border-[#3a3a3a]",
+            "text-left text-ods-text-primary",
           )}
         >
           <textarea
@@ -69,8 +73,8 @@ const ChatInput = React.forwardRef<HTMLTextAreaElement, ChatInputProps>(
             rows={1}
             className={cn(
               "flex-1 resize-none bg-transparent px-0",
-              "text-sm text-white placeholder:text-white/40",
-              "min-h-[32px] max-h-[160px] focus:outline-none",
+              "text-[18px] leading-[20px] font-['DM_Sans'] text-ods-primary placeholder:text-ods-secondary",
+              "min-h-[20px] max-h-[160px] focus:outline-none",
               "disabled:opacity-50 disabled:cursor-not-allowed"
             )}
             {...props}
@@ -81,11 +85,9 @@ const ChatInput = React.forwardRef<HTMLTextAreaElement, ChatInputProps>(
             onClick={handleSubmit}
             disabled={sending || !value.trim()}
             className={cn(
-              "rounded-full bg-[#2B2B2B] p-2 text-white transition-all",
-              sending || !value.trim()
-                ? "cursor-not-allowed opacity-40"
-                : "hover:bg-[#343434] active:scale-95",
-              "focus:outline-none focus-visible:ring-2 focus-visible:ring-[#F357BB]/60"
+              "rounded-md p-1.5 text-ods-text-secondary transition-all",
+              sending || !value.trim() ? "cursor-not-allowed opacity-40" : "hover:text-ods-text-primary active:scale-95",
+              "focus:outline-none"
             )}
             aria-label="Send message"
           >

@@ -15,10 +15,11 @@ export interface ChatMessageListProps extends React.HTMLAttributes<HTMLDivElemen
   messages: Message[]
   isTyping?: boolean
   autoScroll?: boolean
+  showAvatars?: boolean
 }
 
 const ChatMessageList = React.forwardRef<HTMLDivElement, ChatMessageListProps>(
-  ({ className, messages, isTyping = false, autoScroll = true, ...props }, ref) => {
+  ({ className, messages, isTyping = false, autoScroll = true, showAvatars = true, ...props }, ref) => {
     const scrollRef = React.useRef<HTMLDivElement>(null)
     const isPinnedToBottomRef = React.useRef(true)
 
@@ -47,11 +48,9 @@ const ChatMessageList = React.forwardRef<HTMLDivElement, ChatMessageListProps>(
 
     React.useEffect(() => {
       if (!autoScroll) return
-      
-      // Always scroll to bottom when new messages are added
+
       const lastMessage = messages[messages.length - 1]
       if (lastMessage) {
-        // Force scroll to bottom for new user messages, or when pinned to bottom
         const shouldForceScroll = lastMessage.role === 'user' || isPinnedToBottomRef.current
         if (shouldForceScroll) {
           scrollToBottom('smooth')
@@ -80,7 +79,7 @@ const ChatMessageList = React.forwardRef<HTMLDivElement, ChatMessageListProps>(
           )}
           {...props}
         >
-          <div className="mx-auto flex w-full max-w-3xl flex-col gap-1 px-6 pb-6 pt-8" style={{ minHeight: '100%' }}>
+          <div className="mx-auto flex w-full max-w-3xl flex-col gap-1 px-3 pt-8" style={{ minHeight: '100%' }}>
             <div className="flex-1" />
             {messages.map((message, index) => (
               <ChatMessage
@@ -90,7 +89,8 @@ const ChatMessageList = React.forwardRef<HTMLDivElement, ChatMessageListProps>(
                 content={message.content}
                 timestamp={message.timestamp}
                 isTyping={index === messages.length - 1 && isTyping && message.role === 'assistant'}
-                avatar={message.avatar}
+                avatar={showAvatars ? message.avatar : null}
+                showAvatar={showAvatars}
               />
             ))}
           </div>
