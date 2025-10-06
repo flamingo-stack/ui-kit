@@ -4,16 +4,32 @@ import React, { useState, useCallback, useEffect } from 'react'
 import { cn } from '../../utils'
 import { NavigationSidebarConfig, NavigationSidebarItem } from '../../types/navigation'
 import { DoubleChevronIcon, OpenFrameLogo, OpenFrameText } from '../icons'
+import { useLocalStorage } from '../../hooks/ui/use-local-storage'
 
 export interface NavigationSidebarProps {
   config: NavigationSidebarConfig
 }
 
 export function NavigationSidebar({ config }: NavigationSidebarProps) {
-  // Check if we're on mobile and set initial state accordingly
-  const [isMobile, setIsMobile] = useState(false)
-  const [minimized, setMinimized] = useState(config.minimized ?? false)
-  const [showText, setShowText] = useState(!(config.minimized ?? false))
+  const [isMobile, setIsMobile] = useState(typeof window !== 'undefined' ? window.innerWidth < 768 : false)
+
+  const getInitialMinimizedValue = () => {
+    if (typeof window === 'undefined') return config.minimized ?? false
+    
+    const isMobileView = window.innerWidth < 768
+    const hasStoredValue = localStorage.getItem('of.navigationSidebar.minimized') !== null
+    
+    if (hasStoredValue) {
+      return config.minimized ?? false
+    } else if (isMobileView) {
+      return true
+    } else {
+      return config.minimized ?? false
+    }
+  }
+
+  const [minimized, setMinimized] = useLocalStorage<boolean>('of.navigationSidebar.minimized', getInitialMinimizedValue())
+  const [showText, setShowText] = useState(!minimized)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   // Detect mobile on mount and window resize
@@ -21,48 +37,53 @@ export function NavigationSidebar({ config }: NavigationSidebarProps) {
     const checkMobile = () => {
       const mobile = window.innerWidth < 768 // md breakpoint
       setIsMobile(mobile)
-      
-      // On mobile, always start minimized unless explicitly set in config
-      if (mobile && config.minimized === undefined) {
-        setMinimized(true)
-        setShowText(false)
-      }
     }
 
     checkMobile()
     window.addEventListener('resize', checkMobile)
     return () => window.removeEventListener('resize', checkMobile)
-  }, [config.minimized])
+  }, [])
 
   // Handle text visibility with delay to prevent flickering
   useEffect(() => {
-    if (minimized && !mobileMenuOpen) {
-      // Hide text immediately when minimizing
-      setShowText(false)
-    } else if (!minimized || mobileMenuOpen) {
-      // Show text after sidebar expansion animation completes
-      const timer = setTimeout(() => {
-        setShowText(true)
-      }, 150) // Half of the 300ms animation duration for smoother transition
-      
-      return () => clearTimeout(timer)
+    if (isMobile) {
+      if (mobileMenuOpen) {
+        const timer = setTimeout(() => {
+          setShowText(true)
+        }, 50)
+        
+        return () => clearTimeout(timer)
+      } else {
+        setShowText(false)
+      }
+    } else {
+      if (minimized && !mobileMenuOpen) {
+        setShowText(false)
+      } else if (!minimized || mobileMenuOpen) {
+        const timer = setTimeout(() => {
+          setShowText(true)
+        }, 150)
+        
+        return () => clearTimeout(timer)
+      }
     }
-  }, [minimized, mobileMenuOpen])
+  }, [minimized, mobileMenuOpen, isMobile])
 
   const handleToggleMinimized = useCallback(() => {
     if (isMobile) {
-      // On mobile, toggle the overlay menu
       setMobileMenuOpen(!mobileMenuOpen)
     } else {
-      // On desktop, toggle minimized state
       const newMinimized = !minimized
       setMinimized(newMinimized)
+      config.onToggleMinimized?.()
     }
-    config.onToggleMinimized?.()
   }, [minimized, mobileMenuOpen, isMobile, config])
 
-  const handleItemClick = useCallback((item: NavigationSidebarItem) => {
-    // Close mobile menu after clicking an item
+  const handleItemClick = useCallback((item: NavigationSidebarItem, event?: React.MouseEvent) => {
+    if (event) {
+      event.stopPropagation()
+    }
+
     if (isMobile && mobileMenuOpen) {
       setMobileMenuOpen(false)
     }
@@ -77,12 +98,12 @@ export function NavigationSidebar({ config }: NavigationSidebarProps) {
   const renderNavigationItem = (item: NavigationSidebarItem, inOverlay = false) => {
     const isActive = item.isActive ?? false
     const isMinimized = isMobile && !inOverlay ? true : minimized
-    const showLabels = inOverlay || showText
+    const showLabels = isMobile ? (inOverlay && showText) : (inOverlay || showText)
     
     return (
       <button
         key={item.id}
-        onClick={() => handleItemClick(item)}
+        onClick={(event) => handleItemClick(item, event)}
         className={cn(
           "w-full flex items-center gap-2 p-4 transition-all duration-200 relative",
           // Default state
@@ -110,18 +131,16 @@ export function NavigationSidebar({ config }: NavigationSidebarProps) {
         {/* Label with smooth opacity transition */}
         <span className={cn(
           "font-['DM_Sans'] font-medium text-[18px] leading-[24px] flex-1 text-left",
-          "transition-all duration-200",
-          showLabels ? "opacity-100 w-auto" : "opacity-0 w-0 overflow-hidden"
+          "transition-all duration-200 truncate"
         )}>
           {item.label}
         </span>
-        
+
         {/* Badge with smooth opacity transition */}
-        {item.badge && (
+        {item.badge && showLabels && (
           <span className={cn(
             "text-sm transition-all duration-200",
-            isActive ? "text-[#ffc008]" : "text-[#888888]",
-            showLabels ? "opacity-100" : "opacity-0 w-0 overflow-hidden"
+            isActive ? "text-[#ffc008]" : "text-[#888888]"
           )}>
             {item.badge}
           </span>
@@ -141,12 +160,11 @@ export function NavigationSidebar({ config }: NavigationSidebarProps) {
         <div className="flex-shrink-0">
           <OpenFrameLogo className="w-6 h-6" upperPathColor='#FAFAFA' lowerPathColor='#FFC008'/>
         </div>
-        <div className={cn(
-          "flex-1 transition-all duration-200",
-          (inOverlay || showText) ? "opacity-100 w-auto" : "opacity-0 w-0 overflow-hidden"
-        )}>
-          <OpenFrameText textColor='#FAFAFA'/>
-        </div>
+        {(inOverlay || showText) && (
+          <div className="flex-1 transition-all duration-200">
+            <OpenFrameText textColor='#FAFAFA'/>
+          </div>
+        )}
         {/* Close button for mobile overlay */}
         {inOverlay && (
           <button
@@ -200,13 +218,11 @@ export function NavigationSidebar({ config }: NavigationSidebarProps) {
             ) : (
               <>
                 <DoubleChevronIcon direction='left' className="w-6 h-6" />
-                <span className={cn(
-                  "font-['DM_Sans'] font-medium text-[18px] leading-[24px]",
-                  "transition-all duration-200",
-                  showText ? "opacity-100" : "opacity-0 w-0 overflow-hidden"
-                )}>
-                  Hide Menu
-                </span>
+                {showText && (
+                  <span className="font-['DM_Sans'] font-medium text-[18px] leading-[24px] transition-all duration-200">
+                    Hide Menu
+                  </span>
+                )}
               </>
             )}
           </button>
@@ -231,6 +247,7 @@ export function NavigationSidebar({ config }: NavigationSidebarProps) {
           isMobile ? "w-14" : (minimized ? "w-14" : "w-56"),
           config.className
         )}
+        style={isMobile ? { width: '3.5rem' } : undefined}
       >
         {sidebarContent(false)}
       </aside>

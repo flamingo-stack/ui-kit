@@ -152,3 +152,7 @@ export { JumpInIcon } from './jump-in-icon';
 
 // Utility exports
 export * from './icon-utils';
+
+export * from './tactical-icon';
+export * from './meshcentral-icon';
+export * from './fleet-icon';

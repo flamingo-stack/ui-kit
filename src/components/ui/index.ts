@@ -41,6 +41,8 @@ export * from './progress'
 export * from './toaster'
 // TODO: Add other UI components as they are moved to ui-kit
 export * from './skeleton'
+// Chat components
+export * from '../chat'
 export * from './tooltip'
 export { FloatingTooltip } from './floating-tooltip'
 export * from './slider'
@@ -66,6 +68,8 @@ export * from './brand-association-card'
 export * from './brand-association-grid'
 export * from './service-card'
 export * from './more-actions-menu'
+export * from './dashboard-info-card'
+export * from './circular-progress'
 
 // Table components
 export {
