@@ -1,7 +1,6 @@
 import * as React from "react"
 import { cn } from "../../utils/cn"
-import { Settings } from "lucide-react"
-import { SquareAvatar } from "../ui/square-avatar"
+import { SquareAvatar as Avatar } from "../ui/square-avatar"
 
 export interface ChatContainerProps extends React.HTMLAttributes<HTMLDivElement> {
   children?: React.ReactNode
@@ -28,7 +27,6 @@ const ChatContainer = React.forwardRef<HTMLDivElement, ChatContainerProps>(
 
 ChatContainer.displayName = "ChatContainer"
 
-// Chat Header with user info and settings
 interface ChatHeaderProps extends React.HTMLAttributes<HTMLDivElement> {
   userName?: string
   userTitle?: string
@@ -51,7 +49,7 @@ const ChatHeader = React.forwardRef<HTMLDivElement, ChatHeaderProps>(
         {...props}
       >
         <div className="flex items-center gap-3">
-          <SquareAvatar
+          <Avatar
             src={userAvatar}
             alt={userName}
             fallback="F"
@@ -64,21 +62,12 @@ const ChatHeader = React.forwardRef<HTMLDivElement, ChatHeaderProps>(
             <span className="text-sm text-white/70">{userTitle}</span>
           </div>
         </div>
-        
-        <button
-          onClick={onSettingsClick}
-          className="flex items-center gap-2 rounded-full bg-[#2B2B2B] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#313131] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F357BB]/60"
-        >
-          <Settings className="h-4 w-4" />
-          <span>Settings</span>
-        </button>
       </div>
     )
   }
 )
 ChatHeader.displayName = "ChatHeader"
 
-// Content area wrapper - scrolling handled by children (ChatMessageList)
 const ChatContent = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
   ({ className, children, ...props }, ref) => {
     return (
@@ -97,7 +86,6 @@ const ChatContent = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDi
 )
 ChatContent.displayName = "ChatContent"
 
-// Footer for input
 const ChatFooter = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
   ({ className, children, ...props }, ref) => {
     return (

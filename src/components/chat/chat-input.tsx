@@ -1,6 +1,7 @@
 import * as React from "react"
 import { cn } from "../../utils/cn"
 import { Send } from "lucide-react"
+import { Textarea } from "../ui/textarea"
 
 export interface ChatInputProps extends Omit<React.TextareaHTMLAttributes<HTMLTextAreaElement>, 'onSubmit'> {
   onSend?: (message: string) => void
@@ -63,7 +64,7 @@ const ChatInput = React.forwardRef<HTMLTextAreaElement, ChatInputProps>(
             "text-left text-ods-text-primary",
           )}
         >
-          <textarea
+          <Textarea
             ref={textareaRef}
             value={value}
             onChange={handleChange}
@@ -72,7 +73,7 @@ const ChatInput = React.forwardRef<HTMLTextAreaElement, ChatInputProps>(
             disabled={sending}
             rows={1}
             className={cn(
-              "flex-1 resize-none bg-transparent px-0",
+              "flex-1 resize-none bg-transparent px-0 border-none focus-visible:ring-0",
               "text-[18px] leading-[20px] font-['DM_Sans'] text-ods-primary placeholder:text-ods-secondary",
               "min-h-[20px] max-h-[160px] focus:outline-none",
               "disabled:opacity-50 disabled:cursor-not-allowed"

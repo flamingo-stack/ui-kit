@@ -12,7 +12,7 @@ const ChatTypingIndicator = React.forwardRef<HTMLDivElement, ChatTypingIndicator
       md: 'h-4 w-0.5',
       lg: 'h-5 w-1'
     }
-    
+
     return (
       <div
         ref={ref}
@@ -31,31 +31,5 @@ const ChatTypingIndicator = React.forwardRef<HTMLDivElement, ChatTypingIndicator
 )
 
 ChatTypingIndicator.displayName = "ChatTypingIndicator"
-
-// Add the animation to the global styles or as a style tag
-const pulseStyles = `
-  @keyframes pulse-cursor {
-    0%, 100% {
-      opacity: 1;
-    }
-    50% {
-      opacity: 0.3;
-    }
-  }
-  .animate-pulse-cursor {
-    animation: pulse-cursor 1.5s ease-in-out infinite;
-  }
-`
-
-// Inject styles if not already present
-if (typeof document !== 'undefined') {
-  const styleId = 'chat-typing-indicator-styles'
-  if (!document.getElementById(styleId)) {
-    const style = document.createElement('style')
-    style.id = styleId
-    style.textContent = pulseStyles
-    document.head.appendChild(style)
-  }
-}
 
 export { ChatTypingIndicator }

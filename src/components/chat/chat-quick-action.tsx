@@ -1,6 +1,9 @@
-import * as React from "react"
-import { cn } from "../../utils/cn"
-import { ChevronRight } from "lucide-react"
+'use client'
+
+import * as React from 'react'
+import { cn } from '../../utils/cn'
+import { ChevronRight } from 'lucide-react'
+import { Button } from '../ui'
 
 export interface ChatQuickActionProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   text: string
