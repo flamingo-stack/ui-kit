@@ -8,6 +8,8 @@ export type ToolType =
 
 export interface LogEntry {
   id: string
+  ingestDay: string
+  eventType: string
   severity: LogSeverity
   title: string
   timestamp: string | Date
