@@ -42,8 +42,9 @@ export function AnnouncementBar() {
   const fetchActiveAnnouncement = async () => {
     try {
       console.log(`📋 [${platform.toUpperCase()}] Fetching active announcement for current app`);
-      
-      const response = await fetch(`/api/announcements/active/${platform}`);
+
+      // Server-side platform injection - no URL parameter needed
+      const response = await fetch(`/api/announcements/active`);
       
       if (response.ok) {
         const data = await response.json();
