@@ -24,6 +24,6 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules", "../node_modules", "../node_modules/.pnpm"]
+  "include": ["src/**/*", "src/**/*.json"],
+  "exclude": ["node_modules", "../**"]
 }
