@@ -1,22 +1,22 @@
-import * as React from "react"
+import { useState, useRef, useImperativeHandle, forwardRef, useCallback, type TextareaHTMLAttributes, type KeyboardEvent, type ChangeEvent } from "react"
 import { cn } from "../../utils/cn"
 import { Send } from "lucide-react"
 import { Textarea } from "../ui/textarea"
 
-export interface ChatInputProps extends Omit<React.TextareaHTMLAttributes<HTMLTextAreaElement>, 'onSubmit'> {
+export interface ChatInputProps extends Omit<TextareaHTMLAttributes<HTMLTextAreaElement>, 'onSubmit'> {
   onSend?: (message: string) => void
   sending?: boolean
   reserveAvatarOffset?: boolean
 }
 
-const ChatInput = React.forwardRef<HTMLTextAreaElement, ChatInputProps>(
+const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
   ({ className, onSend, sending = false, placeholder = "Enter your request here...", reserveAvatarOffset = true, ...props }, ref) => {
-    const [value, setValue] = React.useState('')
-    const textareaRef = React.useRef<HTMLTextAreaElement>(null)
-    
-    React.useImperativeHandle(ref, () => textareaRef.current!)
-    
-    const handleSubmit = React.useCallback(() => {
+    const [value, setValue] = useState('')
+    const textareaRef = useRef<HTMLTextAreaElement>(null)
+
+    useImperativeHandle(ref, () => textareaRef.current!)
+
+    const handleSubmit = useCallback(() => {
       const message = value.trim()
       if (message && !sending && onSend) {
         onSend(message)
@@ -27,15 +27,15 @@ const ChatInput = React.forwardRef<HTMLTextAreaElement, ChatInputProps>(
         }
       }
     }, [value, sending, onSend])
-    
-    const handleKeyDown = React.useCallback((e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+
+    const handleKeyDown = useCallback((e: KeyboardEvent<HTMLTextAreaElement>) => {
       if (e.key === 'Enter' && !e.shiftKey) {
         e.preventDefault()
         handleSubmit()
       }
     }, [handleSubmit])
-    
-    const handleChange = React.useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
+
+    const handleChange = useCallback((e: ChangeEvent<HTMLTextAreaElement>) => {
       setValue(e.target.value)
 
       if (textareaRef.current) {

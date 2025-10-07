@@ -1,4 +1,4 @@
-import * as React from "react"
+import { useRef, useCallback, useLayoutEffect, useEffect, useImperativeHandle, forwardRef, type HTMLAttributes } from "react"
 import { cn } from "../../utils/cn"
 import { ChatMessage } from "./chat-message"
 
@@ -11,28 +11,28 @@ export interface Message {
   avatar?: string | null
 }
 
-export interface ChatMessageListProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface ChatMessageListProps extends HTMLAttributes<HTMLDivElement> {
   messages: Message[]
   isTyping?: boolean
   autoScroll?: boolean
   showAvatars?: boolean
 }
 
-const ChatMessageList = React.forwardRef<HTMLDivElement, ChatMessageListProps>(
+const ChatMessageList = forwardRef<HTMLDivElement, ChatMessageListProps>(
   ({ className, messages, isTyping = false, autoScroll = true, showAvatars = true, ...props }, ref) => {
-    const scrollRef = React.useRef<HTMLDivElement>(null)
-    const isPinnedToBottomRef = React.useRef(true)
+    const scrollRef = useRef<HTMLDivElement>(null)
+    const isPinnedToBottomRef = useRef(true)
 
-    const scrollToBottom = React.useCallback((behavior: ScrollBehavior = 'auto') => {
+    const scrollToBottom = useCallback((behavior: ScrollBehavior = 'auto') => {
       if (!scrollRef.current) return
       scrollRef.current.scrollTo({ top: scrollRef.current.scrollHeight, behavior })
     }, [])
 
-    React.useLayoutEffect(() => {
+    useLayoutEffect(() => {
       scrollToBottom('auto')
     }, [scrollToBottom])
 
-    React.useEffect(() => {
+    useEffect(() => {
       const node = scrollRef.current
       if (!node) return
 
@@ -46,7 +46,7 @@ const ChatMessageList = React.forwardRef<HTMLDivElement, ChatMessageListProps>(
       return () => node.removeEventListener('scroll', handleScroll)
     }, [])
 
-    React.useEffect(() => {
+    useEffect(() => {
       if (!autoScroll) return
 
       const lastMessage = messages[messages.length - 1]
@@ -58,14 +58,14 @@ const ChatMessageList = React.forwardRef<HTMLDivElement, ChatMessageListProps>(
       }
     }, [messages.length, scrollToBottom, autoScroll, messages])
 
-    React.useEffect(() => {
+    useEffect(() => {
       if (!autoScroll) return
       if (!isPinnedToBottomRef.current) return
       if (!isTyping) return
       scrollToBottom('smooth')
     }, [isTyping, scrollToBottom, autoScroll])
 
-    React.useImperativeHandle(ref, () => scrollRef.current!)
+    useImperativeHandle(ref, () => scrollRef.current!)
     
     return (
       <div className="relative flex-1 min-h-0">
