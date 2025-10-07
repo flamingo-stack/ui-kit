@@ -1,3 +1,5 @@
+"use client"
+
 import { useState, useRef, useImperativeHandle, forwardRef, useCallback, type TextareaHTMLAttributes, type KeyboardEvent, type ChangeEvent } from "react"
 import { cn } from "../../utils/cn"
 import { Send } from "lucide-react"

@@ -1,3 +1,5 @@
+"use client"
+
 import { useRef, useCallback, useLayoutEffect, useEffect, useImperativeHandle, forwardRef, type HTMLAttributes } from "react"
 import { cn } from "../../utils/cn"
 import { ChatMessage } from "./chat-message"
