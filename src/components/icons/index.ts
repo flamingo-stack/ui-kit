@@ -27,6 +27,7 @@ export { ShellIcon } from './shell-icon';
 export { MingoIcon } from './mingo-icon';
 export { PoliciesIcon } from './policies-icon';
 export { QueriesIcon } from './queries-icon'
+export { DocumentIcon } from './document-icon';
 
 // UI state icons
 export { CheckCircleIcon } from './check-circle-icon';
@@ -124,6 +125,7 @@ export * from './tool-directory-icons';
 export { DashboardIcon } from './dashboard-icon';
 export { DevicesIcon } from './devices-icon';
 export { LogsIcon } from './logs-icon';
+export { OrganizationsIcon } from './organizations-icon';
 export { SettingsIcon } from './settings-icon';
 export { LogOutIcon } from './log-out-icon';
 
@@ -156,3 +158,5 @@ export * from './icon-utils';
 export * from './tactical-icon';
 export * from './meshcentral-icon';
 export * from './fleet-icon';
+
+export * from './device-type-icons';

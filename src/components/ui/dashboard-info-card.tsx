@@ -11,6 +11,7 @@ interface DashboardInfoCardProps {
   showProgress?: boolean
   progressColor?: string
   className?: string
+  onClick?: () => void
 }
 
 export function DashboardInfoCard({
@@ -19,7 +20,8 @@ export function DashboardInfoCard({
   percentage,
   showProgress = false,
   progressColor,
-  className
+  className,
+  onClick
 }: DashboardInfoCardProps) {
   const formattedValue = typeof value === 'number' 
     ? value.toLocaleString() 
@@ -29,8 +31,10 @@ export function DashboardInfoCard({
     <div 
       className={cn(
         'bg-ods-card border border-ods-border rounded-[6px] p-4 flex gap-3 items-center',
+        onClick && 'cursor-pointer',
         className
       )}
+      onClick={onClick}
     >
       {/* Content section */}
       <div className="flex-1 flex flex-col">
