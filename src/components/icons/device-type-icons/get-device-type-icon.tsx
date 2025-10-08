@@ -23,6 +23,8 @@ export function getDeviceTypeIcon(
         <DesktopIcon
           className={props?.className}
           style={{ color: props?.color }}
+          width={props?.size}
+          height={props?.size}
         />
       )
     case 'laptop':
@@ -30,6 +32,8 @@ export function getDeviceTypeIcon(
         <LaptopIcon
           className={props?.className}
           style={{ color: props?.color }}
+          width={props?.size}
+          height={props?.size}
         />
       )
     case 'mobile':
@@ -39,14 +43,17 @@ export function getDeviceTypeIcon(
         <ServerIcon
           className={props?.className}
           style={{ color: props?.color }}
+          width={props?.size}
+          height={props?.size}
         />
       )
     default:
       return (
         <DevicesIcon
           className={props?.className}
-          size={props?.size}
-          color={props?.color}
+          style={{ color: props?.color }}
+          width={props?.size}
+          height={props?.size}
         />
       )
   }
