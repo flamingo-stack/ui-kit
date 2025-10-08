@@ -36,8 +36,6 @@ export function getDeviceTypeIcon(
           height={props?.size}
         />
       )
-    case 'mobile':
-    case 'tablet':
     case 'server':
       return (
         <ServerIcon
@@ -47,6 +45,8 @@ export function getDeviceTypeIcon(
           height={props?.size}
         />
       )
+    case 'mobile':
+    case 'tablet':
     default:
       return (
         <DevicesIcon
@@ -58,5 +58,3 @@ export function getDeviceTypeIcon(
       )
   }
 }
-
-
