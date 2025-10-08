@@ -27,6 +27,7 @@ export { ShellIcon } from './shell-icon';
 export { MingoIcon } from './mingo-icon';
 export { PoliciesIcon } from './policies-icon';
 export { QueriesIcon } from './queries-icon'
+export { DocumentIcon } from './document-icon';
 
 // UI state icons
 export { CheckCircleIcon } from './check-circle-icon';
