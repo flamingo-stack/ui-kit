@@ -48,22 +48,22 @@ const ChatMessageList = forwardRef<HTMLDivElement, ChatMessageListProps>(
       return () => node.removeEventListener('scroll', handleScroll)
     }, [])
 
-    useEffect(() => {
+    useLayoutEffect(() => {
       if (!autoScroll) return
 
       const lastMessage = messages[messages.length - 1]
-      if (lastMessage) {
-        const shouldForceScroll = lastMessage.role === 'user' || isPinnedToBottomRef.current
-        if (shouldForceScroll) {
-          scrollToBottom('smooth')
-        }
-      }
-    }, [messages.length, scrollToBottom, autoScroll, messages])
+      if (!lastMessage) return
+
+      const shouldForceScroll = lastMessage.role === 'user' || isPinnedToBottomRef.current
+      if (!shouldForceScroll) return
+
+      const behavior: ScrollBehavior = lastMessage.role === 'user' ? 'smooth' : 'auto'
+      scrollToBottom(behavior)
+    }, [autoScroll, scrollToBottom, messages[messages.length - 1]?.id, messages[messages.length - 1]?.content])
 
     useEffect(() => {
       if (!autoScroll) return
       if (!isPinnedToBottomRef.current) return
-      if (!isTyping) return
       scrollToBottom('smooth')
     }, [isTyping, scrollToBottom, autoScroll])
 
