@@ -17,6 +17,7 @@ interface InfoCardData {
     value: number
     warningThreshold?: number
     criticalThreshold?: number
+    inverted?: boolean  // if true, high values are good (green), low values are bad (red)
   }
 }
 
@@ -87,7 +88,12 @@ export function InfoCard({ data, className = '' }: InfoCardProps) {
 
       {/* Progress bar */}
       {data.progress && (
-        <ProgressBar progress={data.progress.value} warningThreshold={data.progress.warningThreshold} criticalThreshold={data.progress.criticalThreshold} />
+        <ProgressBar
+          progress={data.progress.value}
+          warningThreshold={data.progress.warningThreshold}
+          criticalThreshold={data.progress.criticalThreshold}
+          inverted={data.progress.inverted}
+        />
       )}
     </div>
   )
