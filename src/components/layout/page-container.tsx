@@ -40,9 +40,9 @@ interface AdvancedPageContainerProps {
    */
   title?: string
   /**
-   * Subtitle or description
+   * Subtitle or description (supports both string and ReactNode)
    */
-  subtitle?: string
+  subtitle?: string | React.ReactNode
   /**
    * Back button configuration
    */
@@ -220,9 +220,9 @@ function renderAdvancedPageContainer({
             
             {/* Subtitle */}
             {subtitle && (
-              <p className="text-ods-text-secondary font-['DM_Sans'] font-medium text-[16px]">
+              <div className="text-ods-text-secondary font-['DM_Sans'] font-medium text-[16px]">
                 {subtitle}
-              </p>
+              </div>
             )}
           </div>
 
@@ -246,12 +246,12 @@ function renderAdvancedPageContainer({
               </h1>
             )}
             {subtitle && (
-              <p className="text-ods-text-secondary font-['DM_Sans'] font-medium text-[16px]">
+              <div className="text-ods-text-secondary font-['DM_Sans'] font-medium text-[16px]">
                 {subtitle}
-              </p>
+              </div>
             )}
           </div>
-          
+
           {/* Header Actions */}
           {headerActions && (
             <div className="flex gap-3">
@@ -308,13 +308,13 @@ function renderAdvancedPageContainer({
               </h1>
             )}
             {subtitle && (
-              <p className="text-ods-text-secondary font-['DM_Sans'] font-medium text-[16px]">
+              <div className="text-ods-text-secondary font-['DM_Sans'] font-medium text-[16px]">
                 {subtitle}
-              </p>
+              </div>
             )}
           </div>
         )}
-        
+
         {headerActions && (
           <div className="flex gap-3">
             {headerActions}

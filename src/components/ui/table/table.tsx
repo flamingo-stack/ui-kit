@@ -60,10 +60,10 @@ export function Table<T = any>({
 
   const handleSelectRow = (item: T) => {
     if (!onSelectionChange) return
-    
+
     const key = getRowKey(item, -1)
     const isSelected = isRowSelected(item)
-    
+
     if (isSelected) {
       onSelectionChange(selectedRows.filter(row => getRowKey(row, -1) !== key))
     } else {
@@ -73,14 +73,14 @@ export function Table<T = any>({
 
   const handleSelectAll = () => {
     if (!onSelectionChange) return
-    
+
     if (selectedRows.length === data.length) {
       onSelectionChange([])
     } else {
       onSelectionChange([...data])
     }
   }
-  
+
   const allSelected = selectedRows.length > 0 && selectedRows.length === data.length
   const someSelected = selectedRows.length > 0 && selectedRows.length < data.length
 
@@ -111,10 +111,10 @@ export function Table<T = any>({
           </div>
         </div>
       )}
-      
+
       {/* Desktop Header */}
-      <TableHeader 
-        columns={columns} 
+      <TableHeader
+        columns={columns}
         className={headerClassName}
         hasActions={!!renderRowActions || (!!rowActions && rowActions.length > 0)}
         actionsWidth={actionsWidth || actionsMinWidth}
@@ -129,12 +129,12 @@ export function Table<T = any>({
         someSelected={someSelected}
         onSelectAll={handleSelectAll}
       />
-      
+
       {/* Table Body */}
       <div className={cn('flex flex-col gap-1 w-full', className)}>
         {loading ? (
-          <TableCardSkeleton 
-            columns={columns} 
+          <TableCardSkeleton
+            columns={columns}
             rows={6}
             hasActions={!!rowActions && rowActions.length > 0}
           />
@@ -148,8 +148,8 @@ export function Table<T = any>({
               columns={columns}
               rowKey={rowKey}
               rowActions={rowActions}
-            renderRowActions={renderRowActions}
-            actionsWidth={actionsWidth || actionsMinWidth}
+              renderRowActions={renderRowActions}
+              actionsWidth={actionsWidth || actionsMinWidth}
               onClick={onRowClick}
               className={getRowClassName(item, index)}
               index={index}

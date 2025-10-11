@@ -9,6 +9,7 @@ type ProgressBarProps = {
   segmentWidth?: number; // px, default 6
   segmentGap?: number; // px, default 2
   height?: number; // px, default 16
+  inverted?: boolean; // if true, high values are good (green), low values are bad (red)
 };
 
 export const ProgressBar: React.FC<ProgressBarProps> = ({
@@ -18,6 +19,7 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({
   segmentWidth = 6,
   segmentGap = 2,
   height = 16,
+  inverted = false,
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [segmentCount, setSegmentCount] = useState(0);
@@ -38,11 +40,21 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({
     return () => resizeObserver.disconnect();
   }, [segmentWidth, segmentGap]);
 
-  // Pick color based on thresholds
+  // Pick color based on thresholds using ODS design tokens
   const getColor = () => {
-    if (progress >= criticalThreshold) return "#F36666"; // critical red
-    if (progress >= warningThreshold) return "#E1B32F"; // warning yellow
-    return "#5EA62E"; // base green
+    if (inverted) {
+      // Inverted: high values = good (green), low values = bad (red)
+      // For battery health: 100% = green, <30% = red
+      if (progress >= criticalThreshold) return "var(--ods-attention-green-success)"; // high = green
+      if (progress >= warningThreshold) return "var(--color-warning)"; // medium = warning
+      return "var(--ods-attention-red-error)"; // low = red
+    } else {
+      // Normal: high values = bad (red), low values = good (green)
+      // For disk usage: 100% = red, <70% = green
+      if (progress >= criticalThreshold) return "var(--ods-attention-red-error)"; // critical red
+      if (progress >= warningThreshold) return "var(--color-warning)"; // warning yellow
+      return "var(--ods-attention-green-success)"; // base green
+    }
   };
 
   return (
@@ -57,7 +69,7 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({
             backgroundColor:
               i < Math.round((progress / 100) * segmentCount)
                 ? getColor()
-                : "#4B5563", // gray-600
+                : "var(--ods-system-greys-soft-grey-action)", // unfilled segments
           }}
         />
       ))}
