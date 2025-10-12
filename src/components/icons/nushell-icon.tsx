@@ -6,7 +6,7 @@ export interface NushellIconProps {
   color?: string
 }
 
-export const NushellIcon: React.FC<NushellIconProps> = ({ size = 16, className = '', color = 'var(--ods-text-primary)' }) => {
+export const NushellIcon: React.FC<NushellIconProps> = ({ size = 16, className = '', color = 'white' }) => {
   return (
     <svg xmlns="http://www.w3.org/2000/svg"
       width={size}

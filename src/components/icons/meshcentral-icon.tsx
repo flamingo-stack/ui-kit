@@ -9,7 +9,7 @@ interface MeshCentralIconProps {
 export const MeshCentralIcon: React.FC<MeshCentralIconProps> = ({
 	className = '',
 	size = 16,
-	color = 'var(--ods-text-primary)'
+	color = 'white'
 }) => {
 	return (
 		<svg

@@ -8,7 +8,7 @@ export interface FleetIconProps extends React.SVGProps<SVGSVGElement> {
 }
 
 export const FleetIcon = React.forwardRef<SVGSVGElement, FleetIconProps>(
-  ({ size = 16, className, color='var(--ods-text-primary)', ...props }, ref) => {
+  ({ size = 16, className, color='white', ...props }, ref) => {
     return (
       <svg
 

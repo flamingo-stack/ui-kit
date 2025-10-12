@@ -1,4 +1,4 @@
-export const TacticalIcon: React.FC<{ size?: number, className?: string, color?: string }> = ({ size = 16, className, color = 'var(--ods-text-primary)' }) => (
+export const TacticalIcon: React.FC<{ size?: number, className?: string, color?: string }> = ({ size = 16, className, color = 'white' }) => (
   <svg
     version="1.1"
     xmlns="http://www.w3.org/2000/svg"

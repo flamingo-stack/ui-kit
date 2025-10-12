@@ -6,7 +6,7 @@ export interface CmdIconProps {
   color?: string
 }
 
-export const CmdIcon: React.FC<CmdIconProps> = ({ size = 16, className = '', color='var(--ods-text-primary)'}) => {
+export const CmdIcon: React.FC<CmdIconProps> = ({ size = 16, className = '', color='white'}) => {
   return (
     <svg
       width={size}

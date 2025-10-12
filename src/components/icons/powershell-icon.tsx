@@ -6,7 +6,7 @@ export interface PowerShellIconProps {
   color?: string
 }
 
-export const PowerShellIcon: React.FC<PowerShellIconProps> = ({ size = 16, className = '', color = 'var(--ods-text-primary)' }) => {
+export const PowerShellIcon: React.FC<PowerShellIconProps> = ({ size = 16, className = '', color = 'white' }) => {
   return (
 
     <svg xmlns="http://www.w3.org/2000/svg"

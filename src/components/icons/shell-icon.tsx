@@ -1,6 +1,6 @@
 import React from 'react'
 
-export function ShellIcon({ className = "w-5 h-5", size = 22, color = 'var(--ods-text-primary)' }: { className?: string; size?: number; color?: string }) {
+export function ShellIcon({ className = "w-5 h-5", size = 22, color = 'white' }: { className?: string; size?: number; color?: string }) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
