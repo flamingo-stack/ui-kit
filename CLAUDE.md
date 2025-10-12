@@ -1482,6 +1482,74 @@ These loading standards ensure consistent, predictable behavior across all admin
 6. **Loading States**: Skeleton screens with proper query configuration
 7. **Error Handling**: Toast notifications for user feedback
 8. **Z-Index Management**: Follow established hierarchy (tooltips: 2147483647, modals: 1300, header: 50)
+9. **React Hooks Rules**: ALL hooks must be called unconditionally at the top of components
+
+### CRITICAL: React Hooks Rules
+
+**React Hooks MUST be called unconditionally:**
+```typescript
+// ❌ BAD: Hooks called conditionally
+export function MyComponent() {
+  if (someCondition) {
+    return null  // Early return BEFORE hooks
+  }
+
+  const data = useSomeHook()  // ❌ ERROR: Hook called after conditional
+  const router = useRouter()
+  // ...
+}
+
+// ❌ BAD: Hooks in try-catch
+export function MyComponent() {
+  let searchParams
+  try {
+    searchParams = useSearchParams()  // ❌ ERROR: Hook in try-catch
+  } catch {
+    return null
+  }
+  // ...
+}
+
+// ✅ GOOD: All hooks at the top, unconditionally
+export function MyComponent() {
+  // ALL hooks called first, unconditionally
+  const data = useSomeHook()
+  const router = useRouter()
+  const searchParams = useSearchParams()
+
+  // THEN check conditions
+  if (someCondition) {
+    return null  // Early return AFTER all hooks
+  }
+
+  // Use the hook data
+  return <div>{data}</div>
+}
+
+// ✅ GOOD: Conditional logic inside useEffect
+export function MyComponent() {
+  const isEnabled = checkEnabled()
+  const data = useSomeHook()  // Always called
+
+  useEffect(() => {
+    if (!isEnabled) return  // Conditional logic INSIDE hook
+
+    // Do work when enabled
+  }, [isEnabled])
+
+  return null
+}
+```
+
+**Why This Matters:**
+- React relies on hooks being called in the same order every render
+- Conditional hooks cause "Hook called conditionally" linting errors
+- Breaking this rule causes runtime bugs and unpredictable behavior
+
+**Common Fixes:**
+1. Move all hooks to the top of the component
+2. Use conditional logic INSIDE hooks (useEffect, useMemo), not around them
+3. Never wrap hooks in try-catch - handle errors inside the hook instead
 
 ## Recent Updates (2025-08-15)
 
