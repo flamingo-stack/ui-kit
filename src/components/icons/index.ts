@@ -159,4 +159,12 @@ export * from './tactical-icon';
 export * from './meshcentral-icon';
 export * from './fleet-icon';
 
+// Shell type icons
+export { PowerShellIcon } from './powershell-icon';
+export { CmdIcon } from './cmd-icon';
+export { BashIcon } from './bash-icon';
+export { PythonIcon } from './python-icon';
+export { NushellIcon } from './nushell-icon';
+export { DenoIcon } from './deno-icon';
+
 export * from './device-type-icons';

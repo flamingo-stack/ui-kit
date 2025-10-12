@@ -52,6 +52,8 @@ const buttonVariants = cva(
         // Section selector variant - for feature/section selection buttons
         "section": "bg-ods-card border border-ods-border shadow-ods-card !text-left !justify-start transition-all duration-200 hover:bg-ods-card-hover disabled:opacity-50 disabled:cursor-not-allowed",
         "section-active": "bg-ods-card border border-[var(--ods-open-yellow-base)] shadow-ods-card !text-left !justify-start transition-all duration-200 hover:bg-ods-card-hover disabled:opacity-50 disabled:cursor-not-allowed",
+        // Table display variant - for non-interactive display in tables (no hover, no padding)
+        "table-display": "bg-transparent text-ods-text-primary cursor-default pointer-events-none font-normal",
       },
       size: {
         // Small size for secondary actions

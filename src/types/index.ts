@@ -37,3 +37,6 @@ export * from './faq'
 
 // Navigation types
 export * from './navigation'
+
+// Tool types
+export * from './tool.types'

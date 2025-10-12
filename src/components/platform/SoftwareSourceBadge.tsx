@@ -101,9 +101,10 @@ export const SoftwareSourceBadge: React.FC<SoftwareSourceBadgeProps> = ({
 
   return (
     <Button
-      variant="ghost"
+      variant="table-display"
+      size="none"
       leftIcon={config.icon}
-      className={cn('px-0 py-0 hover:none', className)}
+      className={cn(className)}
       alignment='left'
     >
       {config.label}

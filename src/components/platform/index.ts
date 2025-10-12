@@ -13,3 +13,11 @@ export type { SoftwareSourceBadgeProps, SoftwareSource } from './SoftwareSourceB
 
 export { CveLink } from './CveLink'
 export type { CveLinkProps } from './CveLink'
+
+export { ToolBadge } from './ToolBadge'
+export type { ToolBadgeProps } from './ToolBadge'
+export type { ToolType } from '../../types/tool.types'
+
+export { ShellTypeBadge } from './ShellTypeBadge'
+export type { ShellTypeBadgeProps } from './ShellTypeBadge'
+export type { ShellType } from '../../types/shell.types'
