@@ -1,10 +1,6 @@
-export type LogSeverity = 'DEBUG' | 'INFO' | 'WARNING' | 'ERROR' | 'CRITICAL'
+import type { ToolType } from './tool.types'
 
-export type ToolType = 
-  | 'fleet'
-  | 'meshcentral'
-  | 'tactical'
-  | 'unknown'
+export type LogSeverity = 'DEBUG' | 'INFO' | 'WARNING' | 'ERROR' | 'CRITICAL'
 
 export interface LogEntry {
   id: string
