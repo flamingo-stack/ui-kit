@@ -28,10 +28,10 @@ interface InfoCardProps {
 
 export function InfoCard({ data, className = '' }: InfoCardProps) {
   return (
-    <div className={`bg-[#212121] border border-[#3a3a3a] rounded-[6px] p-4 flex flex-col gap-3 ${className}`}>
+    <div className={`bg-[#212121] border border-[#3a3a3a] rounded-[6px] p-4 flex flex-col ${className}`}>
       {/* Title */}
       {data.title && (
-        <div className="flex flex-col justify-center shrink-0">
+        <div className="flex flex-col justify-center shrink-0 mb-3">
           <div className="flex items-center gap-2">
             <span className="font-['DM_Sans'] font-medium text-[18px] leading-[24px] text-ods-text-primary truncate">
               {data.title}
@@ -43,7 +43,7 @@ export function InfoCard({ data, className = '' }: InfoCardProps) {
 
       {/* Subtitle */}
       {data.subtitle && (
-        <div className="font-['DM_Sans'] font-medium text-[18px] text-[#888888] leading-[24px] truncate">
+        <div className="font-['DM_Sans'] font-medium text-[18px] text-[#888888] leading-[24px] truncate mb-3">
           {data.subtitle}
         </div>
       )}

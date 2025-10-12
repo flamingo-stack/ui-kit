@@ -1,16 +1,16 @@
 import React from 'react'
 
-export function ShellIcon({ className = "w-5 h-5", size = 22 }: { className?: string; size?: number }) {
+export function ShellIcon({ className = "w-5 h-5", size = 22, color = 'white' }: { className?: string; size?: number; color?: string }) {
   return (
     <svg
+      xmlns="http://www.w3.org/2000/svg"
       width={size}
       height={size}
-      viewBox="0 0 20 16"
-      fill="currentColor"
-      className={className}
-      xmlns="http://www.w3.org/2000/svg">
-      <path d="M18.0001 12.8749C18.6214 12.8749 19.1251 13.3786 19.1251 13.9999C19.1251 14.6213 18.6214 15.1249 18.0001 15.1249H9.00005C8.37873 15.1249 7.87505 14.6213 7.87505 13.9999C7.87505 13.3786 8.37873 12.8749 9.00005 12.8749H18.0001Z" />
-<path d="M1.20464 1.20452C1.61655 0.792616 2.26863 0.766421 2.7105 1.12688L2.79546 1.20452L8.79546 7.20452C9.00644 7.4155 9.12505 7.70156 9.12505 7.99993C9.12505 8.2983 9.00644 8.58436 8.79546 8.79534L2.79546 14.7953C2.35612 15.2347 1.64398 15.2347 1.20464 14.7953C0.765304 14.356 0.765304 13.6439 1.20464 13.2045L6.40923 7.99993L1.20464 2.79534L1.12701 2.71038C0.766543 2.26851 0.792738 1.61643 1.20464 1.20452Z" />
-</svg>
+      viewBox="0 0 48 48" >
+      <path
+        fill='transparent'
+        stroke={color}
+        d="M6.5 8.4a2 2 0 0 0-2 2v27.2a2 2 0 0 0 2 2h35a2 2 0 0 0 2-2V10.4a2 2 0 0 0-2-2zM9 23.16l7.72 6L9 35.13v-12zm20.46 11.97h-11" />
+    </svg >
   )
 }

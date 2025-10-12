@@ -10,12 +10,19 @@ export const ToolIcon = React.forwardRef<
   ToolIconProps
 >(({ toolType, size = 16, className }, ref) => {
   const renderIcon = () => {
-    switch (toolType) {
-      case 'fleet':
+    const normalizedType = toolType?.toUpperCase()
+
+    switch (normalizedType) {
+      case 'FLEET':
+      case 'FLEET_MDM':
+      case 'FLEET-MDM':
         return <FleetIcon size={size} />
-      case 'meshcentral':
+      case 'MESHCENTRAL':
+      case 'MESH':
         return <MeshCentralIcon size={size} />
-      case 'tactical':
+      case 'TACTICAL':
+      case 'TACTICAL_RMM':
+      case 'TACTICAL-RMM':
         return <TacticalIcon size={size} />
       default:
         return <></>

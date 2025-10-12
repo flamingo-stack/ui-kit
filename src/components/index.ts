@@ -3,6 +3,7 @@ export * from './ui'
 export * from './features'
 export * from './icons'
 export * from './navigation'
+export * from './platform'
 
 // Individual component exports
 export * from './hero-image-uploader'
