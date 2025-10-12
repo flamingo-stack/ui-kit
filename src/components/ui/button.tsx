@@ -93,7 +93,7 @@ export interface ButtonProps
    * Open the link in a new tab when href is provided
    */
   openInNewTab?: boolean
-  leftIcon?: React.ReactNode 
+  leftIcon?: React.ReactNode
   rightIcon?: React.ReactNode
   /**
    * Render an icon perfectly centered inside the button. Useful for icon-only
@@ -107,14 +107,27 @@ export interface ButtonProps
    * Default is true for most buttons, but icon-only and footer-link variants override this
    */
   fullWidthOnMobile?: boolean
+  /**
+   * Alignment of button content
+   * Default is 'center', can be 'left', 'right', or 'center'
+   */
+  alignment?: 'left' | 'center' | 'right'
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, asChild = false, href, openInNewTab = false, leftIcon, rightIcon, centerIcon, loading, children, disabled, onClick, fullWidthOnMobile, ...props }, ref) => {
+  ({ className, variant, size, asChild = false, href, openInNewTab = false, leftIcon, rightIcon, centerIcon, loading, children, disabled, onClick, fullWidthOnMobile, alignment = 'center', ...props }, ref) => {
     const isDisabled = disabled || loading
-    
+
     const isCenterIconOnly = !!centerIcon && !children && !leftIcon && !rightIcon
     const isFooterLink = variant === "footer-link"
+
+    // Map alignment to justify classes
+    const alignmentClasses = {
+      left: 'justify-start',
+      center: 'justify-center',
+      right: 'justify-end'
+    }
+
     const composedClassName = cn(
       buttonVariants({ variant, size, className }),
       // Remove the default gap when we have a single centered icon so the icon
@@ -123,7 +136,9 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       // Also remove gap for footer links
       isFooterLink && "gap-0",
       // Handle explicit fullWidthOnMobile prop override
-      fullWidthOnMobile === false && "!w-auto"
+      fullWidthOnMobile === false && "!w-auto",
+      // Apply alignment
+      alignment && `!${alignmentClasses[alignment]}`
     )
     
     // Content to render inside the button/link

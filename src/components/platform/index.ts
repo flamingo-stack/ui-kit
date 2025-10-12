@@ -10,3 +10,6 @@ export type { SoftwareInfoProps } from './SoftwareInfo'
 
 export { SoftwareSourceBadge } from './SoftwareSourceBadge'
 export type { SoftwareSourceBadgeProps, SoftwareSource } from './SoftwareSourceBadge'
+
+export { CveLink } from './CveLink'
+export type { CveLinkProps } from './CveLink'

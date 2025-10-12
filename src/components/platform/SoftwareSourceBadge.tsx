@@ -33,8 +33,14 @@
  */
 
 import React from 'react'
-import { Badge } from '../ui/badge'
-import { cn } from '../../utils/cn'
+import { Button } from '../ui/button'
+import {
+  PackageIcon,
+  WindowsIcon,
+  MacOSIcon,
+  LinuxIcon
+} from '../icons'
+import { cn } from '../../utils/common'
 
 export type SoftwareSource =
   | 'apps'
@@ -64,70 +70,44 @@ export interface SoftwareSourceBadgeProps {
 }
 
 /**
- * Maps source types to human-readable labels
+ * Maps source types to human-readable labels and icons
  */
-const sourceLabels: Record<SoftwareSource, string> = {
-  apps: 'App',
-  chrome_extensions: 'Chrome',
-  firefox_addons: 'Firefox',
-  safari_extensions: 'Safari',
-  ie_extensions: 'IE',
-  vscode_extensions: 'VS Code',
-  atom_packages: 'Atom',
-  homebrew_packages: 'Homebrew',
-  npm_packages: 'NPM',
-  python_packages: 'Python',
-  apt_sources: 'APT',
-  deb_packages: 'DEB',
-  rpm_packages: 'RPM',
-  yum_sources: 'YUM',
-  portage_packages: 'Portage',
-  chocolatey_packages: 'Chocolatey',
-  programs: 'Windows',
-  pkg_packages: 'PKG'
-}
-
-/**
- * Maps source types to badge variants for visual distinction
- */
-const sourceVariants: Record<SoftwareSource, 'default' | 'secondary' | 'outline'> = {
-  apps: 'default',
-  chrome_extensions: 'secondary',
-  firefox_addons: 'secondary',
-  safari_extensions: 'secondary',
-  ie_extensions: 'secondary',
-  vscode_extensions: 'secondary',
-  atom_packages: 'outline',
-  homebrew_packages: 'default',
-  npm_packages: 'outline',
-  python_packages: 'outline',
-  apt_sources: 'default',
-  deb_packages: 'default',
-  rpm_packages: 'default',
-  yum_sources: 'default',
-  portage_packages: 'default',
-  chocolatey_packages: 'default',
-  programs: 'default',
-  pkg_packages: 'default'
+const sourceConfig: Record<SoftwareSource, { label: string; icon: React.ReactNode }> = {
+  apps: { label: 'App', icon: <MacOSIcon className="w-4 h-4" /> },
+  chrome_extensions: { label: 'Chrome', icon: <PackageIcon className="w-4 h-4" /> },
+  firefox_addons: { label: 'Firefox', icon: <PackageIcon className="w-4 h-4" /> },
+  safari_extensions: { label: 'Safari', icon: <PackageIcon className="w-4 h-4" /> },
+  ie_extensions: { label: 'IE', icon: <PackageIcon className="w-4 h-4" /> },
+  vscode_extensions: { label: 'VS Code', icon: <PackageIcon className="w-4 h-4" /> },
+  atom_packages: { label: 'Atom', icon: <PackageIcon className="w-4 h-4" /> },
+  homebrew_packages: { label: 'Homebrew', icon: <MacOSIcon className="w-4 h-4" /> },
+  npm_packages: { label: 'NPM', icon: <PackageIcon className="w-4 h-4" /> },
+  python_packages: { label: 'Python', icon: <PackageIcon className="w-4 h-4" /> },
+  apt_sources: { label: 'APT', icon: <LinuxIcon className="w-4 h-4" /> },
+  deb_packages: { label: 'DEB', icon: <LinuxIcon className="w-4 h-4" /> },
+  rpm_packages: { label: 'RPM', icon: <LinuxIcon className="w-4 h-4" /> },
+  yum_sources: { label: 'YUM', icon: <LinuxIcon className="w-4 h-4" /> },
+  portage_packages: { label: 'Portage', icon: <LinuxIcon className="w-4 h-4" /> },
+  chocolatey_packages: { label: 'Chocolatey', icon: <WindowsIcon className="w-4 h-4" /> },
+  programs: { label: 'Windows', icon: <WindowsIcon className="w-4 h-4" /> },
+  pkg_packages: { label: 'PKG', icon: <PackageIcon className="w-4 h-4" /> }
 }
 
 export const SoftwareSourceBadge: React.FC<SoftwareSourceBadgeProps> = ({
   source,
   className
 }) => {
-  const label = sourceLabels[source] || source
-  const variant = sourceVariants[source] || 'default'
+  const config = sourceConfig[source] || { label: source, icon: <PackageIcon className="w-4 h-4" /> }
 
   return (
-    <Badge
-      variant={variant}
-      className={cn(
-        'font-[\'DM_Sans\'] font-normal text-[12px] leading-[16px] px-2 py-1',
-        className
-      )}
+    <Button
+      variant="ghost"
+      leftIcon={config.icon}
+      className={cn('px-0 py-0 hover:none', className)}
+      alignment='left'
     >
-      {label}
-    </Badge>
+      {config.label}
+    </Button>
   )
 }
 
