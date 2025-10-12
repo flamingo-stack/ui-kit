@@ -6,7 +6,7 @@ export interface PythonIconProps {
   color?: string
 }
 
-export const PythonIcon: React.FC<PythonIconProps> = ({ size = 16, className = '', color = 'white' }) => {
+export const PythonIcon: React.FC<PythonIconProps> = ({ size = 16, className = '', color = 'var(--ods-text-primary)' }) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
