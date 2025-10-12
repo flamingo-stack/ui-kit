@@ -1,13 +1,15 @@
 import React from 'react'
-import { MoreHorizontal, Monitor } from 'lucide-react'
+import { MoreHorizontal, Monitor, ExternalLink } from 'lucide-react'
 import { cn } from '../../utils/cn'
-import { WindowsIcon, MacOSIcon, LinuxIcon } from '../icons'
+import type { OSPlatformId } from '../../utils/os-platforms'
+import { OSTypeBadge } from '../features/os-type-badge'
 
 export interface Device {
   id?: string
+  machineId?: string
   name: string
   type?: 'desktop' | 'laptop' | 'mobile' | 'tablet' | 'server'
-  operatingSystem?: 'windows' | 'macos' | 'linux' | 'ios' | 'android'
+  operatingSystem?: OSPlatformId | 'macos' | 'ios' | 'android'  // Support both OSPlatformId and legacy values
   organization?: string
   status?: 'active' | 'inactive' | 'offline' | 'warning' | 'error'
   lastSeen?: string | Date
@@ -36,86 +38,24 @@ export interface DeviceCardProps extends React.HTMLAttributes<HTMLDivElement> {
     }
     detailsButton?: {
       visible?: boolean
-      label?: string
-      onClick?: () => void
+      component?: React.ReactNode
     }
     customActions?: ActionButton[]
   }
-}
-
-// Status badge
-const StatusBadge = ({ status }: { status?: string }) => {
-  const statusConfig = {
-    active: {
-      bg: 'bg-[#2e461f]',
-      text: 'text-[#5ea62e]',
-      label: 'ACTIVE'
-    },
-    inactive: {
-      bg: 'bg-[#3a3a3a]',
-      text: 'text-[#888888]',
-      label: 'INACTIVE'
-    },
-    offline: {
-      bg: 'bg-[#461f1f]',
-      text: 'text-[#ea2e2e]',
-      label: 'OFFLINE'
-    },
-    warning: {
-      bg: 'bg-[#7f6004]',
-      text: 'text-[#ffc008]',
-      label: 'WARNING'
-    },
-    error: {
-      bg: 'bg-[#461f1f]',
-      text: 'text-[#ea2e2e]',
-      label: 'ERROR'
-    }
-  }
-
-  const config = statusConfig[status as keyof typeof statusConfig] || statusConfig.active
-
-  return (
-    <div 
-      className={cn(
-        "flex items-center justify-center h-8 px-2 rounded-[6px]",
-        config.bg
-      )}
-    >
-      <span 
-        className={cn(
-          "font-['Azeret_Mono'] font-medium text-[14px] leading-[20px] tracking-[-0.28px] uppercase",
-          config.text
-        )}
-      >
-        {config.label}
-      </span>
-    </div>
-  )
+  statusBadgeComponent?: React.ReactNode
+  onDeviceClick?: (device: Device) => void
 }
 
 export function DeviceCard({
   device,
   actions = {
-    moreButton: { visible: true },
-    detailsButton: { visible: true, label: 'Details' }
+    moreButton: { visible: true }
   },
+  statusBadgeComponent,
+  onDeviceClick,
   className,
   ...props
 }: DeviceCardProps) {
-  // Get OS icon
-  const getOSIcon = () => {
-    switch (device.operatingSystem) {
-      case 'windows':
-        return <WindowsIcon className="w-4 h-4 text-[#888888]" />
-      case 'macos':
-        return <MacOSIcon className="w-4 h-4 text-[#888888]" />
-      case 'linux':
-        return <LinuxIcon className="w-4 h-4 text-[#888888]" />
-      default:
-        return null
-    }
-  }
 
   // Format date for last seen
   const formatLastSeen = (lastSeen?: string | Date) => {
@@ -132,106 +72,112 @@ export function DeviceCard({
   }
 
   return (
-    <div 
+    <div
       className={cn(
-        "bg-[#212121] relative rounded-[6px] size-full border border-[#3a3a3a]",
+        "bg-ods-card relative rounded-[6px] size-full border border-ods-border",
         className
       )}
       {...props}
     >
+      {/* Details button - absolutely positioned, vertically centered */}
+      {actions.detailsButton?.visible !== false && actions.detailsButton?.component && (
+        <div className="absolute right-4 top-1/2 -translate-y-1/2 z-10">
+          {actions.detailsButton.component}
+        </div>
+      )}
+
       <div className="content-stretch flex flex-col items-start justify-start overflow-clip relative size-full">
-        {/* Main row with device info and actions */}
-        <div className="bg-[#212121] box-border content-stretch flex gap-4 h-20 items-center justify-start px-4 py-0 relative shrink-0 w-full">
-          {/* Device type icon section */}
-          <div className="content-stretch flex gap-2 h-20 items-center justify-start overflow-clip relative shrink-0">
-            <div className="content-stretch flex flex-col items-start justify-center relative shrink-0">
-              <div className="content-stretch flex gap-1 items-center justify-start relative shrink-0 w-full">
-                <div className="bg-[#212121] box-border content-stretch flex gap-2 h-8 items-center justify-center p-2 relative rounded-[6px] shrink-0 border border-[#3a3a3a]">
-                  <Monitor className="relative shrink-0 size-4 text-[#888888]" />
-                </div>
-              </div>
+        {/* Row 1: Device icon | Device name (clickable with external link) + More button */}
+        <div className="bg-ods-card box-border content-stretch flex gap-4 items-center justify-start px-4 py-3 relative shrink-0 w-full">
+          {/* Device type icon */}
+          <div className="flex items-center justify-center shrink-0">
+            <div className="bg-ods-card box-border flex items-center justify-center p-2 rounded-[6px] border border-ods-border h-8 w-8">
+              <Monitor className="size-4 text-ods-text-secondary" />
             </div>
           </div>
 
-          {/* Device name and organization section */}
-          <div className="basis-0 content-stretch flex gap-2 grow h-20 items-center justify-start min-h-px min-w-px overflow-clip relative shrink-0">
-            <div className="basis-0 content-stretch flex flex-col grow items-start justify-center min-h-px min-w-px relative shrink-0">
-              <div className="content-stretch flex gap-1 items-center justify-start relative shrink-0 w-full">
-                <div className="font-['DM_Sans'] font-medium leading-[0] overflow-ellipsis overflow-hidden relative shrink-0 text-[18px] text-[#fafafa] text-nowrap">
-                  <p className="leading-[24px] overflow-ellipsis overflow-hidden whitespace-pre">
-                    {device.name}
-                  </p>
-                </div>
-                {getOSIcon()}
-              </div>
-              {device.organization && (
-                <div className="font-['DM_Sans'] font-medium h-5 leading-[0] overflow-ellipsis overflow-hidden relative shrink-0 text-[#888888] text-[14px] text-nowrap w-full">
-                  <p className="leading-[20px] overflow-ellipsis overflow-hidden">
-                    {device.organization}
-                  </p>
-                </div>
-              )}
+          {/* Device name - clickable with external link icon */}
+          <div
+            className={cn(
+              "flex-1 min-w-0 flex items-center gap-2 group",
+              onDeviceClick && "cursor-pointer"
+            )}
+            onClick={() => onDeviceClick?.(device)}
+          >
+            <div className="font-['DM_Sans'] font-medium text-[18px] leading-[24px] text-ods-text-primary truncate group-hover:text-ods-accent transition-colors">
+              {device.name}
             </div>
+            {onDeviceClick && (
+              <ExternalLink className="size-4 text-ods-text-secondary group-hover:text-ods-accent transition-colors shrink-0" />
+            )}
           </div>
 
-          {/* Action buttons section */}
+          {/* More button */}
           {actions.moreButton?.visible !== false && (
-            <div 
-              className="bg-[#212121] box-border content-stretch flex gap-2 items-center justify-center p-3 relative rounded-[6px] shrink-0 border border-[#3a3a3a] cursor-pointer hover:bg-[#2a2a2a] transition-colors"
+            <div
+              className="bg-ods-card box-border flex items-center justify-center p-3 rounded-[6px] shrink-0 border border-ods-border cursor-pointer hover:bg-ods-bg-hover transition-colors"
               onClick={actions.moreButton?.onClick}
             >
-              <MoreHorizontal className="relative shrink-0 size-6 text-[#fafafa]" />
+              <MoreHorizontal className="size-6 text-ods-text-primary" />
             </div>
-          )}
-          
-          {actions.detailsButton?.visible !== false && (
-            <div 
-              className="bg-[#212121] box-border content-stretch flex gap-2 items-center justify-center px-4 py-3 relative rounded-[6px] shrink-0 border border-[#3a3a3a] cursor-pointer hover:bg-[#2a2a2a] transition-colors"
-              onClick={actions.detailsButton?.onClick}
-            >
-              <div className="font-['DM_Sans'] font-bold leading-[0] relative shrink-0 text-[18px] text-[#fafafa] text-nowrap tracking-[-0.36px]">
-                <p className="leading-[24px] whitespace-pre">{actions.detailsButton?.label || 'Details'}</p>
-              </div>
-            </div>
-          )}
-
-          {/* Custom action buttons */}
-          {actions.customActions?.map((action, index) => 
-            action.visible !== false && (
-              <div 
-                key={index}
-                className="bg-[#212121] box-border content-stretch flex gap-2 items-center justify-center px-4 py-3 relative rounded-[6px] shrink-0 border border-[#3a3a3a] cursor-pointer hover:bg-[#2a2a2a] transition-colors"
-                onClick={action.onClick}
-              >
-                <div className="font-['DM_Sans'] font-bold leading-[0] relative shrink-0 text-[18px] text-[#fafafa] text-nowrap tracking-[-0.36px]">
-                  <p className="leading-[24px] whitespace-pre">{action.label}</p>
-                </div>
-              </div>
-            )
           )}
         </div>
 
-        {/* Status and last seen row */}
-        <div className="bg-[#212121] box-border content-stretch flex gap-4 items-center justify-start px-4 py-2 relative shrink-0 w-full">
-          <div className="basis-0 content-stretch flex gap-2 grow items-center justify-start min-h-px min-w-px relative shrink-0">
-            <StatusBadge status={device.status} />
-            {device.lastSeen && (
-              <div className="basis-0 font-['DM_Sans'] font-medium grow leading-[0] min-h-px min-w-px relative shrink-0 text-[#888888] text-[14px]">
-                <p className="leading-[20px]">Last Seen: {formatLastSeen(device.lastSeen)}</p>
-              </div>
+        {/* Row 2: OS type | Organization name */}
+        <div className="bg-ods-card box-border flex gap-4 items-center px-4 py-2 shrink-0 w-full">
+          {/* OS type badge */}
+          {device.operatingSystem && (
+            <OSTypeBadge
+              osType={device.operatingSystem === 'macos' ? 'darwin' : device.operatingSystem}
+            />
+          )}
+
+          {/* Organization name */}
+          {device.organization && (
+            <div className="flex-1 min-w-0 font-['DM_Sans'] font-medium text-[14px] leading-[20px] text-ods-text-secondary truncate">
+              {device.organization}
+            </div>
+          )}
+        </div>
+
+        {/* Row 3: Custom action buttons (if any) */}
+        {actions.customActions && actions.customActions.some(action => action.visible !== false) && (
+          <div className="bg-ods-card box-border content-stretch flex gap-2 items-center justify-start px-4 py-2 relative shrink-0 w-full">
+            {actions.customActions?.map((action, index) =>
+              action.visible !== false && (
+                <div
+                  key={index}
+                  className="bg-ods-card box-border content-stretch flex gap-2 items-center justify-center px-4 py-3 relative rounded-[6px] shrink-0 border border-ods-border cursor-pointer hover:bg-ods-bg-hover transition-colors"
+                  onClick={action.onClick}
+                >
+                  <div className="font-['DM_Sans'] font-bold leading-[0] relative shrink-0 text-[18px] text-ods-text-primary text-nowrap tracking-[-0.36px]">
+                    <p className="leading-[24px] whitespace-pre">{action.label}</p>
+                  </div>
+                </div>
+              )
             )}
           </div>
+        )}
+
+        {/* Row 4: Status badge | Last seen */}
+        <div className="bg-ods-card box-border content-stretch flex gap-4 items-center justify-start px-4 py-2 relative shrink-0 w-full">
+          {statusBadgeComponent}
+          {device.lastSeen && (
+            <div className="flex-1 font-['DM_Sans'] font-medium text-[14px] leading-[20px] text-ods-text-secondary">
+              Last Seen: {formatLastSeen(device.lastSeen)}
+            </div>
+          )}
         </div>
 
         {/* Tags section */}
         {device.tags && device.tags.length > 0 && (
-          <div className="bg-[#212121] box-border content-stretch flex gap-2 items-center justify-start p-4 pt-3 relative shrink-0 w-full">
+          <div className="bg-ods-card box-border content-stretch flex gap-2 items-center justify-start p-4 pt-3 relative shrink-0 w-full">
             {device.tags.map((tag, index) => (
-              <div 
-                key={index} 
-                className="bg-[#212121] box-border content-stretch flex gap-2 h-8 items-center justify-center p-2 relative rounded-[6px] shrink-0 border border-[#3a3a3a]"
+              <div
+                key={index}
+                className="bg-ods-card box-border content-stretch flex gap-2 h-8 items-center justify-center p-2 relative rounded-[6px] shrink-0 border border-ods-border"
               >
-                <div className="font-['Azeret_Mono'] font-medium leading-[0] relative shrink-0 text-[14px] text-[#fafafa] text-nowrap tracking-[-0.28px] uppercase">
+                <div className="font-['Azeret_Mono'] font-medium leading-[0] relative shrink-0 text-[14px] text-ods-text-primary text-nowrap tracking-[-0.28px] uppercase">
                   <p className="leading-[20px] whitespace-pre">{tag}</p>
                 </div>
               </div>

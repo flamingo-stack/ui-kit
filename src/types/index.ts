@@ -40,3 +40,9 @@ export * from './navigation'
 
 // Tool types
 export * from './tool.types'
+
+// Shell types
+export * from './shell.types'
+
+// OS types
+export * from './os.types'

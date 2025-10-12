@@ -81,7 +81,7 @@ export function TableRow<T = any>({
       onClick={handleRowClick}
     >
       {/* Desktop Layout */}
-      <div className="hidden md:flex items-center gap-4 px-4 py-0 h-20">
+      <div className="hidden md:flex items-center gap-4 pl-4 py-0 h-20">
         {/* Selection checkbox */}
         {selectable && (
           <div className="flex items-center justify-center w-10 shrink-0" data-no-row-click>
@@ -107,7 +107,7 @@ export function TableRow<T = any>({
         {/* Row Actions */}
         {(renderRowActions || (rowActions && rowActions.length > 0)) && (
           <div
-            className="flex gap-2 items-center ml-auto shrink-0"
+            className="flex gap-2 items-center justify-end ml-auto shrink-0 pr-4"
             style={{ width: actionsWidth ? `${actionsWidth}px` : undefined, minWidth: actionsWidth ? `${actionsWidth}px` : '3rem' }}
             data-no-row-click
           >
