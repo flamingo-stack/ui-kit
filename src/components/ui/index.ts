@@ -78,6 +78,7 @@ export {
   TableHeader,
   TableRow,
   TableCell,
+  TableDescriptionCell,
   TableCardSkeleton,
   TableEmptyState
 } from './table'
@@ -89,6 +90,7 @@ export type {
   TableHeaderProps,
   TableRowProps,
   TableCellProps,
+  TableDescriptionCellProps,
   TableCardSkeletonProps,
   TableEmptyStateProps
 } from './table'
