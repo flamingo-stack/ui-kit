@@ -4,7 +4,7 @@ export interface DenoIconProps {
   className?: string
   color?: string
 }
-export const DenoIcon: React.FC<DenoIconProps> = ({ size = 16, className = '', color = 'white' }) => {
+export const DenoIcon: React.FC<DenoIconProps> = ({ size = 16, className = '', color = 'var(--ods-text-primary)' }) => {
   return (
     <svg
       version="1.1"
