@@ -1,13 +1,14 @@
 import React from 'react'
 import { MoreHorizontal, Monitor } from 'lucide-react'
 import { cn } from '../../utils/cn'
-import { WindowsIcon, MacOSIcon, LinuxIcon } from '../icons'
+import { getOSIcon as getOSIconFromTypes } from '../../types/os.types'
+import type { OSPlatformId } from '../../utils/os-platforms'
 
 export interface Device {
   id?: string
   name: string
   type?: 'desktop' | 'laptop' | 'mobile' | 'tablet' | 'server'
-  operatingSystem?: 'windows' | 'macos' | 'linux' | 'ios' | 'android'
+  operatingSystem?: OSPlatformId | 'macos' | 'ios' | 'android'  // Support both OSPlatformId and legacy values
   organization?: string
   status?: 'active' | 'inactive' | 'offline' | 'warning' | 'error'
   lastSeen?: string | Date
@@ -103,18 +104,20 @@ export function DeviceCard({
   className,
   ...props
 }: DeviceCardProps) {
-  // Get OS icon
+  // Get OS icon using centralized OS type system
   const getOSIcon = () => {
-    switch (device.operatingSystem) {
-      case 'windows':
-        return <WindowsIcon className="w-4 h-4 text-[#888888]" />
-      case 'macos':
-        return <MacOSIcon className="w-4 h-4 text-[#888888]" />
-      case 'linux':
-        return <LinuxIcon className="w-4 h-4 text-[#888888]" />
-      default:
-        return null
+    if (!device.operatingSystem) return null
+
+    // Support legacy 'macos' value by mapping to 'darwin'
+    const osValue = device.operatingSystem === 'macos' ? 'darwin' : device.operatingSystem
+
+    // Use centralized OS icon system
+    const IconComponent = getOSIconFromTypes(osValue)
+    if (IconComponent) {
+      return <IconComponent className="w-4 h-4 text-[#888888]" />
     }
+
+    return null
   }
 
   // Format date for last seen
