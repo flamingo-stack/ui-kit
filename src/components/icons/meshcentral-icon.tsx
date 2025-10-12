@@ -18,8 +18,7 @@ export const MeshCentralIcon: React.FC<MeshCentralIconProps> = ({
 			width={size}
 			height={size}
 			className={className}
-			viewBox="0 0 512 512"
-			enable-background="new 0 0 512 512" >
+			viewBox="0 0 512 512">
 			<path fill={color}
 				d="
 M307.161530,355.983307 

@@ -3,27 +3,29 @@ import { cn } from '../../utils/cn'
 
 export interface FleetIconProps extends React.SVGProps<SVGSVGElement> {
   size?: number
+  color?: string
+  className?: string
 }
 
 export const FleetIcon = React.forwardRef<SVGSVGElement, FleetIconProps>(
-  ({ size = 16, className, ...props }, ref) => {
+  ({ size = 16, className, color='white', ...props }, ref) => {
     return (
       <svg
+
         ref={ref}
         width={size}
         height={size}
-        viewBox="0 0 16 16"
-        fill="none"
+        viewBox="0 0 14 14"
         xmlns="http://www.w3.org/2000/svg"
         className={cn(className)}
         {...props}
       >
-        <rect x="1.33" y="1.33" width="3.33" height="3.33" fill="currentColor" />
-        <rect x="6.33" y="1.33" width="3.33" height="3.33" fill="currentColor" />
-        <rect x="11.33" y="1.33" width="3.33" height="3.33" fill="currentColor" />
-        <rect x="1.33" y="6.33" width="3.33" height="3.33" fill="currentColor" />
-        <rect x="6.33" y="6.33" width="3.33" height="3.33" fill="currentColor" />
-        <rect x="1.33" y="11.33" width="3.33" height="3.33" fill="currentColor" />
+        <circle cx="2" cy="2" r="2" fill={color} />
+        <circle cx="7" cy="2" r="2" fill={color} />
+        <circle cx="12" cy="2" r="2" fill={color} />
+        <circle cx="2" cy="7" r="2" fill={color} />
+        <circle cx="7" cy="7" r="2" fill={color} />
+        <circle cx="2" cy="12" r="2" fill={color} />
       </svg>
     )
   }
