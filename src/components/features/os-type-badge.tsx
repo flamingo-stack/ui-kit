@@ -19,6 +19,9 @@ export interface OSTypeBadgeProps {
   iconOnly?: boolean
   /** Icon size class (default: w-4 h-4) */
   iconSize?: string
+  variant?: "primary" | "secondary" | "table-display" | "outline" | "ghost" | "link" | "search" | "filter" | "white" | "transparent" | "ghost-nav" | "submit" | "destructive" | "success" | "warning" | "info" | "flamingo-primary" | "flamingo-secondary" | "footer-link" | "filter-active" | "section" | "section-active" | null | undefined
+  alignment?: 'left' | 'center' | 'right'
+  rigntIcon?: React.ReactNode
   /** Show label only (no icon) */
   labelOnly?: boolean
 }
@@ -37,7 +40,10 @@ export function OSTypeBadge({
   osType,
   className = '',
   iconOnly = false,
+  alignment = 'left',
   iconSize = 'w-4 h-4',
+  rigntIcon=undefined,
+  variant = 'table-display',
   labelOnly = false
 }: OSTypeBadgeProps) {
   if (!osType) {
@@ -70,11 +76,12 @@ export function OSTypeBadge({
 
   return (
     <Button
-      variant="table-display"
+      variant={variant}
       size="none"
       leftIcon={IconComponent ? <IconComponent className={iconSize} /> : undefined}
+      rightIcon={rigntIcon}
       className={cn(className)}
-      alignment='left'
+      alignment={alignment}
     >
       {label}
     </Button>
