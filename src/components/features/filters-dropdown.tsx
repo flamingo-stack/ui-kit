@@ -113,6 +113,7 @@ export const FiltersDropdown: React.FC<FiltersDropdownProps> = ({
 }) => {
   const [isOpen, setIsOpen] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
+  const [actualPlacement, setActualPlacement] = useState(placement)
   const dropdownRef = useRef<HTMLDivElement>(null)
   const triggerRef = useRef<HTMLButtonElement | HTMLDivElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
@@ -132,6 +133,41 @@ export const FiltersDropdown: React.FC<FiltersDropdownProps> = ({
     window.addEventListener('resize', checkMobile)
     return () => window.removeEventListener('resize', checkMobile)
   }, [responsive])
+
+  useEffect(() => {
+    if (!isOpen || isMobile || !triggerRef.current) return
+
+    const calculateOptimalPlacement = () => {
+      const trigger = triggerRef.current
+      if (!trigger) return
+
+      const triggerRect = trigger.getBoundingClientRect()
+      const dropdownWidth = 320 // Fixed width from the dropdown
+      const viewportWidth = window.innerWidth
+      const viewportHeight = window.innerHeight
+
+      const spaceRight = viewportWidth - triggerRect.right
+      const spaceLeft = triggerRect.left
+      const spaceBelow = viewportHeight - triggerRect.bottom
+      
+      let optimalPlacement = placement
+
+      if (placement === "bottom-start" && spaceRight < dropdownWidth && spaceLeft >= dropdownWidth) {
+        optimalPlacement = "bottom-end"
+      } else if (placement === "bottom-end" && spaceLeft < dropdownWidth && spaceRight >= dropdownWidth) {
+        optimalPlacement = "bottom-start"
+      } else if (placement === "bottom" && (spaceLeft < dropdownWidth / 2 || spaceRight < dropdownWidth / 2)) {
+        optimalPlacement = spaceLeft > spaceRight ? "bottom-end" : "bottom-start"
+      }
+
+      setActualPlacement(optimalPlacement)
+    }
+
+    calculateOptimalPlacement()
+    window.addEventListener('resize', calculateOptimalPlacement)
+    
+    return () => window.removeEventListener('resize', calculateOptimalPlacement)
+  }, [isOpen, isMobile, placement])
 
   // Initialize state with current filters or defaults
   const [selectedFilters, setSelectedFilters] = useState<Record<string, string[]>>(() => {
@@ -162,6 +198,7 @@ export const FiltersDropdown: React.FC<FiltersDropdownProps> = ({
         !containerRef.current.contains(event.target as Node)
       ) {
         setIsOpen(false)
+        setActualPlacement(placement)
       }
     }
 
@@ -176,18 +213,19 @@ export const FiltersDropdown: React.FC<FiltersDropdownProps> = ({
         document.removeEventListener('mousedown', handleClickOutside)
       }
     }
-  }, [isOpen])
+  }, [isOpen, placement])
 
   // Handle escape key
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === 'Escape' && isOpen) {
         setIsOpen(false)
+        setActualPlacement(placement)
       }
     }
     document.addEventListener('keydown', handleEscape)
     return () => document.removeEventListener('keydown', handleEscape)
-  }, [isOpen])
+  }, [isOpen, placement])
 
   const handleToggleOption = (sectionId: string, optionId: string, sectionType: string) => {
     setSelectedFilters(prev => {
@@ -239,6 +277,7 @@ export const FiltersDropdown: React.FC<FiltersDropdownProps> = ({
   const handleApply = () => {
     onApply(selectedFilters)
     setIsOpen(false)
+    setActualPlacement(placement)
   }
 
   const getActiveFiltersCount = () => {
@@ -260,7 +299,7 @@ export const FiltersDropdown: React.FC<FiltersDropdownProps> = ({
       "bottom": "top-full left-1/2 -translate-x-1/2 mt-2"
     }
     
-    return desktopClasses[placement]
+    return desktopClasses[actualPlacement]
   }
 
   return (
