@@ -18,6 +18,8 @@ export type {
   TableRowProps,
   TableCellProps,
   TableCardSkeletonProps,
-  TableEmptyStateProps
+  TableEmptyStateProps,
+  CursorPagination,
+  PagePagination
 } from './types'
 export type { TableDescriptionCellProps } from './table-description-cell'

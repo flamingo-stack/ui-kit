@@ -6,6 +6,8 @@ import { TableHeader } from './table-header'
 import { TableRow } from './table-row'
 import { TableCardSkeleton } from './table-skeleton'
 import { TableEmptyState } from './table-empty-state'
+import { CursorPagination } from '../cursor-pagination'
+import { Pagination } from '../../pagination'
 import type { TableProps } from './types'
 
 export function Table<T = any>({
@@ -35,7 +37,10 @@ export function Table<T = any>({
   bulkActions,
   showToolbar,
   mobileColumns,
-  renderMobileRow
+  renderMobileRow,
+  cursorPagination,
+  pagePagination,
+  paginationClassName
 }: TableProps<T>) {
   const getRowKey = (item: T, index: number): string => {
     if (typeof rowKey === 'function') {
@@ -162,6 +167,45 @@ export function Table<T = any>({
           ))
         )}
       </div>
+
+      {/* Pagination */}
+      {cursorPagination && (
+        <CursorPagination
+          hasNextPage={cursorPagination.hasNextPage}
+          hasPreviousPage={cursorPagination.hasPreviousPage}
+          isFirstPage={cursorPagination.isFirstPage}
+          startCursor={cursorPagination.startCursor}
+          endCursor={cursorPagination.endCursor}
+          currentCount={cursorPagination.currentCount ?? data.length}
+          totalCount={cursorPagination.totalCount}
+          itemName={cursorPagination.itemName}
+          loading={loading}
+          onNext={cursorPagination.onNext}
+          onPrevious={cursorPagination.onPrevious}
+          onReset={cursorPagination.onReset}
+          showInfo={cursorPagination.showInfo ?? true}
+          compact={cursorPagination.compact}
+          resetButtonLabel={cursorPagination.resetButtonLabel}
+          resetButtonIcon={cursorPagination.resetButtonIcon}
+          className={cn(
+            'border-t border-[#3a3a3a] pt-3 mt-2',
+            paginationClassName
+          )}
+        />
+      )}
+
+      {pagePagination && !cursorPagination && (
+        <div className={cn(
+          'border-t border-[#3a3a3a] pt-3 mt-2',
+          paginationClassName
+        )}>
+          <Pagination
+            currentPage={pagePagination.currentPage}
+            totalPages={pagePagination.totalPages}
+            onPageChange={pagePagination.onPageChange}
+          />
+        </div>
+      )}
     </div>
   )
 }

@@ -93,5 +93,10 @@ export type {
   TableCellProps,
   TableDescriptionCellProps,
   TableCardSkeletonProps,
-  TableEmptyStateProps
+  TableEmptyStateProps,
+  PagePagination
 } from './table'
+
+// Pagination components
+export { CursorPagination, CursorPaginationSimple } from './cursor-pagination'
+export type { CursorPaginationProps } from './cursor-pagination'

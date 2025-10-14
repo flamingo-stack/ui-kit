@@ -38,6 +38,32 @@ export interface TableFilters {
   [columnKey: string]: any[]
 }
 
+export interface CursorPagination {
+  hasNextPage: boolean
+  hasPreviousPage?: boolean
+  isFirstPage?: boolean
+  startCursor?: string | null
+  endCursor?: string | null
+  currentCount?: number
+  totalCount?: number | null
+  onNext?: (cursor: string) => void
+  onPrevious?: (cursor: string) => void
+  onReset?: () => void
+  itemName?: string
+  showInfo?: boolean
+  compact?: boolean
+  resetButtonLabel?: string
+  resetButtonIcon?: 'home' | 'rotate'
+}
+
+export interface PagePagination {
+  currentPage: number
+  totalPages: number
+  pageSize?: number
+  totalItems?: number
+  onPageChange: (page: number) => void
+}
+
 export interface TableProps<T = any> {
   // Data
   data: T[]
@@ -90,6 +116,11 @@ export interface TableProps<T = any> {
   // Mobile
   mobileColumns?: string[]
   renderMobileRow?: (item: T) => ReactNode
+  
+  // Pagination - supports both cursor and page-based
+  cursorPagination?: CursorPagination
+  pagePagination?: PagePagination
+  paginationClassName?: string
 }
 
 export interface BulkAction<T = any> {
