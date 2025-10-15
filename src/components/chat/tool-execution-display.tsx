@@ -40,7 +40,7 @@ const ToolExecutionDisplay = React.forwardRef<HTMLDivElement, ToolExecutionDispl
     const expanded = onToggleExpand ? isExpanded : localExpanded
 
     const formatToolName = (toolType: string) => {
-      return toolType.replace(/_/g, ' ').replace(/MDM/g, 'MDM').replace(/RMM/g, 'RMM')
+      return toolType.replace(/_/g, ' ')
     }
 
     const formatParameters = (params: Record<string, any>) => {
