@@ -74,7 +74,7 @@ const ChatMessage = React.forwardRef<HTMLDivElement, ChatMessageProps>(
           </div>
           
           {/* Message text */}
-          <div className="text-[18px] leading-relaxed text-white/90">
+          <div className="text-[18px] font-normal leading-[24px] text-white/90">
             {isTyping ? (
               <ChatTypingIndicator />
             ) : isError ? (

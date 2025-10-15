@@ -76,7 +76,9 @@ const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
             rows={1}
             className={cn(
               "flex-1 resize-none bg-transparent px-0 border-none focus-visible:ring-0",
-              "text-[18px] leading-[20px] font-['DM_Sans'] text-ods-primary placeholder:text-ods-secondary",
+              "font-dm-sans text-[18px] font-normal leading-[24px]",
+              "placeholder:text-[#888]",
+              "overflow-hidden text-ellipsis",
               "min-h-[20px] max-h-[160px] focus:outline-none",
               "disabled:opacity-50 disabled:cursor-not-allowed"
             )}
