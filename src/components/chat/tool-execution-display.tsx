@@ -1,3 +1,5 @@
+"use client"
+
 import { useState, useEffect, forwardRef, HTMLAttributes } from "react"
 import { cn } from "../../utils/cn"
 import { ToolIcon } from "../tool-icon"
