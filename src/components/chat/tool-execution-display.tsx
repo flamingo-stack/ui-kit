@@ -1,4 +1,4 @@
-import * as React from "react"
+import { useState, useEffect, forwardRef, HTMLAttributes } from "react"
 import { cn } from "../../utils/cn"
 import { ToolIcon } from "../tool-icon"
 import { ChevronDown, ChevronRight, Loader2, CheckCircle2, XCircle, ArrowRightIcon } from "lucide-react"
@@ -13,17 +13,17 @@ export interface ToolExecutionMessage {
   success?: boolean
 }
 
-export interface ToolExecutionDisplayProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface ToolExecutionDisplayProps extends HTMLAttributes<HTMLDivElement> {
   message: ToolExecutionMessage
   isExpanded?: boolean
   onToggleExpand?: () => void
 }
 
-const ToolExecutionDisplay = React.forwardRef<HTMLDivElement, ToolExecutionDisplayProps>(
+const ToolExecutionDisplay = forwardRef<HTMLDivElement, ToolExecutionDisplayProps>(
   ({ className, message, isExpanded = false, onToggleExpand, ...props }, ref) => {
-    const [localExpanded, setLocalExpanded] = React.useState(isExpanded)
-    
-    React.useEffect(() => {
+    const [localExpanded, setLocalExpanded] = useState(isExpanded)
+
+    useEffect(() => {
       setLocalExpanded(isExpanded)
     }, [isExpanded])
 
