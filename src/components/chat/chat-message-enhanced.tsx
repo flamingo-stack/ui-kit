@@ -29,12 +29,12 @@ function normalizeContent(content: MessageContent): MessageSegment[] {
   return content
 }
 
-const ChatMessageEnhanced = React.forwardRef<HTMLDivElement, ChatMessageEnhancedProps>(
+const ChatMessageEnhanced = forwardRef<HTMLDivElement, ChatMessageEnhancedProps>(
   ({ className, role, content, name, avatar, isTyping = false, timestamp, showAvatar = true, ...props }, ref) => {
     const isUser = role === 'user'
     const isError = role === 'error'
-    
-    const [expandedTools, setExpandedTools] = React.useState<Set<string>>(new Set())
+
+    const [expandedTools, setExpandedTools] = useState<Set<string>>(new Set())
     
     const getAvatarProps = () => {
       const displayName = name || (isUser ? "User" : "Fae")
