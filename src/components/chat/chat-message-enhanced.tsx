@@ -1,16 +1,18 @@
-import * as React from "react"
+"use client"
+
+import { useState, forwardRef, HTMLAttributes } from "react"
 import { cn } from "../../utils/cn"
 import { SquareAvatar } from "../ui/square-avatar"
 import { ChatTypingIndicator } from "./chat-typing-indicator"
 import { ToolExecutionDisplay, type ToolExecutionMessage } from "./tool-execution-display"
 
-export type MessageSegment = 
+export type MessageSegment =
   | { type: 'text'; text: string }
   | { type: 'tool_execution'; data: ToolExecutionMessage }
 
 export type MessageContent = string | MessageSegment[]
 
-export interface ChatMessageEnhancedProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'content'> {
+export interface ChatMessageEnhancedProps extends Omit<HTMLAttributes<HTMLDivElement>, 'content'> {
   role: 'user' | 'assistant' | 'error'
   content: MessageContent
   name?: string
