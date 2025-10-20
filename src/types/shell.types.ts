@@ -40,13 +40,13 @@ export interface ShellTypeDefinition {
  * SINGLE SOURCE OF TRUTH - Use this everywhere
  */
 export const SHELL_TYPES: ShellTypeDefinition[] = [
-  { id: 'POWERSHELL', label: 'PowerShell', value: 'POWERSHELL', icon: React.createElement(PowerShellIcon, { size: 16 }) },
-  { id: 'CMD', label: 'Batch', value: 'CMD', icon: React.createElement(CmdIcon, { size: 16 }) },
-  { id: 'BASH', label: 'Bash', value: 'BASH', icon: React.createElement(BashIcon, { size: 16 }) },
-  { id: 'PYTHON', label: 'Python', value: 'PYTHON', icon: React.createElement(PythonIcon, { size: 16 }) },
-  { id: 'NUSHELL', label: 'Nu', value: 'NUSHELL', icon: React.createElement(NushellIcon, { size: 16 }) },
-  { id: 'DENO', label: 'Deno', value: 'DENO', icon: React.createElement(DenoIcon, { size: 16 }) },
-  { id: 'SHELL', label: 'Shell', value: 'SHELL', icon: React.createElement(ShellIcon, { size: 16 }) },
+  { id: 'POWERSHELL', label: 'PowerShell', value: 'powershell', icon: React.createElement(PowerShellIcon, { size: 16 }) },
+  { id: 'CMD', label: 'Batch', value: 'cmd', icon: React.createElement(CmdIcon, { size: 16 }) },
+  { id: 'BASH', label: 'Bash', value: 'bash', icon: React.createElement(BashIcon, { size: 16 }) },
+  { id: 'PYTHON', label: 'Python', value: 'python', icon: React.createElement(PythonIcon, { size: 16 }) },
+  { id: 'NUSHELL', label: 'Nu', value: 'nu', icon: React.createElement(NushellIcon, { size: 16 }) },
+  { id: 'DENO', label: 'Deno', value: 'deno', icon: React.createElement(DenoIcon, { size: 16 }) },
+  { id: 'SHELL', label: 'Shell', value: 'shell', icon: React.createElement(ShellIcon, { size: 16 }) },
 ]
 
 /**
