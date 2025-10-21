@@ -3,6 +3,7 @@
 import React from 'react'
 import { cn } from '../../utils/cn'
 import { Button } from '../ui/button'
+import { StatusBadge } from '../ui/status-badge'
 
 export interface SectionItem {
   id: string
@@ -10,6 +11,11 @@ export interface SectionItem {
   subtitle?: string
   description?: string
   number?: string
+  badge?: {
+    text: string
+    variant?: 'card' | 'button'
+    colorScheme?: 'cyan' | 'pink' | 'yellow' | 'green' | 'purple' | 'default'
+  }
   screenshots?: {
     src: string
     alt: string
@@ -86,9 +92,18 @@ const SectionButton: React.FC<{
             </span>
           )}
           <div className="flex-1 text-left min-w-0">
-            <p className={cn(titleClasses, 'font-medium text-lg leading-[24px] whitespace-normal break-words')}>
-              {section.title}
-            </p>
+            <div className="flex items-center gap-2 flex-wrap">
+              <p className={cn(titleClasses, 'font-medium text-lg leading-[24px] whitespace-normal break-words')}>
+                {section.title}
+              </p>
+              {section.badge && (
+                <StatusBadge
+                  text={section.badge.text}
+                  variant={section.badge.variant || 'button'}
+                  colorScheme={section.badge.colorScheme || 'default'}
+                />
+              )}
+            </div>
             {section.description && showDescription && (
               <p className={cn(subtitleClasses, 'text-sm mt-1 hidden xl:block whitespace-normal break-words')}>
                 {section.description}
@@ -99,8 +114,17 @@ const SectionButton: React.FC<{
       ) : (
         // Wrap layout with title and subtitle
         <div className="flex flex-col items-start justify-start w-full h-full overflow-hidden text-left">
-          <div className={cn(titleClasses, 'font-bold text-[18px] leading-[24px] tracking-[-0.36px] truncate lg:whitespace-nowrap text-left')}>
-            {section.title}
+          <div className="flex items-center gap-2 flex-wrap">
+            <div className={cn(titleClasses, 'font-bold text-[18px] leading-[24px] tracking-[-0.36px] truncate lg:whitespace-nowrap text-left')}>
+              {section.title}
+            </div>
+            {section.badge && (
+              <StatusBadge
+                text={section.badge.text}
+                variant={section.badge.variant || 'button'}
+                colorScheme={section.badge.colorScheme || 'default'}
+              />
+            )}
           </div>
           {section.subtitle && (
             <div className={cn(subtitleClasses, 'font-medium text-[14px] leading-[20px] truncate lg:whitespace-nowrap text-left')}>
