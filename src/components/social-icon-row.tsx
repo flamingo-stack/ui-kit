@@ -1,5 +1,5 @@
 import { Button } from './ui/button';
-import { GitHubIcon, RedditIcon, XLogo, LinkedInIcon, LumaIcon, WhatsAppIcon, GlobeIcon, MessageCircleIcon, TelegramIcon, YouTubeIcon, InstagramIcon, FacebookIcon } from './icons';
+import { GitHubIcon, RedditIcon, XLogo, LinkedInIcon, LumaIcon, WhatsAppIcon, GlobeIcon, MessageCircleIcon, TelegramIcon, YouTubeIcon, InstagramIcon, FacebookIcon, SlackIcon } from './icons';
 
 interface SocialLink {
   platform: string;
@@ -15,8 +15,8 @@ interface SocialIconRowProps {
 
 const defaultLinks: SocialLink[] = [
   { platform: 'github', href: 'https://github.com/flamingo-stack', label: 'GitHub' },
-  { platform: 'twitter', href: 'https://x.com/openmsp', label: 'X / Twitter' },
-  { platform: 'reddit', href: 'https://www.reddit.com/user/rishi_elle/', label: 'Reddit' }
+  { platform: 'linkedin', href: 'https://linkedin.com/company/flamingo.run', label: 'LinkedIn' },
+  { platform: 'facebook', href: 'https://www.facebook.com/flamingoai.msp', label: 'Facebook' }
 ];
 
 function renderSocialIcon(platform: string) {
@@ -40,8 +40,9 @@ function renderSocialIcon(platform: string) {
     case 'web':
     case 'url':
       return <GlobeIcon className="w-5 h-5" />;
-    case 'discord':
     case 'slack':
+      return <SlackIcon className="w-5 h-5" injectedColor="white" />;
+    case 'discord':
       return <MessageCircleIcon className="w-5 h-5" />;
     case 'telegram':
       return <TelegramIcon className="w-5 h-5" />;
