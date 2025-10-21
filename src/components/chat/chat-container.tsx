@@ -1,6 +1,8 @@
 import * as React from "react"
 import { cn } from "../../utils/cn"
 import { SquareAvatar as Avatar } from "../ui/square-avatar"
+import { Button } from "../ui/button"
+import { PlusCircleIcon } from "../plus-circle-icon"
 
 export interface ChatContainerProps extends React.HTMLAttributes<HTMLDivElement> {
   children?: React.ReactNode
@@ -32,10 +34,12 @@ interface ChatHeaderProps extends React.HTMLAttributes<HTMLDivElement> {
   userTitle?: string
   userAvatar?: string
   onSettingsClick?: () => void
+  onNewChat?: () => void
+  showNewChat?: boolean
 }
 
 const ChatHeader = React.forwardRef<HTMLDivElement, ChatHeaderProps>(
-  ({ className, userName = 'Grace "Fae" Meadows', userTitle = "Your Personal Assistant", userAvatar, onSettingsClick, ...props }, ref) => {
+  ({ className, userName = 'Grace "Fae" Meadows', userTitle = "Your Personal Assistant", userAvatar, onSettingsClick, onNewChat, showNewChat = false, ...props }, ref) => {
     return (
       <div
         ref={ref}
@@ -62,6 +66,17 @@ const ChatHeader = React.forwardRef<HTMLDivElement, ChatHeaderProps>(
             <span className="text-sm text-white/70">{userTitle}</span>
           </div>
         </div>
+        {showNewChat && onNewChat && (
+          <Button
+            onClick={onNewChat}
+            variant="ghost"
+            size="sm"
+            leftIcon={<PlusCircleIcon className="w-5 h-5" whiteOverlay/>}
+            className="text-white/90 hover:bg-white/10"
+          >
+            New Chat
+          </Button>
+        )}
       </div>
     )
   }
