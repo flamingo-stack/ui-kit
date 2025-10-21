@@ -75,12 +75,15 @@ const SectionButton: React.FC<{
         widthClasses,
         buttonClassName,
         isActive && activeButtonClassName,
-        layout === 'vertical' ? '!h-auto !py-4 !px-4 !min-h-[80px]' : 'overflow-hidden'
+        layout === 'vertical' ? '!h-auto !py-4 !px-4 !min-h-[80px]' : '!text-left'
       )}
-      style={{ 
+      style={{
         minHeight,
         touchAction: 'manipulation',
-        WebkitTapHighlightColor: 'transparent'
+        WebkitTapHighlightColor: 'transparent',
+        textAlign: 'left',
+        justifyContent: 'flex-start',
+        alignItems: 'flex-start'
       }}
     >
       {layout === 'vertical' ? (
@@ -113,11 +116,11 @@ const SectionButton: React.FC<{
         </div>
       ) : (
         // Wrap layout with title and subtitle
-        <div className="flex flex-col items-start justify-start w-full h-full overflow-hidden text-left">
-          <div className="flex items-center gap-2 flex-wrap">
-            <div className={cn(titleClasses, 'font-bold text-[18px] leading-[24px] tracking-[-0.36px] truncate lg:whitespace-nowrap text-left')}>
+        <div className="flex flex-col items-start justify-start w-full h-full" style={{ textAlign: 'left' }}>
+          <div className="flex items-start gap-2 flex-wrap w-full">
+            <span className={cn(titleClasses, 'font-bold text-[18px] leading-[24px] tracking-[-0.36px]')} style={{ textAlign: 'left' }}>
               {section.title}
-            </div>
+            </span>
             {section.badge && (
               <StatusBadge
                 text={section.badge.text}
@@ -127,9 +130,9 @@ const SectionButton: React.FC<{
             )}
           </div>
           {section.subtitle && (
-            <div className={cn(subtitleClasses, 'font-medium text-[14px] leading-[20px] truncate lg:whitespace-nowrap text-left')}>
+            <span className={cn(subtitleClasses, 'font-medium text-[14px] leading-[20px] block w-full')} style={{ textAlign: 'left' }}>
               {section.subtitle}
-            </div>
+            </span>
           )}
         </div>
       )}
