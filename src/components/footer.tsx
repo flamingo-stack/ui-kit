@@ -26,6 +26,18 @@ interface FooterConfig {
   moveDescriptionToRight?: boolean  // Move description and belowDescriptionContent to right column
   keepBelowDescriptionLeft?: boolean  // Keep belowDescriptionContent on left even when moveDescriptionToRight is true
   backgroundColor?: string  // ODS background color (e.g., 'bg-ods-bg-card', 'bg-ods-system-greys-black')
+  social?: {
+    github?: string
+    twitter?: string
+    linkedin?: string
+    reddit?: string
+    youtube?: string
+    instagram?: string
+    facebook?: string
+    discord?: string
+    telegram?: string
+    whatsapp?: string
+  }
 }
 
 interface FooterProps {
@@ -96,7 +108,14 @@ function UniversalFooter({ config, renderLink }: { config: FooterConfig; renderL
               
               {/* Conditional social row - show by default unless hideSocialRow is true */}
               {!config.hideSocialRow && (
-                <SocialIconRow className="pt-2" />
+                <SocialIconRow
+                  className="pt-2"
+                  links={config.social ? Object.entries(config.social)
+                    .filter(([_, href]) => href)
+                    .map(([platform, href]) => ({ platform, href: href as string }))
+                    : undefined
+                  }
+                />
               )}
             </>
           )}
