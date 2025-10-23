@@ -13,7 +13,7 @@ const statusBadgeVariants = cva(
       colorScheme: {
         cyan: "bg-[var(--ods-flamingo-cyan-base)] text-ods-text-on-accent",
         pink: "bg-[var(--ods-flamingo-pink-base)] text-ods-text-on-accent",
-        yellow: "bg-[var(--ods-flamingo-yellow-base)] text-ods-text-on-accent",
+        yellow: "bg-[var(--ods-flamingo-yellow-base)] text-ods-text-on-accent border border-[var(--ods-system-greys-black)]",
         green: "bg-[var(--ods-flamingo-green-base)] text-ods-text-on-accent",
         purple: "bg-[var(--ods-flamingo-purple-base)] text-ods-text-on-accent",
         default: "bg-ods-bg-secondary text-ods-text-primary",

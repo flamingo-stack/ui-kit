@@ -1,6 +1,7 @@
 
 import * as React from 'react';
 import { Button, type ButtonProps } from "../ui/button";
+import { StatusBadge } from "../ui/status-badge";
 import { OpenFrameLogo } from "../icons";
 import { cn } from "../../utils";
 
@@ -76,9 +77,16 @@ export const StartWithOpenFrameButton = React.forwardRef<
         className
       )}
       style={customStyle}
-      leftIcon={!loading ? <OpenFrameLogo className="w-5 h-5" 
-        lowerPathColor={iconLowerPath} 
+      leftIcon={!loading ? <OpenFrameLogo className="w-5 h-5"
+        lowerPathColor={iconLowerPath}
         upperPathColor={iconUpperPath} /> : undefined}
+      rightIcon={
+        <StatusBadge
+          text="Beta"
+          variant="button"
+          colorScheme="yellow"
+        />
+      }
     >
       {children}
     </Button>
