@@ -4,7 +4,7 @@ interface XLogoProps extends React.SVGProps<SVGSVGElement> {
   className?: string;
 }
 
-export function XLogo({ className = '', ...props }: XLogoProps) {
+export function XLogo({ className = '', color = 'white', ...props }: XLogoProps) {
   return (
     <svg
       width={24}

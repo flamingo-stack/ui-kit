@@ -9,7 +9,7 @@ interface HotelIconProps {
 export function HotelIcon({
   className = '',
   size = 24,
-  color = 'currentColor'
+  color = 'white'
 }: HotelIconProps) {
   return (
     <svg

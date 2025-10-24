@@ -1,12 +1,15 @@
 import React from 'react';
 
 interface XIconProps {
+  color?: string;
   width?: number;
   height?: number;
   className?: string;
 }
 
-export function XIcon({ width = 16, height = 16, className = '' }: XIconProps) {
+export function XIcon({ width = 16, height = 16, className = '' ,
+  color = 'white'
+}:  XIconProps) {
   return (
     <svg 
       width={width} 

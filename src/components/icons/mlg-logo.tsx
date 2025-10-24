@@ -1,13 +1,13 @@
 import React from 'react';
 
 interface MlgLogoProps {
-  size?: number;
   color?: string;
+  size?: number;
 }
 
-export const MlgLogo: React.FC<MlgLogoProps> = ({ 
-  size = 240, 
-  color = 'currentColor' 
+export const MlgLogo: React.FC<MlgLogoProps> = ({
+  size = 240,
+  color = 'white'
 }) => {
   return (
     <svg
@@ -26,11 +26,11 @@ export const MlgLogo: React.FC<MlgLogoProps> = ({
           c50.2-21.5,184.1-23.3,247.4-4.8c38.6-25.5,108.8-61.6,138-52.2V105.8H434.1c-149.9,0-271.3,121.5-271.3,271.3v608.6H535
           C534.9,957.4,534.4,893.1,534.4,893.1z M230.2,583.1c0-63.2,51.2-114.5,114.5-114.5s114.5,51.2,114.5,114.5
           s-51.2,114.5-114.5,114.5S230.2,646.3,230.2,583.1z"
-          fill="currentColor"
+          fill={color}
         />
         <path 
           d="M753,756.1c36.1,22.7,46.4,51.2,46.4,128.3c0,71.3-0.9,85.5-0.8,101.3H920v-282C881.5,733.9,826.5,748.5,753,756.1z"
-          fill="currentColor"
+          fill={color}
         />
       </g>
     </svg>

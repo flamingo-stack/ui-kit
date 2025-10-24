@@ -1,12 +1,12 @@
 import React from 'react'
 
-export function TableViewIcon({ className = "w-5 h-5", size=22 }: { className?: string; size?: number }) {
+export function TableViewIcon({ className = "w-5 h-5", size = 22, color = 'white' }: { className?: string; size?: number; color?: string }) {
   return (
     <svg
       width={size}
       height={size}
       viewBox="0 0 21 22"
-      fill="currentColor"
+      fill={color}
       className={className}
       xmlns="http://www.w3.org/2000/svg">
       <path d="M9.625 20V15.125H1.75C1.12868 15.125 0.625 14.6213 0.625 14C0.625 13.3787 1.12868 12.875 1.75 12.875H9.625V9.125H1.75C1.12868 9.125 0.625 8.62132 0.625 8C0.625 7.37868 1.12868 6.875 1.75 6.875H9.625V2C9.625 1.37868 10.1287 0.875 10.75 0.875C11.3713 0.875 11.875 1.37868 11.875 2V6.875H19.75C20.3713 6.875 20.875 7.37868 20.875 8C20.875 8.62132 20.3713 9.125 19.75 9.125H11.875V12.875H19.75C20.3713 12.875 20.875 13.3787 20.875 14C20.875 14.6213 20.3713 15.125 19.75 15.125H11.875V20C11.875 20.6213 11.3713 21.125 10.75 21.125C10.1287 21.125 9.625 20.6213 9.625 20Z" />
