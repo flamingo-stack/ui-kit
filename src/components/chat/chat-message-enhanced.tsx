@@ -109,7 +109,7 @@ const ChatMessageEnhanced = forwardRef<HTMLDivElement, ChatMessageEnhancedProps>
           </div>
           
           {/* Message segments */}
-          <div className="space-y-2">
+          <div>
             {isTyping && segments.length === 0 ? (
               <ChatTypingIndicator />
             ) : (
@@ -119,10 +119,10 @@ const ChatMessageEnhanced = forwardRef<HTMLDivElement, ChatMessageEnhancedProps>
                     <div key={index} className={cn(
                       "whitespace-pre-wrap",
                       "font-dm-sans text-[18px] font-normal leading-[24px]",
-                      isError 
-                        ? "text-[#F36666]" 
-                        : isUser 
-                          ? "text-white/90" 
+                      isError
+                        ? "text-[#F36666]"
+                        : isUser
+                          ? "text-white/90"
                           : "text-[#FAFAFA]"
                     )}>
                       {segment.text}
@@ -136,7 +136,6 @@ const ChatMessageEnhanced = forwardRef<HTMLDivElement, ChatMessageEnhancedProps>
                       message={segment.data}
                       isExpanded={expandedTools.has(toolKey)}
                       onToggleExpand={() => toggleToolExpanded(toolKey)}
-                      className="my-2"
                     />
                   )
                 }
