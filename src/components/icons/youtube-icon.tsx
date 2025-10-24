@@ -1,10 +1,13 @@
 import React from 'react';
 
 interface YouTubeIconProps {
+  color?: string;
   className?: string;
 }
 
-export function YouTubeIcon({ className }: YouTubeIconProps) {
+export function YouTubeIcon({ className ,
+  color = 'white'
+}:  YouTubeIconProps) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -12,7 +15,7 @@ export function YouTubeIcon({ className }: YouTubeIconProps) {
       height="24"
       viewBox="0 0 24 24"
       fill="none"
-      stroke="currentColor"
+      stroke={color}
       strokeWidth="2"
       strokeLinecap="round"
       strokeLinejoin="round"

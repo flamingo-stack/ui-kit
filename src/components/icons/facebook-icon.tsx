@@ -1,10 +1,13 @@
 import React from 'react';
 
 interface FacebookIconProps {
+  color?: string;
   className?: string;
 }
 
-export function FacebookIcon({ className }: FacebookIconProps) {
+export function FacebookIcon({ className ,
+  color = 'white'
+}:  FacebookIconProps) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -12,7 +15,7 @@ export function FacebookIcon({ className }: FacebookIconProps) {
       height="24"
       viewBox="0 0 24 24"
       fill="none"
-      stroke="currentColor"
+      stroke={color}
       strokeWidth="2"
       strokeLinecap="round"
       strokeLinejoin="round"

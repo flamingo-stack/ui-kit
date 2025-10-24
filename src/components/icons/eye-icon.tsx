@@ -7,7 +7,7 @@ interface EyeIconProps {
   off?: boolean // when true show eye-off
 }
 
-export const EyeIcon: React.FC<EyeIconProps> = ({ className = '', size = 24, color = 'currentColor', off = false }) => {
+export const EyeIcon: React.FC<EyeIconProps> = ({ className = '', size = 24, color = 'white', off = false }) => {
   if (off) {
     // eye-off
     return (

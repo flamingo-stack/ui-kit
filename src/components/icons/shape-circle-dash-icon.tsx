@@ -10,7 +10,7 @@ interface ShapeCircleDashIconProps {
 export function ShapeCircleDashIcon({
   className = '',
   size = 24,
-  color = 'currentColor',
+  color = 'white',
   full = false
 }: ShapeCircleDashIconProps) {
   return (

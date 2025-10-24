@@ -1,10 +1,13 @@
 import React from 'react';
 
 interface TelegramIconProps {
+  color?: string;
   className?: string;
 }
 
-export function TelegramIcon({ className }: TelegramIconProps) {
+export function TelegramIcon({ className ,
+  color = 'white'
+}:  TelegramIconProps) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -12,7 +15,7 @@ export function TelegramIcon({ className }: TelegramIconProps) {
       height="24"
       viewBox="0 0 24 24"
       fill="none"
-      stroke="currentColor"
+      stroke={color}
       strokeWidth="2"
       strokeLinecap="round"
       strokeLinejoin="round"
