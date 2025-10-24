@@ -42,9 +42,8 @@ export interface ShellTypeDefinition {
 export const SHELL_TYPES: ShellTypeDefinition[] = [
   { id: 'POWERSHELL', label: 'PowerShell', value: 'powershell', icon: React.createElement(PowerShellIcon, { size: 16 }) },
   { id: 'CMD', label: 'Batch', value: 'cmd', icon: React.createElement(CmdIcon, { size: 16 }) },
-  { id: 'BASH', label: 'Bash', value: 'bash', icon: React.createElement(BashIcon, { size: 16 }) },
   { id: 'PYTHON', label: 'Python', value: 'python', icon: React.createElement(PythonIcon, { size: 16 }) },
-  { id: 'NUSHELL', label: 'Nu', value: 'nu', icon: React.createElement(NushellIcon, { size: 16 }) },
+  { id: 'NUSHELL', label: 'Nu', value: 'nushell', icon: React.createElement(NushellIcon, { size: 16 }) },
   { id: 'DENO', label: 'Deno', value: 'deno', icon: React.createElement(DenoIcon, { size: 16 }) },
   { id: 'SHELL', label: 'Shell', value: 'shell', icon: React.createElement(ShellIcon, { size: 16 }) },
 ]
