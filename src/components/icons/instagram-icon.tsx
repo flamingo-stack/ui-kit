@@ -1,10 +1,13 @@
 import React from 'react';
 
 interface InstagramIconProps {
+  color?: string;
   className?: string;
 }
 
-export function InstagramIcon({ className }: InstagramIconProps) {
+export function InstagramIcon({ className ,
+  color = 'white'
+}:  InstagramIconProps) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -12,7 +15,7 @@ export function InstagramIcon({ className }: InstagramIconProps) {
       height="24"
       viewBox="0 0 24 24"
       fill="none"
-      stroke="currentColor"
+      stroke={color}
       strokeWidth="2"
       strokeLinecap="round"
       strokeLinejoin="round"
