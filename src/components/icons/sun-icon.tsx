@@ -7,10 +7,11 @@ interface SunIconProps {
   height?: number;
 }
 
-export const SunIcon: React.FC<SunIconProps> = ({ 
-  className = "", 
-  width = 24, 
-  height = 24 
+export const SunIcon: React.FC<SunIconProps> = ({
+  className = "",
+  width = 24,
+  height = 24,
+  color = 'white'
 }) => {
   return (
     <svg 

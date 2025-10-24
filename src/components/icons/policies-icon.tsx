@@ -1,8 +1,10 @@
 import React from "react"
 
-export interface PoliciesIconProps extends React.SVGProps<SVGSVGElement> { }
+export interface PoliciesIconProps extends React.SVGProps<SVGSVGElement> {
+  color?: string;
+}
 
-export function PoliciesIcon({ className, ...props }: PoliciesIconProps) {
+export function PoliciesIcon({ className, color = 'white', ...props }: PoliciesIconProps) {
   return (
     <svg
       width="24"

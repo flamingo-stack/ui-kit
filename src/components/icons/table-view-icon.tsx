@@ -1,6 +1,6 @@
 import React from 'react'
 
-export function TableViewIcon({ className = "w-5 h-5", size=22 }: { className?: string; size?: number }) {
+export function TableViewIcon({ className = "w-5 h-5", size = 22, color = 'white' }: { className?: string; size?: number; color?: string }) {
   return (
     <svg
       width={size}

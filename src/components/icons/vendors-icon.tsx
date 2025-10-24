@@ -7,10 +7,11 @@ interface VendorsIconProps {
   height?: number;
 }
 
-export const VendorsIcon: React.FC<VendorsIconProps> = ({ 
-  className = "", 
-  width = 24, 
-  height = 24 
+export const VendorsIcon: React.FC<VendorsIconProps> = ({
+  className = "",
+  width = 24,
+  height = 24,
+  color = 'white'
 }) => {
   return (
     <svg 

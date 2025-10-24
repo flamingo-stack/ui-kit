@@ -3,12 +3,11 @@ import React from 'react';
 interface MlgLogoProps {
   color?: string;
   size?: number;
-  color?: string;
 }
 
-export const MlgLogo: React.FC<MlgLogoProps> = ({ 
-  size = 240, 
-  color = 'currentColor' 
+export const MlgLogo: React.FC<MlgLogoProps> = ({
+  size = 240,
+  color = 'white'
 }) => {
   return (
     <svg

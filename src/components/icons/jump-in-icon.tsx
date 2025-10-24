@@ -8,7 +8,7 @@ interface JumpInIconProps {
 
 export const JumpInIcon: React.FC<JumpInIconProps> = ({
   size = 48,
-  color = 'currentColor',
+  color = 'white',
   className = ''
 }) => {
   return (

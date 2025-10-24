@@ -7,10 +7,11 @@ interface GitHubIconProps {
   height?: number;
 }
 
-export const GitHubIcon: React.FC<GitHubIconProps> = ({ 
-  className = "", 
-  width = 15, 
-  height = 14 
+export const GitHubIcon: React.FC<GitHubIconProps> = ({
+  className = "",
+  width = 15,
+  height = 14,
+  color = 'white'
 }) => {
   return (
     <svg 

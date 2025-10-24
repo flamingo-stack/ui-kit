@@ -1,8 +1,10 @@
 import React from "react"
 
-export interface OrganizationsIconProps extends React.SVGProps<SVGSVGElement> { }
+export interface OrganizationsIconProps extends React.SVGProps<SVGSVGElement> {
+  color?: string;
+}
 
-export function OrganizationsIcon({ className, ...props }: OrganizationsIconProps) {
+export function OrganizationsIcon({ className, color = 'white', ...props }: OrganizationsIconProps) {
   return (
     <svg
       width="24"

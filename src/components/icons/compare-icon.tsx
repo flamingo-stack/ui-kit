@@ -7,10 +7,11 @@ interface CompareIconProps {
   height?: number;
 }
 
-export const CompareIcon: React.FC<CompareIconProps> = ({ 
-  className = "", 
-  width = 24, 
-  height = 24 
+export const CompareIcon: React.FC<CompareIconProps> = ({
+  className = "",
+  width = 24,
+  height = 24,
+  color = 'white'
 }) => {
   return (
     <svg 

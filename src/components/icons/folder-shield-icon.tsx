@@ -9,7 +9,7 @@ interface FolderShieldIconProps {
 export const FolderShieldIcon: React.FC<FolderShieldIconProps> = ({
   className = '',
   size = 24,
-  color = 'currentColor'
+  color = 'white'
 }) => {
   return (
     <svg

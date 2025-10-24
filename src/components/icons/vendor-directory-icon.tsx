@@ -7,10 +7,11 @@ interface VendorDirectoryIconProps {
   height?: number;
 }
 
-export const VendorDirectoryIcon: React.FC<VendorDirectoryIconProps> = ({ 
-  className = "", 
-  width = 20, 
-  height = 20 
+export const VendorDirectoryIcon: React.FC<VendorDirectoryIconProps> = ({
+  className = "",
+  width = 20,
+  height = 20,
+  color = 'white'
 }) => {
   return (
     <svg 

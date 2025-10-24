@@ -7,10 +7,11 @@ interface OpenSourceIconProps {
   height?: number;
 }
 
-export const OpenSourceIcon: React.FC<OpenSourceIconProps> = ({ 
-  className = "", 
-  width = 19, 
-  height = 18 
+export const OpenSourceIcon: React.FC<OpenSourceIconProps> = ({
+  className = "",
+  width = 19,
+  height = 18,
+  color = 'white'
 }) => {
   return (
     <svg 

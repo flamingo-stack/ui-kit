@@ -7,10 +7,11 @@ interface CommunityHubIconProps {
   height?: number;
 }
 
-export const CommunityHubIcon: React.FC<CommunityHubIconProps> = ({ 
-  className = "", 
-  width = 19, 
-  height = 16 
+export const CommunityHubIcon: React.FC<CommunityHubIconProps> = ({
+  className = "",
+  width = 19,
+  height = 16,
+  color = 'white'
 }) => {
   return (
     <svg 

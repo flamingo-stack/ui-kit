@@ -9,7 +9,7 @@ interface UsersGroupIconProps {
 export const UsersGroupIcon: React.FC<UsersGroupIconProps> = ({
   className = '',
   size = 24,
-  color = 'currentColor'
+  color = 'white'
 }) => {
   return (
     <svg

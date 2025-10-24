@@ -9,7 +9,7 @@ interface BuildingsIconProps {
 export function BuildingsIcon({
   className = '',
   size = 24,
-  color = 'currentColor'
+  color = 'white'
 }: BuildingsIconProps) {
   return (
     <svg

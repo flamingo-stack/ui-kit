@@ -7,10 +7,11 @@ interface MoonIconProps {
   height?: number;
 }
 
-export const MoonIcon: React.FC<MoonIconProps> = ({ 
-  className = "", 
-  width = 23, 
-  height = 24 
+export const MoonIcon: React.FC<MoonIconProps> = ({
+  className = "",
+  width = 23,
+  height = 24,
+  color = 'white'
 }) => {
   return (
     <svg 

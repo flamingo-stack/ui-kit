@@ -9,7 +9,7 @@ interface ShieldLockIconProps {
 export function ShieldLockIcon({
   className = '',
   size = 24,
-  color = 'currentColor'
+  color = 'white'
 }: ShieldLockIconProps) {
   return (
     <svg
