@@ -67,47 +67,49 @@ const ToolExecutionDisplay = forwardRef<HTMLDivElement, ToolExecutionDisplayProp
         {...props}
       >
         {/* Header */}
-        <div 
-          className="flex items-center gap-3 px-4 py-3 cursor-pointer hover:bg-ods-bg-secondary/80 transition-colors"
+        <div
+          className="flex flex-col gap-2 px-4 py-3 cursor-pointer hover:bg-ods-bg-secondary/80 transition-colors"
           onClick={handleToggle}
         >
-          {/* Expand/Collapse Icon */}
-          <button className="p-0 w-5 h-5 flex items-center justify-center text-ods-text-secondary hover:text-ods-text-primary transition-colors">
-            {expanded ? (
-              <ChevronDown className="w-4 h-4" />
-            ) : (
-              <ChevronRight className="w-4 h-4" />
-            )}
-          </button>
+          {/* First Row: Expand Icon + Tool Icon + Tool Name + Status */}
+          <div className="flex items-center gap-3">
+            {/* Expand/Collapse Icon */}
+            <button className="p-0 w-5 h-5 flex items-center justify-center text-ods-text-secondary hover:text-ods-text-primary transition-colors flex-shrink-0">
+              {expanded ? (
+                <ChevronDown className="w-4 h-4" />
+              ) : (
+                <ChevronRight className="w-4 h-4" />
+              )}
+            </button>
 
-          {/* Tool Icon */}
-          <div className="flex-shrink-0">
-            <ToolIcon toolType={message.integratedToolType as ToolType} size={20} />
-          </div>
+            {/* Tool Icon */}
+            <div className="flex-shrink-0">
+              <ToolIcon toolType={message.integratedToolType as ToolType} size={20} />
+            </div>
 
-          {/* Tool Name and Function */}
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2">
-              <span className="text-sm font-medium text-ods-text-primary">
-                {formatToolName(message.integratedToolType)}
-              </span>
-              <span className="inline-flex items-center gap-1 text-sm text-ods-text-secondary whitespace-nowrap">
-                <ArrowRightIcon className="w-4 h-4" /> {message.toolFunction}
-              </span>
+            {/* Tool Name */}
+            <span className="text-sm font-medium text-ods-text-primary flex-1">
+              {formatToolName(message.integratedToolType)}
+            </span>
+
+            {/* Status Indicator */}
+            <div className="flex-shrink-0">
+              {isExecuting && (
+                <Loader2 className="w-4 h-4 text-blue-500 animate-spin" />
+              )}
+              {isExecuted && message.success === true && (
+                <CheckCircle2 className="w-4 h-4 text-green-500" />
+              )}
+              {isExecuted && message.success === false && (
+                <XCircle className="w-4 h-4 text-red-500" />
+              )}
             </div>
           </div>
 
-          {/* Status Indicator */}
-          <div className="flex-shrink-0">
-            {isExecuting && (
-              <Loader2 className="w-4 h-4 text-blue-500 animate-spin" />
-            )}
-            {isExecuted && message.success === true && (
-              <CheckCircle2 className="w-4 h-4 text-green-500" />
-            )}
-            {isExecuted && message.success === false && (
-              <XCircle className="w-4 h-4 text-red-500" />
-            )}
+          {/* Second Row: Tool Function (aligned to start) */}
+          <div className="flex items-center gap-1 text-sm text-ods-text-secondary ml-0">
+            <ArrowRightIcon className="w-4 h-4 flex-shrink-0" />
+            <span className="break-all">{message.toolFunction}</span>
           </div>
         </div>
 

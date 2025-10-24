@@ -19,10 +19,11 @@ export interface ChatMessageListProps extends HTMLAttributes<HTMLDivElement> {
   isTyping?: boolean
   autoScroll?: boolean
   showAvatars?: boolean
+  contentClassName?: string
 }
 
 const ChatMessageList = forwardRef<HTMLDivElement, ChatMessageListProps>(
-  ({ className, messages, isTyping = false, autoScroll = true, showAvatars = true, ...props }, ref) => {
+  ({ className, messages, isTyping = false, autoScroll = true, showAvatars = true, contentClassName, ...props }, ref) => {
     const scrollRef = useRef<HTMLDivElement>(null)
     const isPinnedToBottomRef = useRef(true)
 
@@ -82,7 +83,7 @@ const ChatMessageList = forwardRef<HTMLDivElement, ChatMessageListProps>(
           )}
           {...props}
         >
-          <div className="mx-auto flex w-full max-w-3xl flex-col gap-1 px-12 pt-8" style={{ minHeight: '100%' }}>
+          <div className={cn("mx-auto flex w-full max-w-3xl flex-col gap-1 pt-8", contentClassName || "px-12")} style={{ minHeight: '100%' }}>
             <div className="flex-1" />
             {messages.map((message, index) => {
               const useEnhanced = Array.isArray(message.content) || message.role === 'assistant'
