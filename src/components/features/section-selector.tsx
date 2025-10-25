@@ -11,6 +11,7 @@ export interface SectionItem {
   subtitle?: string
   description?: string
   number?: string
+  disabled?: boolean
   badge?: {
     text: string
     variant?: 'card' | 'button'
@@ -65,10 +66,12 @@ const SectionButton: React.FC<{
   const subtitleClasses = "font-['DM_Sans'] text-ods-text-secondary"
   const numberClasses = "font-['DM_Sans'] font-bold text-[var(--ods-open-yellow-base)]"
 
+  const isDisabled = section.disabled || disabled;
+
   return (
     <Button
       onClick={onClick}
-      disabled={disabled}
+      disabled={isDisabled}
       variant={isActive ? "section-active" : "section"}
       size={layout === 'vertical' ? "touch" : "sectionWrap"}
       className={cn(
