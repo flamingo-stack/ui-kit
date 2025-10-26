@@ -133,7 +133,7 @@ const SectionButton: React.FC<{
             )}
           </div>
           {section.subtitle && (
-            <div className={cn(subtitleClasses, 'font-medium text-[14px] leading-[20px] w-full line-clamp-2 min-h-[40px]')} style={{ textAlign: 'left' }}>
+            <div className={cn(subtitleClasses, 'font-medium text-[14px] leading-[20px] w-full')} style={{ textAlign: 'left' }}>
               {section.subtitle}
             </div>
           )}
