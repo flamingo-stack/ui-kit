@@ -29,12 +29,12 @@ const ChatQuickAction = React.forwardRef<HTMLButtonElement, ChatQuickActionProps
         className={cn(
           "flex items-center justify-between gap-3 w-full",
           "px-4 py-3 rounded-lg",
-          "bg-transparent border border-white/20",
-          "text-left text-white",
-          "hover:bg-white/5 hover:border-white/30",
-          "active:bg-white/10 active:scale-[0.98]",
+          "bg-transparent border border-ods-border",
+          "text-left text-ods-text-primary",
+          "hover:bg-ods-bg-hover hover:border-ods-border",
+          "active:bg-ods-bg-active active:scale-[0.98]",
           "transition-all duration-150",
-          "focus:outline-none focus:ring-2 focus:ring-white/50 focus:ring-offset-2 focus:ring-offset-[#161616]",
+          "focus:outline-none focus:ring-2 focus:ring-ods-focus focus:ring-offset-2 focus:ring-offset-ods-bg",
           className
         )}
         {...props}

@@ -78,7 +78,7 @@ const ChatMessageList = forwardRef<HTMLDivElement, ChatMessageListProps>(
           className={cn(
             "flex h-full w-full flex-col overflow-y-auto overflow-x-hidden",
             "[scroll-behavior:smooth]",
-            "scrollbar-thin scrollbar-track-transparent scrollbar-thumb-white/10 hover:scrollbar-thumb-white/20",
+            "scrollbar-thin scrollbar-track-transparent scrollbar-thumb-ods-border/30 hover:scrollbar-thumb-ods-text-secondary/30",
             className
           )}
           {...props}

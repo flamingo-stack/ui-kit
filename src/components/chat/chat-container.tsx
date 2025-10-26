@@ -15,7 +15,7 @@ const ChatContainer = React.forwardRef<HTMLDivElement, ChatContainerProps>(
         ref={ref}
         className={cn(
           "flex h-screen w-full flex-col",
-          "bg-[#161616] text-white",
+          "bg-ods-bg text-ods-text-primary",
           "px-4 sm:px-6 lg:px-8 pt-10 pb-8",
           className
         )}
@@ -46,8 +46,8 @@ const ChatHeader = React.forwardRef<HTMLDivElement, ChatHeaderProps>(
         className={cn(
           "relative mx-auto w-full max-w-3xl",
           "flex items-center justify-between gap-4 px-6 py-5",
-          "rounded-2xl bg-[#212121] shadow-[0_18px_48px_rgba(0,0,0,0.45)]",
-          "ring-1 ring-black/30",
+          "rounded-2xl bg-ods-card shadow-[0_18px_48px_rgba(0,0,0,0.45)]",
+          "ring-1 ring-black/20",
           className
         )}
         {...props}
@@ -62,8 +62,8 @@ const ChatHeader = React.forwardRef<HTMLDivElement, ChatHeaderProps>(
             className="bg-gradient-to-br from-pink-400 to-pink-600"
           />
           <div className="flex flex-col">
-            <span className="text-base font-semibold text-white">{userName}</span>
-            <span className="text-sm text-white/70">{userTitle}</span>
+            <span className="text-base font-semibold text-ods-text-primary">{userName}</span>
+            <span className="text-sm text-ods-text-secondary">{userTitle}</span>
           </div>
         </div>
         {showNewChat && onNewChat && (
@@ -72,7 +72,7 @@ const ChatHeader = React.forwardRef<HTMLDivElement, ChatHeaderProps>(
             variant="ghost"
             size="sm"
             leftIcon={<PlusCircleIcon className="w-5 h-5" whiteOverlay/>}
-            className="text-white/90 hover:bg-white/10"
+            className="text-ods-text-primary hover:bg-ods-bg-hover"
           >
             New Chat
           </Button>

@@ -95,13 +95,13 @@ const ToolExecutionDisplay = forwardRef<HTMLDivElement, ToolExecutionDisplayProp
             {/* Status Indicator */}
             <div className="flex-shrink-0">
               {isExecuting && (
-                <Loader2 className="w-4 h-4 text-blue-500 animate-spin" />
+                <Loader2 className="w-4 h-4 text-ods-info animate-spin" />
               )}
               {isExecuted && message.success === true && (
-                <CheckCircle2 className="w-4 h-4 text-green-500" />
+                <CheckCircle2 className="w-4 h-4 text-ods-success" />
               )}
               {isExecuted && message.success === false && (
-                <XCircle className="w-4 h-4 text-red-500" />
+                <XCircle className="w-4 h-4 text-ods-error" />
               )}
             </div>
           </div>
@@ -162,8 +162,8 @@ const ToolExecutionDisplay = forwardRef<HTMLDivElement, ToolExecutionDisplayProp
                 </h4>
                 <div className={cn(
                   "rounded-md p-3",
-                  message.success 
-                    ? "bg-green-500/10 border border-green-500/20" 
+                  message.success
+                    ? "bg-green-500/10 border border-green-500/20"
                     : "bg-red-500/10 border border-red-500/20"
                 )}>
                   <pre className="text-xs text-ods-text-primary font-mono whitespace-pre-wrap break-all">

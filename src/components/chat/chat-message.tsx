@@ -44,6 +44,7 @@ const ChatMessage = React.forwardRef<HTMLDivElement, ChatMessageProps>(
         ref={ref}
         className={cn(
           "flex flex-row items-start gap-4 py-3",
+          !isUser && "bg-ods-card/50 rounded-lg px-4 -mx-4",
           className
         )}
         {...props}
@@ -62,23 +63,23 @@ const ChatMessage = React.forwardRef<HTMLDivElement, ChatMessageProps>(
           <div className="flex items-center justify-between pr-2">
             <span className={cn(
               "text-sm font-semibold text-[18px]",
-              isUser ? "text-ods-text-secondary" : "text-[#F357BB]"
+              isUser ? "text-ods-text-secondary" : "text-[var(--ods-flamingo-pink-base)]"
             )}>
               {name || (isUser ? "User" : "Fae")}:
             </span>
             {timestamp && (
-              <span className="text-xs text-white/40 text-[18px]">
+              <span className="text-xs text-ods-text-muted text-[18px]">
                 {timestamp.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}
               </span>
             )}
           </div>
           
           {/* Message text */}
-          <div className="text-[18px] font-normal leading-[24px] text-white/90">
+          <div className="text-[18px] font-normal leading-[24px] text-ods-text-primary">
             {isTyping ? (
               <ChatTypingIndicator />
             ) : isError ? (
-              <span className="text-[#F36666]">{content}</span>
+              <span className="text-ods-error">{content}</span>
             ) : (
               <span className="whitespace-pre-wrap">{content}</span>
             )}

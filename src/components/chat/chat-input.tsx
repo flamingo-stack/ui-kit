@@ -62,7 +62,6 @@ const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
             "rounded-lg bg-ods-bg-card border border-ods-border",
             "px-3 py-1.5",
             "transition-colors",
-            "bg-ods-bg-card border border-[#3a3a3a]",
             "text-left text-ods-text-primary",
           )}
         >
@@ -77,7 +76,7 @@ const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
             className={cn(
               "flex-1 resize-none bg-transparent px-0 border-none focus-visible:ring-0",
               "font-dm-sans text-[18px] font-normal leading-[24px]",
-              "placeholder:text-[#888]",
+              "placeholder:text-ods-text-secondary",
               "overflow-hidden text-ellipsis",
               "min-h-[20px] max-h-[160px] focus:outline-none",
               "disabled:opacity-50 disabled:cursor-not-allowed"

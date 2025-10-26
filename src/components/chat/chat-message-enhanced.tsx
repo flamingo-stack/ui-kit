@@ -79,6 +79,7 @@ const ChatMessageEnhanced = forwardRef<HTMLDivElement, ChatMessageEnhancedProps>
         ref={ref}
         className={cn(
           "flex flex-row items-start gap-4 py-3",
+          !isUser && "bg-ods-card/50 rounded-lg px-4 -mx-4",
           className
         )}
         {...props}
@@ -97,12 +98,12 @@ const ChatMessageEnhanced = forwardRef<HTMLDivElement, ChatMessageEnhancedProps>
           <div className="flex items-center justify-between pr-2">
             <span className={cn(
               "text-sm font-semibold text-[18px]",
-              isUser ? "text-ods-text-secondary" : "text-[#F357BB]"
+              isUser ? "text-ods-text-secondary" : "text-[var(--ods-flamingo-pink-base)]"
             )}>
               {name || (isUser ? "User" : "Fae")}:
             </span>
             {timestamp && (
-              <span className="text-xs text-white/40 text-[18px]">
+              <span className="text-xs text-ods-text-muted text-[18px]">
                 {timestamp.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}
               </span>
             )}
@@ -120,10 +121,10 @@ const ChatMessageEnhanced = forwardRef<HTMLDivElement, ChatMessageEnhancedProps>
                       "whitespace-pre-wrap",
                       "font-dm-sans text-[18px] font-normal leading-[24px]",
                       isError
-                        ? "text-[#F36666]"
+                        ? "text-ods-error"
                         : isUser
-                          ? "text-white/90"
-                          : "text-[#FAFAFA]"
+                          ? "text-ods-text-primary"
+                          : "text-ods-text-primary"
                     )}>
                       {segment.text}
                     </div>
