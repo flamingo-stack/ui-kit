@@ -7,8 +7,8 @@ import { cn } from "../../utils/cn"
 
 const buttonVariants = cva(
   // Base styles following ButtonFull specifications with Figma-accurate typography
-  // Default width behavior - constrained to content width with max-w-full for mobile
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-[6px] font-['DM_Sans'] font-bold text-lg leading-tight transition-colors duration-200 focus-visible:outline-none disabled:pointer-events-none [&_svg]:pointer-events-none [&_svg]:shrink-0 w-auto max-w-full",
+  // Text wrapping enabled - full width on mobile, auto width on desktop
+  "inline-flex items-center justify-center gap-2 rounded-[6px] font-['DM_Sans'] font-bold text-lg leading-tight transition-colors duration-200 focus-visible:outline-none disabled:pointer-events-none [&_svg]:pointer-events-none [&_svg]:shrink-0 w-full sm:w-auto text-center",
   {
     variants: {
       variant: { 
@@ -57,7 +57,7 @@ const buttonVariants = cva(
       },
       size: {
         // Small size for secondary actions
-        sm: "h-10 px-6 py-2 text-sm", 
+        sm: "h-10 px-6 py-2 text-sm",
         // Default size for most buttons (ButtonFull default)
         default: "h-12 px-8 py-3 text-base",
         // Large size for prominent CTAs (ButtonFull lg) - adjusted for better text/icon fit
