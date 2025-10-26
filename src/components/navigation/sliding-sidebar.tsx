@@ -137,7 +137,7 @@ export function SlidingSidebar({ config }: SlidingSidebarProps) {
             leftIcon={item.icon}
             rightIcon={chevronIcon}
             className={cn(
-              "w-full rounded-lg transition-colors",
+              "!w-full rounded-lg transition-colors",
               level === 0 ? "pl-3" : "pl-6",
               item.isActive ? "bg-ods-accent text-ods-text-on-accent hover:bg-ods-accent/90" : "text-ods-text-primary hover:bg-ods-border"
             )}
@@ -187,10 +187,10 @@ export function SlidingSidebar({ config }: SlidingSidebarProps) {
           }}
           leftIcon={item.icon}
           className={cn(
-            "w-full rounded-lg transition-colors",
+            "!w-full rounded-lg transition-colors",
             level === 0 ? "pl-3" : "pl-6",
-            item.isActive 
-              ? "bg-ods-accent text-ods-text-on-accent hover:bg-ods-accent/90" 
+            item.isActive
+              ? "bg-ods-accent text-ods-text-on-accent hover:bg-ods-accent/90"
               : "text-ods-text-primary hover:bg-ods-border"
           )}
         >
@@ -213,10 +213,10 @@ export function SlidingSidebar({ config }: SlidingSidebarProps) {
         }}
         leftIcon={item.icon}
         className={cn(
-          "w-full rounded-lg transition-colors",
+          "!w-full rounded-lg transition-colors",
           level === 0 ? "pl-3" : "pl-6",
-          item.isActive 
-            ? "bg-ods-accent text-ods-text-on-accent hover:bg-ods-accent/90" 
+          item.isActive
+            ? "bg-ods-accent text-ods-text-on-accent hover:bg-ods-accent/90"
             : "text-ods-text-primary hover:bg-ods-border"
         )}
       >
