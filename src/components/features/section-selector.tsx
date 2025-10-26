@@ -78,7 +78,7 @@ const SectionButton: React.FC<{
         widthClasses,
         buttonClassName,
         isActive && activeButtonClassName,
-        layout === 'vertical' ? '!h-auto !py-4 !px-4 !min-h-[80px]' : '!text-left'
+        layout === 'vertical' ? '!h-auto !py-4 !px-4 !min-h-[80px]' : '!text-left !whitespace-normal'
       )}
       style={{
         minHeight,
@@ -119,7 +119,7 @@ const SectionButton: React.FC<{
         </div>
       ) : (
         // Wrap layout with title and subtitle
-        <div className="flex flex-col items-start justify-start w-full h-full" style={{ textAlign: 'left' }}>
+        <div className="flex flex-col items-start justify-start w-full h-full gap-1" style={{ textAlign: 'left' }}>
           <div className="flex items-start gap-2 flex-wrap w-full">
             <span className={cn(titleClasses, 'font-bold text-[18px] leading-[24px] tracking-[-0.36px]')} style={{ textAlign: 'left' }}>
               {section.title}
@@ -133,9 +133,9 @@ const SectionButton: React.FC<{
             )}
           </div>
           {section.subtitle && (
-            <span className={cn(subtitleClasses, 'font-medium text-[14px] leading-[20px] block w-full')} style={{ textAlign: 'left' }}>
+            <div className={cn(subtitleClasses, 'font-medium text-[14px] leading-[20px] w-full line-clamp-2 min-h-[40px]')} style={{ textAlign: 'left' }}>
               {section.subtitle}
-            </span>
+            </div>
           )}
         </div>
       )}
