@@ -7,8 +7,8 @@ import { cn } from "../../utils/cn"
 
 const buttonVariants = cva(
   // Base styles following ButtonFull specifications with Figma-accurate typography
-  // Default width behavior - let parent container control width
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-[6px] font-['DM_Sans'] font-bold text-lg leading-tight transition-colors duration-200 focus-visible:outline-none disabled:pointer-events-none [&_svg]:pointer-events-none [&_svg]:shrink-0",
+  // Default width behavior - constrained to content width with max-w-full for mobile
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-[6px] font-['DM_Sans'] font-bold text-lg leading-tight transition-colors duration-200 focus-visible:outline-none disabled:pointer-events-none [&_svg]:pointer-events-none [&_svg]:shrink-0 w-auto max-w-full",
   {
     variants: {
       variant: { 
