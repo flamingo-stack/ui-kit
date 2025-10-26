@@ -7,8 +7,8 @@ import { cn } from "../../utils/cn"
 
 const buttonVariants = cva(
   // Base styles following ButtonFull specifications with Figma-accurate typography
-  // Text wrapping enabled - full width on mobile, auto width on desktop
-  "inline-flex items-center justify-center gap-2 rounded-[6px] font-['DM_Sans'] font-bold text-lg leading-tight transition-colors duration-200 focus-visible:outline-none disabled:pointer-events-none [&_svg]:pointer-events-none [&_svg]:shrink-0 w-full sm:w-auto text-center",
+  // Text wrapping enabled - full width on mobile, extra small text and minimal gap for better wrapping
+  "inline-flex items-center justify-center gap-1 sm:gap-2 rounded-[6px] font-['DM_Sans'] font-bold text-xs sm:text-lg leading-tight transition-colors duration-200 focus-visible:outline-none disabled:pointer-events-none [&_svg]:pointer-events-none [&_svg]:shrink-0 w-full sm:w-auto text-center",
   {
     variants: {
       variant: { 
@@ -21,11 +21,11 @@ const buttonVariants = cva(
         // Outline variant for Submit Product buttons and secondary actions
         outline: "border border-ods-border bg-transparent text-ods-text-primary hover:bg-ods-bg-hover active:bg-ods-bg-active focus-visible:ring-2 focus-visible:ring-ods-focus disabled:border-ods-disabled disabled:text-ods-text-secondary disabled:bg-ods-disabled disabled:cursor-not-allowed disabled:shadow-none",
         // Transparent variant for ghost-like actions (ButtonFull transparent)
-        transparent: "bg-transparent text-ods-text-primary hover:bg-ods-bg-hover active:bg-ods-bg-active focus-visible:ring-2 focus-visible:ring-ods-focus disabled:text-ods-text-disabled",
+        transparent: "bg-transparent text-ods-text-primary hover:bg-ods-bg-hover active:bg-ods-bg-active focus-visible:ring-2 focus-visible:ring-ods-focus disabled:text-ods-text-disabled !w-auto whitespace-nowrap !text-base",
         // Ghost variant for subtle interactions
-        ghost: "bg-transparent text-ods-text-primary hover:bg-ods-bg-hover active:bg-ods-bg-active focus-visible:ring-2 focus-visible:ring-ods-focus disabled:text-ods-text-disabled",
+        ghost: "bg-transparent text-ods-text-primary hover:bg-ods-bg-hover active:bg-ods-bg-active focus-visible:ring-2 focus-visible:ring-ods-focus disabled:text-ods-text-disabled !w-auto whitespace-nowrap !text-base",
         // Ghost navigation variant - left-aligned for navigation menus
-        "ghost-nav": "bg-transparent text-ods-text-primary hover:bg-ods-bg-hover active:bg-ods-bg-active focus-visible:ring-2 focus-visible:ring-ods-focus disabled:text-ods-text-disabled justify-start",
+        "ghost-nav": "bg-transparent text-ods-text-primary hover:bg-ods-bg-hover active:bg-ods-bg-active focus-visible:ring-2 focus-visible:ring-ods-focus disabled:text-ods-text-disabled justify-start !w-auto whitespace-nowrap !text-base",
         // Link variant for text-like buttons
         link: "bg-transparent text-ods-link underline-offset-4 hover:underline hover:text-ods-link-hover focus-visible:ring-2 focus-visible:ring-ods-focus disabled:text-ods-text-disabled",
         // Search variant for search containers
@@ -57,11 +57,11 @@ const buttonVariants = cva(
       },
       size: {
         // Small size for secondary actions
-        sm: "h-10 px-6 py-2 text-sm",
+        sm: "h-10 px-2 sm:px-6 py-2 text-sm",
         // Default size for most buttons (ButtonFull default)
-        default: "h-12 px-8 py-3 text-base",
+        default: "h-12 px-2 sm:px-8 py-3 text-base",
         // Large size for prominent CTAs (ButtonFull lg) - adjusted for better text/icon fit
-        lg: "min-h-[48px] px-8 py-3 text-base",
+        lg: "min-h-[48px] px-2 sm:px-8 py-3 text-base",
         // Icon-only buttons - fixed square size
         icon: "!w-10 h-10 p-0",
         // Icon-only large buttons (like hamburger menu) - fixed square size
