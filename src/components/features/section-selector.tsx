@@ -78,7 +78,7 @@ const SectionButton: React.FC<{
         widthClasses,
         buttonClassName,
         isActive && activeButtonClassName,
-        layout === 'vertical' ? '!h-auto !py-4 !px-4 !min-h-[80px]' : '!text-left'
+        layout === 'vertical' ? '!h-auto !py-4 !px-4 !min-h-[80px]' : '!text-left !whitespace-normal'
       )}
       style={{
         minHeight,
