@@ -102,6 +102,25 @@
   animation: pulse-cursor 1.5s ease-in-out infinite;
 }
 
+/* Quick action hint animation - Very slow breathing glow */
+@keyframes hint-pulse-ring {
+  0% {
+    opacity: 0.7;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.7;
+  }
+}
+
+.animate-hint-pulse {
+  border-color: rgba(243, 87, 187, 0.4) !important;
+  background-color: rgba(243, 87, 187, 0.05) !important;
+  animation: hint-pulse-ring 1s ease-in-out infinite !important;
+}
+
 .ods-interactive:hover {
   transform: translateY(-1px);
 }

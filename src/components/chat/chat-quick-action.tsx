@@ -8,19 +8,27 @@ import { Button } from '../ui'
 export interface ChatQuickActionProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   text: string
   onAction?: (text: string) => void
+  /** Whether this action should show the hint animation */
+  isHintActive?: boolean
+  /** Callback when user clicks the action - stops hint */
+  onHintInteraction?: () => void
 }
 
 const ChatQuickAction = React.forwardRef<HTMLButtonElement, ChatQuickActionProps>(
-  ({ className, text, onAction, onClick, ...props }, ref) => {
+  ({ className, text, onAction, onClick, isHintActive, onHintInteraction, ...props }, ref) => {
     const handleClick = React.useCallback((e: React.MouseEvent<HTMLButtonElement>) => {
+      // Stop hint only on click, not on hover
+      if (onHintInteraction) {
+        onHintInteraction()
+      }
       if (onAction) {
         onAction(text)
       }
       if (onClick) {
         onClick(e)
       }
-    }, [text, onAction, onClick])
-    
+    }, [text, onAction, onClick, onHintInteraction])
+
     return (
       <button
         ref={ref}
@@ -35,6 +43,7 @@ const ChatQuickAction = React.forwardRef<HTMLButtonElement, ChatQuickActionProps
           "active:bg-ods-bg-active active:scale-[0.98]",
           "transition-all duration-150",
           "focus:outline-none focus:ring-2 focus:ring-ods-focus focus:ring-offset-2 focus:ring-offset-ods-bg",
+          isHintActive && "animate-hint-pulse",
           className
         )}
         {...props}
