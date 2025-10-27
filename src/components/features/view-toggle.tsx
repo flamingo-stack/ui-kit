@@ -89,7 +89,16 @@ export function ViewToggle({
         aria-label="Grid view"
         disabled={disabled}
       >
-        <GridViewIcon className="w-5 h-5" />
+        <GridViewIcon 
+          className="w-5 h-5" 
+          color={
+            disabled 
+              ? "var(--ods-system-greys-grey)" 
+              : value === 'grid' 
+              ? "var(--ods-system-greys-black)" 
+              : "var(--ods-system-greys-grey)"
+          }
+        />
       </ToggleGroupItem>
 
       <ToggleGroupItem
@@ -105,7 +114,16 @@ export function ViewToggle({
         aria-label="Table view"
         disabled={disabled}
       >
-        <TableViewIcon className="w-5 h-5" />
+        <TableViewIcon 
+          className="w-5 h-5" 
+          color={
+            disabled 
+              ? "var(--ods-system-greys-grey)" 
+              : value === 'table' 
+              ? "var(--ods-system-greys-black)" 
+              : "var(--ods-system-greys-grey)"
+          }
+        />
       </ToggleGroupItem>
     </ToggleGroup>
   )

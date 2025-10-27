@@ -119,13 +119,14 @@ export function NavigationSidebar({ config }: NavigationSidebarProps) {
           <div className="absolute left-0 top-0 bottom-0 w-1 bg-[#ffc008]" />
         )}
         
-        {/* Icon - inherits text color (yellow when active) */}
+        {/* Icon - with explicit color prop */}
         <div className={cn(
           "flex-shrink-0 w-6 h-6",
-          "transition-colors duration-200",
-          isActive ? "text-[#ffc008]" : "text-[#888888]"
+          "transition-colors duration-200"
         )}>
-          {item.icon}
+          {React.cloneElement(item.icon as React.ReactElement<any>, {
+            color: isActive ? "#ffc008" : "#888888"
+          })}
         </div>
         
         {/* Label with smooth opacity transition */}
