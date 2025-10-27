@@ -8,7 +8,7 @@ import { cn } from "../../utils/cn"
 const buttonVariants = cva(
   // Base styles following ButtonFull specifications with Figma-accurate typography
   // Text wrapping enabled - full width on mobile, extra small text and minimal gap for better wrapping
-  "whitespace-nowrap inline-flex items-center justify-center gap-1 sm:gap-2 rounded-[6px] font-['DM_Sans'] font-bold text-xs sm:text-lg leading-tight transition-colors duration-200 focus-visible:outline-none disabled:pointer-events-none [&_svg]:pointer-events-none [&_svg]:shrink-0 !w-full sm:w-auto text-center",
+  "whitespace-nowrap inline-flex items-center justify-center gap-1 sm:gap-2 rounded-[6px] font-['DM_Sans'] font-bold text-xs sm:text-lg leading-tight transition-colors duration-200 focus-visible:outline-none disabled:pointer-events-none [&_svg]:pointer-events-none [&_svg]:shrink-0 !w-full sm:!w-auto text-center",
   {
     variants: {
       variant: { 
