@@ -98,7 +98,7 @@ const Pagination = ({ currentPage, totalPages, onPageChange, className }: Pagina
                 variant={currentPage === page ? "primary" : "outline"}
                 size="icon"
                 onClick={() => onPageChange(page)}
-                className="h-9 w-9"
+                className="!h-9 !w-9 sm:!w-9"
                 aria-label={`Page ${page}`}
                 aria-current={currentPage === page ? "page" : undefined}
               >
