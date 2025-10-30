@@ -83,6 +83,7 @@ export { UsersIcon } from './users-icon';
 export { PackageIcon } from './package-icon';
 export { AlertTriangleIcon } from './alert-triangle-icon';
 export { FileTextIcon } from './file-text-icon';
+export { SSOConfigurationIcon } from './sso-configuration-icon';
 
 // X icon with alias to avoid conflict with ui/custom-icons
 export { XIcon as IconsXIcon } from './x-icon';
@@ -143,6 +144,7 @@ export { TableViewIcon } from './table-view-icon';
 
 // Trust page icons (recovered after build script deletion)
 export { ShieldLockIcon } from './shield-lock-icon';
+export { ShieldKeyIcon } from './shield-key-icon';
 export { EyeIcon } from './eye-icon';
 export { ShapeCircleDashIcon } from './shape-circle-dash-icon';
 export { BuildingsIcon } from './buildings-icon';

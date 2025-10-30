@@ -121,8 +121,11 @@ export function TabNavigation({
                 onClick={() => handleTabChange(tab.id)}
                 variant="ghost"
                 leftIcon={
-                  <div>
-                    <tab.icon className={`h-6 w-6 ${isActive ? 'text-ods-text-primary' : 'text-ods-text-secondary'} transition-colors`} />
+                  <div className="relative">
+                    <tab.icon 
+                      className="h-6 w-6 transition-colors" 
+                      color={isActive ? '#fafafa' : '#888888'}
+                    />
                     {tab.hasAlert && (
                       <div className={`
                         absolute -top-1 -right-1 w-2 h-2 rounded-full
