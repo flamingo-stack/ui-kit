@@ -74,7 +74,7 @@ export function VendorTag({
         }
       case 'commercial':
         return {
-          text: text || "Commercial",
+          text: text || "Commercial Vendor",
           icon: (
             <div className="w-4 h-4 bg-ods-border rounded-sm flex items-center justify-center flex-shrink-0">
               <CoinsIcon width={10} height={10} className="text-ods-text-secondary" />
@@ -141,7 +141,7 @@ export function VendorTag({
           }
         } else if (classificationType === 'commercial') {
           return {
-            text: "Commercial",
+            text: "Commercial Vendor",
             icon: (
               <div className="w-4 h-4 bg-ods-border rounded-sm flex items-center justify-center flex-shrink-0">
                 <CoinsIcon width={10} height={10} className="text-ods-text-secondary" />
