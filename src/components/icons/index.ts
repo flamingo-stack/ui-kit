@@ -33,6 +33,8 @@ export { DocumentIcon } from './document-icon';
 export { CheckCircleIcon } from './check-circle-icon';
 export { PlusCircleIcon } from './plus-circle-icon';
 export { MinusCircleIcon } from './minus-circle-icon';
+export { ThumbsUpIcon } from './thumbs-up-icon';
+export { ThumbsDownIcon } from './thumbs-down-icon';
 export { SunIcon } from './sun-icon';
 export { MoonIcon } from './moon-icon';
 export { CoinsIcon } from './coins-icon';
@@ -63,6 +65,8 @@ export { ClaudeIcon } from './claude-icon';
 export { LinkedInIcon } from './linkedin-icon';
 export { LumaIcon } from './luma-icon';
 export { WhatsAppIcon } from './whatsapp-icon';
+export { FigmaIcon } from './figma-icon';
+export { ImageIcon } from './image-icon';
 
 // Social platform icons
 export { GlobeIcon } from './globe-icon';

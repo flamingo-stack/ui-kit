@@ -4,9 +4,13 @@
   --ods-attention-green-success: #5ea62e;
   --ods-attention-green-success-action: #4a921a;
   --ods-attention-green-success-hover: #549c24;
+  --ods-attention-green-success-secondary: #2e461f;
   --ods-attention-red-error: #f36666;
   --ods-attention-red-error-action: #df5252;
   --ods-attention-red-error-hover: #e95c5c;
+  --ods-attention-red-error-secondary: #4a2121;
+  --ods-attention-yellow-warning: #ffc008;
+  --ods-attention-yellow-warning-secondary: #4a3b1f;
 
   /* Flamingo Cyan */
   --ods-flamingo-cyan-base: #5efaf0;
