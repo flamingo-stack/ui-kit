@@ -21,9 +21,10 @@ export { HamburgerIcon } from './hamburger-icon';
 export { MenuIcon } from './menu-icon';
 export { ExploreCategoriesIcon } from './explore-categories-icon';
 export { FilterIcon } from './filter-icon';
+export { SearchIcon } from './search-icon';
 export { ScriptIcon } from './script-icon';
 export { RemoteControlIcon } from './remote-control-icon';
-export { ShellIcon } from './shell-icon'; 
+export { ShellIcon } from './shell-icon';
 export { MingoIcon } from './mingo-icon';
 export { PoliciesIcon } from './policies-icon';
 export { QueriesIcon } from './queries-icon'
