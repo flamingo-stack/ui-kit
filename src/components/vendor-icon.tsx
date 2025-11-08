@@ -31,8 +31,8 @@ const imageSizeMap = {
   sm: { width: 20, height: 20 },
   md: { width: 32, height: 32 },
   lg: { width: 40, height: 40 },
-  l: { width: 48, height: 48 },
-  xl: { width: 52, height: 52 }
+  l: { width: 38, height: 38 },
+  xl: { width: 40, height: 40 }
 }
 
 const backgroundClasses = {
