@@ -20,6 +20,10 @@ const statusBadgeVariants = cva(
         error: "bg-[var(--ods-attention-red-error-secondary)] text-[var(--ods-attention-red-error)]",
         warning: "bg-[var(--ods-attention-yellow-warning-secondary)] text-[var(--ods-attention-yellow-warning)]",
         default: "bg-ods-bg-secondary text-ods-text-primary",
+        // Border-only variants (no background) - for task type badges
+        accentBorder: "bg-transparent border-2 text-ods-accent border-ods-accent",
+        errorBorder: "bg-transparent border-2 text-[var(--ods-attention-red-error)] border-[var(--ods-attention-red-error)]",
+        whiteBorder: "bg-transparent border-2 text-ods-text-primary border-ods-text-primary",
       },
     },
     defaultVariants: {
