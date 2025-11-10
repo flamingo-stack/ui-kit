@@ -1,4 +1,4 @@
-export interface MediaItem {
+export interface Media {
   id: string;
   type: 'image' | 'video';
   src: string;
