@@ -11,6 +11,43 @@ export interface ChangelogEntry {
   issue_number?: string
 }
 
+export interface ReleaseMedia {
+  id: number
+  release_id: number
+  media_type: 'image' | 'video' | 'screenshot' | 'demo'
+  media_url: string
+  display_order: number | null
+  title: string | null
+  description: string | null
+  created_at: string
+  updated_at: string
+  created_by: string
+}
+
+export interface ProductReleaseGitHubLink {
+  id: number
+  release_id: number
+  github_release_url: string // Full URL (e.g., https://github.com/org/repo/releases/tag/v2.0.0)
+  display_order: number | null
+  created_at: string
+}
+
+export interface KnowledgeBaseLink {
+  id: number
+  release_id: number
+  kb_article_path: string // Relative path (e.g., /api/authentication/api-keys.md)
+  display_order: number | null
+  created_at: string
+}
+
+export interface ClickUpTask {
+  id: number
+  release_id: number
+  clickup_task_id: string // Just the task ID - details from roadmap
+  display_order: number | null
+  created_at: string
+}
+
 export interface ProductRelease {
   id: number
   title: string
@@ -30,17 +67,14 @@ export interface ProductRelease {
   improvements: ChangelogEntry[]
   breaking_changes: ChangelogEntry[]
 
-  // GitHub integration
-  github_release_ids: string[]
+  // External relationships (one-to-many)
+  github_releases?: ProductReleaseGitHubLink[]
+  knowledge_base_links?: KnowledgeBaseLink[]
+  clickup_tasks?: ClickUpTask[]
+  release_media?: ReleaseMedia[]
 
-  // External relationships
-  knowledge_base_links: string[] // Knowledge base article slugs/URLs
-  clickup_task_ids: string[] // ClickUp task IDs from roadmap (enhancements/bugs)
-
-  // Media
+  // Media (keeping featured_image for hero)
   featured_image: string | null
-  screenshot_urls: string[]
-  demo_video_url: string | null
 
   // Documentation
   migration_guide_url: string | null
@@ -91,12 +125,11 @@ export interface CreateProductReleaseData {
   bugs_fixed?: ChangelogEntry[]
   improvements?: ChangelogEntry[]
   breaking_changes?: ChangelogEntry[]
-  github_release_ids?: string[]
-  knowledge_base_links?: string[] // Knowledge base article slugs/URLs
-  clickup_task_ids?: string[] // ClickUp task IDs from roadmap
+  github_releases?: Array<{ github_release_url: string; display_order?: number }>
+  knowledge_base_links?: Array<{ kb_article_path: string; display_order?: number }>
+  clickup_tasks?: Array<{ clickup_task_id: string; display_order?: number }>
+  release_media?: Array<{ media_type: 'image' | 'video' | 'screenshot' | 'demo'; media_url: string; title?: string; description?: string; display_order?: number }>
   featured_image?: string
-  screenshot_urls?: string[]
-  demo_video_url?: string
   migration_guide_url?: string
   documentation_url?: string
   seo_title?: string
