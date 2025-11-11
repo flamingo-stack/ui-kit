@@ -40,10 +40,18 @@ export interface KnowledgeBaseLink {
   created_at: string
 }
 
-export interface ClickUpTask {
+export interface ClickUpRoadmapTask {
   id: number
   release_id: number
-  clickup_task_id: string // Just the task ID - details from roadmap
+  clickup_task_id: string // Just the task ID - details from roadmap folder
+  display_order: number | null
+  created_at: string
+}
+
+export interface ClickUpDeliveryTask {
+  id: number
+  release_id: number
+  clickup_task_id: string // Just the task ID - details from delivery list
   display_order: number | null
   created_at: string
 }
@@ -70,7 +78,8 @@ export interface ProductRelease {
   // External relationships (one-to-many)
   github_releases?: ProductReleaseGitHubLink[]
   knowledge_base_links?: KnowledgeBaseLink[]
-  clickup_tasks?: ClickUpTask[]
+  clickup_roadmap_tasks?: ClickUpRoadmapTask[]
+  clickup_delivery_tasks?: ClickUpDeliveryTask[]
   release_media?: ReleaseMedia[]
 
   // Media (keeping featured_image for hero)
@@ -127,7 +136,8 @@ export interface CreateProductReleaseData {
   breaking_changes?: ChangelogEntry[]
   github_releases?: Array<{ github_release_url: string; display_order?: number }>
   knowledge_base_links?: Array<{ kb_article_path: string; display_order?: number }>
-  clickup_tasks?: Array<{ clickup_task_id: string; display_order?: number }>
+  clickup_roadmap_tasks?: Array<{ clickup_task_id: string; display_order?: number }>
+  clickup_delivery_tasks?: Array<{ clickup_task_id: string; display_order?: number }>
   release_media?: Array<{ media_type: 'image' | 'video' | 'screenshot' | 'demo'; media_url: string; title?: string; description?: string; display_order?: number }>
   featured_image?: string
   migration_guide_url?: string

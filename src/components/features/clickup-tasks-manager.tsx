@@ -11,12 +11,14 @@ export interface ClickUpTaskLink {
 interface ClickUpTasksManagerProps {
   tasks: ClickUpTaskLink[];
   onChange: (tasks: ClickUpTaskLink[]) => void;
+  title?: string; // Optional custom title
   className?: string;
 }
 
 export function ClickUpTasksManager({
   tasks,
   onChange,
+  title = 'ClickUp Roadmap Tasks', // Default title
   className = ''
 }: ClickUpTasksManagerProps) {
   const addTask = () => {
@@ -36,7 +38,7 @@ export function ClickUpTasksManager({
   return (
     <div className={`space-y-3 ${className}`}>
       <div className="flex items-center justify-between">
-        <Label className="text-[14px] text-ods-text-primary">ClickUp Roadmap Tasks</Label>
+        <Label className="text-[14px] text-ods-text-primary">{title}</Label>
         <Button
           type="button"
           variant="outline"
