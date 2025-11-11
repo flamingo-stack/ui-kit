@@ -7,8 +7,6 @@ import type { BlogTag } from './blog'
 export interface ChangelogEntry {
   title: string
   description?: string
-  category?: string
-  issue_number?: string
 }
 
 export interface ReleaseMedia {
@@ -203,12 +201,12 @@ export const releaseStatusOptions = [
   { value: 'deprecated', label: 'Deprecated', description: 'No longer supported', color: 'gray' }
 ] as const
 
-// Changelog category icons
-export const changelogIcons = {
-  features_added: '✨',
-  bugs_fixed: '🐛',
-  improvements: '⚡',
-  breaking_changes: '🚨'
+// Changelog category labels
+export const changelogLabels = {
+  features_added: 'Features Added',
+  bugs_fixed: 'Bugs Fixed',
+  improvements: 'Improvements',
+  breaking_changes: 'Breaking Changes'
 } as const
 
 // Semantic versioning validation regex
