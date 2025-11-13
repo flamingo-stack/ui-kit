@@ -40,6 +40,7 @@ export * from './status-badge'
 export * from './status-indicator'
 export * from './progress'
 export * from './toaster'
+export * from './release-changelog-section'
 // TODO: Add other UI components as they are moved to ui-kit
 export * from './skeleton'
 // Chat components
