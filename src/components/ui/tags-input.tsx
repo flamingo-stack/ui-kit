@@ -71,7 +71,7 @@ export function TagsInput({
         </label>
       )}
       
-      <div className="flex gap-2">
+      <div className="flex items-center gap-2">
         <Input
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}

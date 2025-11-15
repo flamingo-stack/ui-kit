@@ -18,6 +18,17 @@ export interface MSP {
   seat_count: number;
   technician_count?: number | null;
   annual_revenue?: number | null;
+
+  // Case study fields
+  website?: string | null;
+  industry?: string | null;
+  description?: string | null;
+  location?: string | null;
+  company_size?: 'small' | 'midmarket' | 'enterprise' | 'enterprise_1000+' | null;
+  founded_year?: number | null;
+  specialties?: string[] | null;
+  certifications?: string[] | null;
+
   created_at: string;
   updated_at: string;
 }
