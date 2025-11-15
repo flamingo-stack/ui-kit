@@ -11,29 +11,19 @@ export interface CaseStudy {
   title: string
   slug: string
   summary: string | null
-  content: string | null
   featured_image: string | null
 
   // OpenMSP user (MSP info comes through user.msp_id)
+  // All company/industry/testimonial data comes from the MSP profile
   user_id: string | null // OpenMSP user who owns this case study
-  industry: string | null
-  company_size: 'small' | 'midmarket' | 'enterprise' | 'enterprise_1000+' | null
-  company_location: string | null
 
   // Story structure
   challenge: string | null
   solution: string | null
   results: string | null
-  results_metrics: Record<string, any>
 
-  // Testimonial
-  testimonial_quote: string | null
-  testimonial_author: string | null
-  testimonial_role: string | null
+  // Testimonial video (text testimonials come from MSP profile)
   testimonial_video_url: string | null
-
-  // Media
-  screenshot_urls: string[]
 
   // SEO
   seo_title: string | null
@@ -57,7 +47,8 @@ export interface CaseStudy {
   platforms?: PlatformRecord[]
   tags?: BlogTag[]
   user?: UserProfile // Populated user data (includes msp_id)
-  msp?: MSP // Populated MSP data via user.msp_id
+  msp?: MSP // Populated MSP data via user.msp_id - includes industry, company_size, testimonials, etc.
+  author?: UserProfile // Article author
   case_study_platforms?: Array<{
     platform_id: string
     is_featured: boolean
@@ -73,21 +64,12 @@ export interface CreateCaseStudyData {
   title: string
   slug: string
   summary?: string
-  content?: string
   featured_image?: string
   user_id?: string // OpenMSP user ID (UUID) - MSP comes through user.msp_id
-  industry?: string
-  company_size?: 'small' | 'midmarket' | 'enterprise' | 'enterprise_1000+'
-  company_location?: string
   challenge?: string
   solution?: string
   results?: string
-  results_metrics?: Record<string, any>
-  testimonial_quote?: string
-  testimonial_author?: string
-  testimonial_role?: string
   testimonial_video_url?: string
-  screenshot_urls?: string[]
   seo_title?: string
   seo_description?: string
   seo_keywords?: string
@@ -105,8 +87,8 @@ export type UpdateCaseStudyData = Partial<CreateCaseStudyData>
 export interface CaseStudyFilters {
   platform?: string | 'all'
   tags?: string[]
-  industry?: string
-  company_size?: string
+  industry?: string // Filtered from MSP profile data
+  company_size?: string // Filtered from MSP profile data
   search?: string
   featured?: boolean
   status?: string
@@ -118,25 +100,3 @@ export interface CaseStudyListResponse {
   data: CaseStudy[]
   count: number
 }
-
-// Company size options for dropdowns
-export const companySizeOptions = [
-  { value: 'small', label: 'Small Business (1-50 employees)' },
-  { value: 'midmarket', label: 'Mid-Market (51-500 employees)' },
-  { value: 'enterprise', label: 'Enterprise (501-1000 employees)' },
-  { value: 'enterprise_1000+', label: 'Large Enterprise (1000+ employees)' }
-] as const
-
-// Industry options (can be expanded)
-export const industryOptions = [
-  { value: 'healthcare', label: 'Healthcare' },
-  { value: 'finance', label: 'Financial Services' },
-  { value: 'legal', label: 'Legal / Professional Services' },
-  { value: 'manufacturing', label: 'Manufacturing' },
-  { value: 'education', label: 'Education' },
-  { value: 'retail', label: 'Retail / E-commerce' },
-  { value: 'technology', label: 'Technology' },
-  { value: 'nonprofit', label: 'Non-Profit' },
-  { value: 'government', label: 'Government' },
-  { value: 'other', label: 'Other' }
-] as const
