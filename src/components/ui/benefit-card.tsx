@@ -71,25 +71,50 @@ export const BenefitCard: React.FC<BenefitCardProps> = ({
 interface BenefitCardGridProps {
   children: React.ReactNode
   className?: string
+  columns?: 2 | 3 | 4 // Support 2, 3, or 4 columns
 }
 
 export const BenefitCardGrid: React.FC<BenefitCardGridProps> = ({
   children,
-  className = ''
+  className = '',
+  columns = 2
 }) => {
   const childrenArray = React.Children.toArray(children)
-  
+
+  const gridClass = columns === 4
+    ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4'
+    : columns === 3
+    ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3'
+    : 'flex flex-col md:flex-row'
+
   return (
     <div className={cn(
-      "bg-ods-card rounded-lg flex flex-col md:flex-row shadow-ods-card border border-ods-border overflow-hidden",
+      "bg-ods-card rounded-lg shadow-ods-card border border-ods-border overflow-hidden",
+      gridClass,
       className
     )}>
       {childrenArray.map((child, index) => {
-        const isLastItem = index === childrenArray.length - 1
-        const borderClass = isLastItem 
-          ? 'border-b-0' 
-          : 'border-b md:border-b-0 md:border-r border-ods-border'
-        
+        const totalItems = childrenArray.length
+        const isLastItem = index === totalItems - 1
+
+        // Dynamic border logic based on columns
+        let borderClass = ''
+        if (columns === 4) {
+          // 4-column grid borders
+          const isLastInRow = (index + 1) % 4 === 0
+          const isInLastRow = index >= totalItems - 4
+          borderClass = cn(
+            !isLastInRow && 'md:border-r border-ods-border',
+            !isInLastRow && 'border-b md:border-b lg:border-b-0',
+            index < 2 && 'lg:border-b-0'
+          )
+        } else {
+          // Original 2-3 column logic
+          borderClass = isLastItem
+            ? 'border-b-0'
+            : 'border-b md:border-b-0 md:border-r border-ods-border'
+        }
+
         return React.cloneElement(child as React.ReactElement<any>, {
           key: index,
           className: borderClass

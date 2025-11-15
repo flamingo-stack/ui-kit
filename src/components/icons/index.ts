@@ -175,3 +175,9 @@ export { NushellIcon } from './nushell-icon';
 export { DenoIcon } from './deno-icon';
 
 export * from './device-type-icons';
+
+// Review platform icons
+export { G2Icon } from './g2-icon';
+export { CapterraIcon } from './capterra-icon';
+export { TrustpilotIcon } from './trustpilot-icon';
+export { GetAppIcon } from './getapp-icon';
