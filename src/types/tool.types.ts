@@ -11,6 +11,7 @@ export type ToolType =
   | 'MESHCENTRAL'
   | 'AUTHENTIK'
   | 'OPENFRAME'
+  | 'OPENFRAME_CHAT'
   | 'SYSTEM'
 
 /**
@@ -22,6 +23,7 @@ export const toolLabels: Record<ToolType, string> = {
   MESHCENTRAL: 'MeshCentral',
   AUTHENTIK: 'Authentik',
   OPENFRAME: 'OpenFrame',
+  OPENFRAME_CHAT: 'OpenFrame Chat',
   SYSTEM: 'System'
 }
 
