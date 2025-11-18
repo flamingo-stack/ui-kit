@@ -20,13 +20,17 @@ interface HeroImageUploaderProps {
   showReplaceButton?: boolean;
   /** If true, skip the actual upload and just return a base64 data URL preview. Useful for unauthenticated flows – the caller can upload later. */
   deferUpload?: boolean;
+  /** Optional custom upload handler for authenticated uploads. If provided, this will be used instead of the default fetch */
+  onUpload?: (file: File) => Promise<string>;
+  /** Optional custom delete handler for authenticated deletion. If provided, this will be used instead of just clearing the image */
+  onDelete?: () => Promise<void>;
 }
 
 /**
  * Reusable dashed hero-style image uploader identical to Blog Editor's hero picker.
  * Handles client-side validation (JPEG/PNG/WebP/GIF up to 5 MB), upload, preview & removal.
  */
-export function HeroImageUploader({ imageUrl, onChange, uploadEndpoint, height = 300, objectFit = 'cover', showReplaceButton = true, deferUpload = false }: HeroImageUploaderProps) {
+export function HeroImageUploader({ imageUrl, onChange, uploadEndpoint, height = 300, objectFit = 'cover', showReplaceButton = true, deferUpload = false, onUpload, onDelete }: HeroImageUploaderProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
   const [uploading, setUploading] = useState(false);
@@ -71,16 +75,25 @@ export function HeroImageUploader({ imageUrl, onChange, uploadEndpoint, height =
       return;
     }
 
-    // Normal authenticated upload flow
+    // Upload flow - use custom handler if provided, otherwise use default fetch
     setUploading(true);
     try {
-      const fd = new FormData();
-      fd.append('file', file);
-      const res = await fetch(uploadEndpoint, { method: 'POST', body: fd });
-      if (!res.ok) throw new Error('Upload failed');
-      const json = await res.json();
-      const uploadedUrl = (json.data && json.data.url) || json.url || json.file_url;
-      if (!uploadedUrl) throw new Error('Invalid upload response');
+      let uploadedUrl: string;
+      
+      if (onUpload) {
+        // Use custom upload handler (e.g., for authenticated uploads)
+        uploadedUrl = await onUpload(file);
+      } else {
+        // Default upload flow
+        const fd = new FormData();
+        fd.append('file', file);
+        const res = await fetch(uploadEndpoint, { method: 'POST', body: fd });
+        if (!res.ok) throw new Error('Upload failed');
+        const json = await res.json();
+        uploadedUrl = (json.data && json.data.url) || json.url || json.file_url;
+        if (!uploadedUrl) throw new Error('Invalid upload response');
+      }
+      
       onChange(uploadedUrl);
     } catch (err: any) {
       toast({ title: 'Upload error', description: err.message || 'Failed to upload', variant: 'destructive' });
@@ -94,7 +107,17 @@ export function HeroImageUploader({ imageUrl, onChange, uploadEndpoint, height =
     handleFile(e.target.files?.[0]);
   };
 
-  const handleRemove = () => onChange(undefined);
+  const handleRemove = async () => {
+    if (onDelete) {
+      try {
+        await onDelete();
+      } catch (error) {
+        // onDelete handler should handle its own error reporting
+        return;
+      }
+    }
+    onChange(undefined);
+  };
 
   const heightStyle = typeof height === 'number' ? `${height}px` : height;
 
@@ -117,7 +140,7 @@ export function HeroImageUploader({ imageUrl, onChange, uploadEndpoint, height =
             <Button
               variant="outline"
               size="icon"
-              onClick={handleRemove}
+              onClick={() => handleRemove()}
               className="bg-white text-black hover:bg-gray-100 rounded-full w-12 h-12"
             >
               <X className="h-5 w-5" />

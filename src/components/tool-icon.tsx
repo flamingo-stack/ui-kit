@@ -4,6 +4,7 @@ import { ToolIconProps } from '../types/logs.types'
 import { FleetIcon } from './icons/fleet-icon'
 import { MeshCentralIcon } from './icons/meshcentral-icon'
 import { TacticalIcon } from './icons/tactical-icon'
+import { OpenFrameLogo } from './icons'
 
 export const ToolIcon = React.forwardRef<
   HTMLDivElement,
@@ -24,6 +25,8 @@ export const ToolIcon = React.forwardRef<
       case 'TACTICAL_RMM':
       case 'TACTICAL-RMM':
         return <TacticalIcon size={size} />
+      case 'OPENFRAME_CHAT':
+        return <OpenFrameLogo className="h-4 w-auto" lowerPathColor="var(--color-accent-primary)" upperPathColor="var(--color-text-primary)" />
       default:
         return <></>
     }
