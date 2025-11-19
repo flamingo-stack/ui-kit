@@ -29,12 +29,12 @@ export function TableRow<T = any>({
     if (target.closest('[data-no-row-click]')) {
       return
     }
-    
+
     if (onClick) {
       onClick(item)
     }
   }
-  
+
   const handleSelect = () => {
     if (onSelect) {
       onSelect(item)
@@ -45,7 +45,7 @@ export function TableRow<T = any>({
     if (column.renderCell) {
       return column.renderCell(item, column)
     }
-    
+
     // Access nested properties using dot notation
     const keys = column.key.split('.')
     let value: any = item
@@ -62,12 +62,12 @@ export function TableRow<T = any>({
     if (typeof value === 'object') {
       return JSON.stringify(value)
     }
-    
+
     return String(value)
   }
 
   // Filter columns for mobile display
-  const mobileColumnsToShow = mobileColumns 
+  const mobileColumnsToShow = mobileColumns
     ? columns.filter(col => mobileColumns.includes(col.key))
     : columns.filter(col => !col.hideOnMobile).slice(0, 3) // Default: show first 3 columns
 
@@ -92,7 +92,7 @@ export function TableRow<T = any>({
             />
           </div>
         )}
-        
+
         {columns.map((column) => (
           <TableCell
             key={column.key}
@@ -103,7 +103,7 @@ export function TableRow<T = any>({
             {getCellValue(column)}
           </TableCell>
         ))}
-        
+
         {/* Row Actions */}
         {(renderRowActions || (rowActions && rowActions.length > 0)) && (
           <div
@@ -118,25 +118,17 @@ export function TableRow<T = any>({
                 <Button
                   key={actionIndex}
                   variant={action.variant || 'outline'}
-                  size={action.icon && !action.label ? 'icon' : 'default'}
+                  // size={action.icon && !action.label ? 'sm' : undefined}
                   onClick={(e) => {
                     e.stopPropagation()
                     action.onClick(item)
                   }}
-                  className={cn(
-                    'bg-[#212121] border-[#3a3a3a] hover:bg-[#2a2a2a]',
-                    action.className
-                  )}
-                  aria-label={action.label}
+                  leftIcon={action.icon && action.label ? action.icon : undefined}
+                  centerIcon={action.icon && !action.label ? action.icon : undefined}
+                  className={action.className}
                 >
-                  {action.icon && !action.label ? (
-                    action.icon
-                  ) : (
-                    <>
-                      {action.icon}
-                      {action.label}
-                    </>
-                  )}
+
+                  {action.label}
                 </Button>
               ))
             )}
@@ -169,7 +161,7 @@ export function TableRow<T = any>({
                 </div>
               ))}
             </div>
-            
+
             {/* Mobile Actions */}
             {rowActions && rowActions.length > 0 && (
               <Button
@@ -183,7 +175,7 @@ export function TableRow<T = any>({
                     rowActions[0].onClick(item)
                   }
                 }}
-                className="bg-[#212121] border-[#3a3a3a] hover:bg-[#2a2a2a] h-12 w-12 shrink-0"
+              // className="bg-[#212121] border-[#3a3a3a] hover:bg-[#2a2a2a] h-12 w-12 shrink-0"
               >
                 {rowActions.length === 1 && rowActions[0].icon ? (
                   rowActions[0].icon

@@ -3,6 +3,7 @@ import { MoreHorizontal, Monitor, ExternalLink } from 'lucide-react'
 import { cn } from '../../utils/cn'
 import type { OSPlatformId } from '../../utils/os-platforms'
 import { OSTypeBadge } from '../features/os-type-badge'
+import { InteractiveCard } from './interactive-card'
 
 export interface Device {
   id?: string
@@ -72,7 +73,8 @@ export function DeviceCard({
   }
 
   return (
-    <div
+    <InteractiveCard
+      onClick={onDeviceClick ? () => onDeviceClick(device) : undefined}
       className={cn(
         "bg-ods-card relative rounded-[6px] size-full border border-ods-border",
         className
@@ -97,16 +99,10 @@ export function DeviceCard({
           </div>
 
           {/* Device name - clickable with external link icon */}
-          <div
-            className={cn(
-              "flex-1 min-w-0 flex items-center gap-2 group",
-              onDeviceClick && "cursor-pointer"
-            )}
-            onClick={() => onDeviceClick?.(device)}
-          >
-            <div className="font-['DM_Sans'] font-medium text-[18px] leading-[24px] text-ods-text-primary truncate group-hover:text-ods-accent transition-colors">
+          <div className="flex-1 min-w-0 flex items-center gap-2">
+            <h3 className="font-['DM_Sans'] font-medium text-[18px] leading-[24px] text-ods-text-primary truncate transition-colors">
               {device.name}
-            </div>
+            </h3>
             {onDeviceClick && (
               <ExternalLink className="size-4 text-ods-text-secondary group-hover:text-ods-accent transition-colors shrink-0" />
             )}
@@ -185,6 +181,6 @@ export function DeviceCard({
           </div>
         )}
       </div>
-    </div>
+    </InteractiveCard>
   )
 }

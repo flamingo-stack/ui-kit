@@ -188,10 +188,9 @@ export function PersistentPaginationWrapper({
   const isPaginationDisabled = isLoading
   const hasNoResults = !hasResults && !isLoading
 
-  // Import the appropriate pagination component dynamically
-  const PaginationComponent = variant === 'vendor' 
-    ? require('@/components/pagination').Pagination
-    : require('@/components/blog/blog-pagination').BlogPagination
+  // Use UnifiedPagination directly from ui-kit instead of importing from consuming apps
+  // Both Pagination and BlogPagination in multi-platform-hub are just wrappers around UnifiedPagination
+  const PaginationComponent = require('./unified-pagination').UnifiedPagination
 
   return (
     <div 
