@@ -6,3 +6,7 @@ export * from './use-toast'
 export * from './use-contact-submission'
 export * from './use-quick-action-hint'
 export * from './api-hooks-stub'
+
+// Image authentication hooks
+export * from './use-batch-images'
+export * from './use-authenticated-image'

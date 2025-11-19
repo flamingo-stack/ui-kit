@@ -94,9 +94,13 @@ export { MarginReportSkeleton } from './margin-report-skeleton';
 export { UsersGridSkeleton } from './users-grid-skeleton'
 
 // Dynamic ODS-aware skeleton components
-export { 
+export {
   DynamicSkeleton,
   SkeletonPresets,
   PlatformSkeletonContainer,
   ProgressiveSkeleton
-} from '../dynamic-skeleton' 
+} from '../dynamic-skeleton'
+
+// Organization & Device skeleton components
+export { OrganizationIconSkeleton } from './organization-icon-skeleton'
+export { DeviceCardSkeleton, DeviceCardSkeletonGrid } from './device-card-skeleton' 
