@@ -54,6 +54,8 @@ const buttonVariants = cva(
         "section-active": "bg-ods-card border border-[var(--ods-open-yellow-base)] shadow-ods-card !text-left !justify-start !items-start transition-all duration-200 hover:bg-ods-card-hover disabled:opacity-50 disabled:cursor-not-allowed",
         // Table display variant - for non-interactive display in tables (no hover, no padding)
         "table-display": "bg-transparent text-ods-text-primary cursor-default pointer-events-none font-normal",
+        // Device action variant - for device detail page action buttons
+        "device-action": "bg-ods-card border border-ods-border hover:bg-ods-bg-hover text-ods-text-primary px-4 py-3 rounded-[6px] font-['DM_Sans'] font-bold text-[18px] tracking-[-0.36px] disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-ods-card disabled:text-ods-text-secondary",
       },
       size: {
         // Small size for secondary actions
