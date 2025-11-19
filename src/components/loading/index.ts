@@ -103,4 +103,5 @@ export {
 
 // Organization & Device skeleton components
 export { OrganizationIconSkeleton } from './organization-icon-skeleton'
+export { OrganizationCardSkeleton, OrganizationCardSkeletonGrid } from './organization-card-skeleton'
 export { DeviceCardSkeleton, DeviceCardSkeletonGrid } from './device-card-skeleton' 
