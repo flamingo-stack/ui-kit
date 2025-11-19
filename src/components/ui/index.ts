@@ -1,6 +1,7 @@
 // UI Components exports
 export * from './button'
 export * from './card'
+export * from './interactive-card'
 export * from './content-loader'
 export * from './page-loader'
 export * from './error-state'

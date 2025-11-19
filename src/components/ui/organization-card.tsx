@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation"
 import { Monitor } from "lucide-react"
 import { cn } from "../../utils/cn"
 import { OrganizationIcon } from "../features/organization-icon"
+import { InteractiveCard } from "./interactive-card"
 
 export interface Organization {
   id: string
@@ -180,30 +181,13 @@ export function OrganizationCard({
   }
 
   return (
-    <div
+    <InteractiveCard
+      onClick={handleCardClick}
+      hoverAccentColor={hoverAccentColor}
       className={cn(
-        "flex flex-col bg-ods-card border border-ods-border rounded-lg p-4 gap-3 transition-all w-full group relative cursor-pointer",
-        !hoverAccentColor && 'hover:border-ods-accent',
+        "flex flex-col bg-ods-card border border-ods-border rounded-lg p-4 gap-3 w-full relative",
         className
       )}
-      style={hoverAccentColor ? {
-        ['--hover-accent' as any]: hoverAccentColor
-      } : undefined}
-      onMouseEnter={hoverAccentColor ? (e) => {
-        e.currentTarget.style.borderColor = hoverAccentColor
-        const title = e.currentTarget.querySelector('h3')
-        if (title) {
-          (title as HTMLElement).style.color = hoverAccentColor
-        }
-      } : undefined}
-      onMouseLeave={hoverAccentColor ? (e) => {
-        e.currentTarget.style.borderColor = ''
-        const title = e.currentTarget.querySelector('h3')
-        if (title) {
-          (title as HTMLElement).style.color = ''
-        }
-      } : undefined}
-      onClick={handleCardClick}
     >
       {/* Device count with icon (top-right corner) - Only show if provided */}
       {deviceCount !== undefined && (
@@ -293,6 +277,6 @@ export function OrganizationCard({
           </div>
         </div>
       ) : null}
-    </div>
+    </InteractiveCard>
   )
 }
