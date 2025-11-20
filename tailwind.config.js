@@ -148,6 +148,9 @@ export default {
         "ods-link": "var(--color-link)",
         "ods-link-hover": "var(--color-link-hover)",
 
+        // Adaptive current color (platform-specific)
+        "ods-current": "var(--ods-current)",
+
         // Legacy nested structure (keep for any existing usage)
         ods: {
           bg: "var(--color-bg)",

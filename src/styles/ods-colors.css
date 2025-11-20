@@ -128,6 +128,9 @@
   --color-link: var(--ods-open-yellow-base);
   --color-link-hover: var(--ods-open-yellow-hover);
   --color-link-visited: #b794f6;
+
+  /* Adaptive Current Color (Platform-Specific) */
+  --ods-current: var(--color-text-primary); /* Default to primary text */
 }
 
 
@@ -145,6 +148,9 @@
   /* Add OpenFrame-specific card backgrounds to match Figma */
   --color-bg-card-primary: var(--ods-system-greys-black);
   --color-bg-card-secondary: var(--ods-system-greys-background);
+
+  /* OpenFrame uses yellow as adaptive color */
+  --ods-current: var(--ods-open-yellow-base);
 }
 
 [data-app-type="flamingo"] {
@@ -167,6 +173,9 @@
   --color-text-muted: var(--ods-system-greys-grey-action);
   --color-border-default: var(--ods-system-greys-soft-grey);
   --color-divider: var(--ods-system-greys-soft-grey);
+
+  /* Flamingo uses pink as adaptive color */
+  --ods-current: var(--ods-flamingo-pink-base);
 }
 
 [data-app-type="tmcg"] {
@@ -189,6 +198,9 @@
   --color-text-muted: var(--ods-system-greys-grey-action);
   --color-border-default: var(--ods-system-greys-soft-grey);
   --color-divider: var(--ods-system-greys-soft-grey);
+
+  /* TMCG uses pink as adaptive color */
+  --ods-current: var(--ods-flamingo-pink-base);
 }
 
 /* Light Theme Support */
