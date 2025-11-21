@@ -95,7 +95,8 @@ export const InteractiveCard = React.forwardRef<HTMLDivElement, InteractiveCardP
           (title as HTMLElement).style.color = hoverAccentColor
         }
         // Change primary text elements (large values, main content)
-        const primaryTexts = e.currentTarget.querySelectorAll('.text-ods-text-primary')
+        // Exclude button text from color change
+        const primaryTexts = e.currentTarget.querySelectorAll('.text-ods-text-primary:not(button):not(button *)')
         primaryTexts.forEach((el) => {
           (el as HTMLElement).style.color = hoverAccentColor
         })
@@ -111,7 +112,7 @@ export const InteractiveCard = React.forwardRef<HTMLDivElement, InteractiveCardP
           (title as HTMLElement).style.color = ''
         }
         // Reset primary text elements
-        const primaryTexts = e.currentTarget.querySelectorAll('.text-ods-text-primary')
+        const primaryTexts = e.currentTarget.querySelectorAll('.text-ods-text-primary:not(button):not(button *)')
         primaryTexts.forEach((el) => {
           (el as HTMLElement).style.color = ''
         })
@@ -130,8 +131,8 @@ export const InteractiveCard = React.forwardRef<HTMLDivElement, InteractiveCardP
               "hover:border-ods-accent",
               // H3 titles turn accent on hover
               "[&:hover_h3]:text-ods-accent",
-              // Primary text turns accent on hover
-              "[&:hover_.text-ods-text-primary]:text-ods-accent"
+              // Primary text turns accent on hover (but not inside buttons)
+              "[&:hover_.text-ods-text-primary:not(button):not(button_*)]:text-ods-accent"
             ]
           ],
           className

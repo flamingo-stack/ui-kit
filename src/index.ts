@@ -6,6 +6,8 @@ export * from './components/navigation'
 export * from './components/platform'
 // Chat exports
 export * from './components/chat'
+// Onboarding exports
+export * from './components/shared/onboarding'
 // Logs components
 export { LogsList } from './components/logs-list'
 export { LogSeverityDot } from './components/log-severity-dot'

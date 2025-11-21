@@ -63,5 +63,8 @@ export * from './date-time-picker'
 // Chat components
 export * from './chat'
 
+// Onboarding components
+export * from './shared/onboarding'
+
 // Priority UI components that exist in main components directory
 // Note: These are re-exported from ./ui already, no need to duplicate
