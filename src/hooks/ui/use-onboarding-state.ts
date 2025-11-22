@@ -11,7 +11,7 @@ import {
   isStepComplete as storageIsComplete,
   isStepSkipped as storageIsSkipped,
   type OnboardingState
-} from '@lib/utils/onboarding-storage'
+} from '../../utils/onboarding-storage'
 
 export interface OnboardingStepConfig {
   id: string

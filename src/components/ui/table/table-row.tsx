@@ -12,14 +12,13 @@ export function TableRow<T = any>({
   item,
   columns,
   rowKey,
-  rowActions,
-  renderRowActions,
-  actionsWidth,
   onClick,
   className,
   index,
   mobileColumns,
   renderMobileRow,
+  rowActions,
+  renderRowActions,
   selectable,
   selected,
   onSelect
@@ -103,37 +102,6 @@ export function TableRow<T = any>({
             {getCellValue(column)}
           </TableCell>
         ))}
-
-        {/* Row Actions */}
-        {(renderRowActions || (rowActions && rowActions.length > 0)) && (
-          <div
-            className="flex gap-2 items-center justify-end ml-auto shrink-0 pr-4"
-            style={{ width: actionsWidth ? `${actionsWidth}px` : undefined, minWidth: actionsWidth ? `${actionsWidth}px` : '3rem' }}
-            data-no-row-click
-          >
-            {renderRowActions ? (
-              renderRowActions(item)
-            ) : (
-              rowActions!.map((action, actionIndex) => (
-                <Button
-                  key={actionIndex}
-                  variant={action.variant || 'outline'}
-                  // size={action.icon && !action.label ? 'sm' : undefined}
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    action.onClick(item)
-                  }}
-                  leftIcon={action.icon && action.label ? action.icon : undefined}
-                  centerIcon={action.icon && !action.label ? action.icon : undefined}
-                  className={action.className}
-                >
-
-                  {action.label}
-                </Button>
-              ))
-            )}
-          </div>
-        )}
       </div>
 
       {/* Mobile Layout */}

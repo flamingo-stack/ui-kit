@@ -8,7 +8,54 @@ import { TableCardSkeleton } from './table-skeleton'
 import { TableEmptyState } from './table-empty-state'
 import { CursorPagination } from '../cursor-pagination'
 import { Pagination } from '../../pagination'
-import type { TableProps } from './types'
+import { Button } from '../button'
+import type { TableProps, TableColumn, RowAction } from './types'
+import type { ReactNode } from 'react'
+
+/**
+ * Injects a synthetic actions column into the columns array when row actions exist
+ */
+function injectActionsColumn<T>(
+  columns: TableColumn<T>[],
+  rowActions?: RowAction<T>[],
+  renderRowActions?: (item: T) => ReactNode
+): TableColumn<T>[] {
+  const hasActions = !!rowActions || !!renderRowActions
+  if (!hasActions) return columns
+
+  const actionsColumn: TableColumn<T> = {
+    key: '__actions__',
+    label: '',
+    width: 'w-fit shrink-0',
+    align: 'right',
+    renderCell: (item: T) => (
+      <div className="flex gap-2 items-center justify-end pr-4" data-no-row-click>
+        {renderRowActions ? (
+          renderRowActions(item)
+        ) : (
+          rowActions!.map((action, actionIndex) => (
+            <Button
+              key={actionIndex}
+              variant={action.variant || 'outline'}
+              onClick={(e) => {
+                e.stopPropagation()
+                action.onClick(item)
+              }}
+              leftIcon={action.icon && action.label ? action.icon : undefined}
+              centerIcon={action.icon && !action.label ? action.icon : undefined}
+              className={action.className}
+            >
+              {action.label}
+            </Button>
+          ))
+        )}
+      </div>
+    ),
+    renderHeader: () => <div className="text-right" />
+  }
+
+  return [...columns, actionsColumn]
+}
 
 export function Table<T = any>({
   data,
@@ -23,8 +70,6 @@ export function Table<T = any>({
   onRowClick,
   rowActions,
   renderRowActions,
-  actionsWidth,
-  actionsMinWidth = 48,
   sortBy,
   sortDirection,
   onSort,
@@ -42,6 +87,8 @@ export function Table<T = any>({
   pagePagination,
   paginationClassName
 }: TableProps<T>) {
+  // Inject synthetic actions column if needed
+  const columnsWithActions = injectActionsColumn(columns, rowActions, renderRowActions)
   const getRowKey = (item: T, index: number): string => {
     if (typeof rowKey === 'function') {
       return rowKey(item)
@@ -119,10 +166,8 @@ export function Table<T = any>({
 
       {/* Desktop Header */}
       <TableHeader
-        columns={columns}
+        columns={columnsWithActions}
         className={headerClassName}
-        hasActions={!!renderRowActions || (!!rowActions && rowActions.length > 0)}
-        actionsWidth={actionsWidth || actionsMinWidth}
         sortBy={sortBy}
         sortDirection={sortDirection}
         onSort={onSort}
@@ -150,16 +195,15 @@ export function Table<T = any>({
             <TableRow
               key={getRowKey(item, index)}
               item={item}
-              columns={columns}
+              columns={columnsWithActions}
               rowKey={rowKey}
-              rowActions={rowActions}
-              renderRowActions={renderRowActions}
-              actionsWidth={actionsWidth || actionsMinWidth}
               onClick={onRowClick}
               className={getRowClassName(item, index)}
               index={index}
               mobileColumns={mobileColumns}
               renderMobileRow={renderMobileRow}
+              rowActions={rowActions}
+              renderRowActions={renderRowActions}
               selectable={selectable}
               selected={isRowSelected(item)}
               onSelect={handleSelectRow}
