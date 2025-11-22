@@ -87,11 +87,7 @@ export interface TableProps<T = any> {
   rowActions?: RowAction<T>[]
   // Custom renderer for the actions area (e.g., kebab/dots menu)
   renderRowActions?: (item: T) => ReactNode
-  // Fixed action column width in px (takes precedence if provided)
-  actionsWidth?: number
-  // Minimum width in px to reserve when actions exist (fallback)
-  actionsMinWidth?: number
-  
+
   // Sorting
   sortBy?: string
   sortDirection?: 'asc' | 'desc'
@@ -144,8 +140,6 @@ export interface RowAction<T = any> {
 export interface TableHeaderProps<T = any> {
   columns: TableColumn<T>[]
   className?: string
-  hasActions?: boolean
-  actionsWidth?: number
   // Sorting
   sortBy?: string
   sortDirection?: 'asc' | 'desc'
@@ -165,15 +159,15 @@ export interface TableRowProps<T = any> {
   item: T
   columns: TableColumn<T>[]
   rowKey: keyof T | ((item: T) => string)
-  rowActions?: RowAction<T>[]
-  renderRowActions?: (item: T) => ReactNode
-  actionsWidth?: number
   onClick?: (item: T) => void
   className?: string | ((item: T, index: number) => string)
   index: number
   isMobile?: boolean
   mobileColumns?: string[]
   renderMobileRow?: (item: T) => ReactNode
+  // Mobile actions only (desktop uses synthetic column)
+  rowActions?: RowAction<T>[]
+  renderRowActions?: (item: T) => ReactNode
   // Selection
   selectable?: boolean
   selected?: boolean

@@ -11,8 +11,6 @@ import type { TableHeaderProps, TableColumn } from './types'
 export function TableHeader<T = any>({
   columns,
   className,
-  hasActions = false,
-  actionsWidth,
   sortBy,
   sortDirection,
   onSort,
@@ -226,14 +224,6 @@ export function TableHeader<T = any>({
             )}
           </div>
         ))}
-        
-        {/* Space for actions - matches row actions container */}
-        {hasActions && (
-          <div
-            className="flex gap-2 items-center ml-auto shrink-0"
-            style={{ width: actionsWidth ? `${actionsWidth}px` : undefined, minWidth: actionsWidth ? `${actionsWidth}px` : '3rem' }}
-          />
-        )}
       </div>
     </>
   )
