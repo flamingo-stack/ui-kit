@@ -38,6 +38,7 @@ export function OnboardingWalkthrough({
     markSkipped,
     dismissOnboarding,
     isStepComplete,
+    isStepSkipped,
     allStepsComplete,
     markMultipleComplete
   } = useOnboardingState(storageKey)
@@ -99,18 +100,19 @@ export function OnboardingWalkthrough({
 
   return (
     <div className={cn('w-full space-y-4', className)}>
-      {/* Header matching Devices Overview / Chats Overview styling */}
-      <div className="flex items-center justify-between">
+      {/* Header - responsive: stacks on mobile */}
+      <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-3 md:gap-0">
         <h2 className="font-['Azeret_Mono'] font-semibold text-[24px] leading-[32px] tracking-[-0.48px] text-ods-text-primary">
           Get Started
         </h2>
 
         {isLoadingCompletion ? (
-          <div className="h-[40px] w-[160px] bg-ods-border rounded-[6px] animate-pulse" />
+          <div className="h-[40px] w-full md:w-[160px] bg-ods-border rounded-[6px] animate-pulse" />
         ) : isAllComplete ? (
           <Button
             variant="primary"
             onClick={handleDismiss}
+            className="w-full md:w-auto"
           >
             Close Onboarding
           </Button>
@@ -118,6 +120,7 @@ export function OnboardingWalkthrough({
           <Button
             variant="device-action"
             onClick={handleDismiss}
+            className="w-full md:w-auto"
           >
             Skip Onboarding
           </Button>
@@ -131,6 +134,7 @@ export function OnboardingWalkthrough({
             key={step.id}
             step={step}
             isCompleted={isStepComplete(step.id)}
+            isSkipped={isStepSkipped(step.id)}
             isCheckingCompletion={isLoadingCompletion}
             onAction={() => handleStepAction(step)}
             onSkip={() => handleStepSkip(step)}

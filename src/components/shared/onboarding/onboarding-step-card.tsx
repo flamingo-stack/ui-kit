@@ -18,6 +18,7 @@ export interface OnboardingStepCardProps {
     onSkip?: () => void
   }
   isCompleted: boolean
+  isSkipped: boolean
   isCheckingCompletion: boolean
   onAction: () => void | Promise<void>
   onSkip: () => void
@@ -27,6 +28,7 @@ export interface OnboardingStepCardProps {
 export function OnboardingStepCard({
   step,
   isCompleted,
+  isSkipped,
   isCheckingCompletion,
   onAction,
   onSkip,
@@ -53,13 +55,17 @@ export function OnboardingStepCard({
     <InteractiveCard
       clickable={true}
       className={cn(
-        'bg-ods-card border border-ods-border rounded-[6px] h-[80px]',
-        'flex items-center gap-4 px-4',
+        'bg-ods-card border border-ods-border rounded-[6px]',
+        'flex flex-col md:flex-row',
+        'min-h-[80px] md:h-[80px]',
+        'items-start md:items-center',
+        'gap-3 md:gap-4',
+        'px-4 py-4 md:py-0',
         className
       )}
     >
       {/* Left column - content */}
-      <div className="flex-1 min-w-0 flex flex-col justify-center gap-1">
+      <div className="flex-1 w-full md:w-auto min-w-0 flex flex-col justify-center gap-1">
         <h3 className="font-['DM_Sans'] font-medium text-[18px] leading-[24px] text-ods-text-primary truncate">
           {step.title}
         </h3>
@@ -68,8 +74,8 @@ export function OnboardingStepCard({
         </p>
       </div>
 
-      {/* Right column - action buttons or completed badge */}
-      <div className="flex items-center gap-2 shrink-0" onClick={(e) => e.stopPropagation()}>
+      {/* Right column - action buttons, completed badge, or skipped badge */}
+      <div className="flex items-center gap-2 w-full md:w-auto justify-start md:justify-end shrink-0" onClick={(e) => e.stopPropagation()}>
         {isCheckingCompletion ? (
           <>
             <div className="h-[32px] w-[100px] bg-ods-border rounded-[6px] animate-pulse" />
@@ -90,6 +96,14 @@ export function OnboardingStepCard({
             >
               {step.completedText}
             </Button>
+          </>
+        ) : isSkipped ? (
+          <>
+            <StatusBadge
+              text="SKIPPED"
+              variant="card"
+              colorScheme="default"
+            />
           </>
         ) : (
           <>
