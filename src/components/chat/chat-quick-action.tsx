@@ -12,10 +12,11 @@ export interface ChatQuickActionProps extends React.ButtonHTMLAttributes<HTMLBut
   isHintActive?: boolean
   /** Callback when user clicks the action - stops hint */
   onHintInteraction?: () => void
+  disabled?: boolean
 }
 
 const ChatQuickAction = React.forwardRef<HTMLButtonElement, ChatQuickActionProps>(
-  ({ className, text, onAction, onClick, isHintActive, onHintInteraction, ...props }, ref) => {
+  ({ className, text, onAction, onClick, isHintActive, onHintInteraction, disabled = false, ...props }, ref) => {
     const handleClick = React.useCallback((e: React.MouseEvent<HTMLButtonElement>) => {
       // Stop hint only on click, not on hover
       if (onHintInteraction) {
@@ -34,16 +35,17 @@ const ChatQuickAction = React.forwardRef<HTMLButtonElement, ChatQuickActionProps
         ref={ref}
         type="button"
         onClick={handleClick}
+        disabled={disabled}
         className={cn(
           "flex items-center justify-between gap-3 w-full",
           "px-4 py-3 rounded-lg",
           "bg-transparent border border-ods-border",
           "text-left text-ods-text-primary",
-          "hover:bg-ods-bg-hover hover:border-ods-border",
-          "active:bg-ods-bg-active active:scale-[0.98]",
           "transition-all duration-150",
           "focus:outline-none focus:ring-2 focus:ring-ods-focus focus:ring-offset-2 focus:ring-offset-ods-bg",
-          isHintActive && "animate-hint-pulse",
+          !disabled && "hover:bg-ods-bg-hover hover:border-ods-border active:bg-ods-bg-active active:scale-[0.98]",
+          disabled && "opacity-50 cursor-not-allowed",
+          isHintActive && !disabled && "animate-hint-pulse",
           className
         )}
         {...props}

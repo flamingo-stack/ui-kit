@@ -83,7 +83,7 @@ const ChatMessageList = forwardRef<HTMLDivElement, ChatMessageListProps>(
           )}
           {...props}
         >
-          <div className={cn("mx-auto flex w-full max-w-3xl flex-col gap-1 pt-8", contentClassName || "px-12")} style={{ minHeight: '100%' }}>
+          <div className={cn("mx-auto flex w-full max-w-3xl flex-col gap-1 pt-8 min-w-0", contentClassName || "px-12")} style={{ minHeight: '100%' }}>
             <div className="flex-1" />
             {messages.map((message, index) => {
               const useEnhanced = Array.isArray(message.content) || message.role === 'assistant'

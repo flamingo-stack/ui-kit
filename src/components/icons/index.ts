@@ -68,6 +68,8 @@ export { LumaIcon } from './luma-icon';
 export { WhatsAppIcon } from './whatsapp-icon';
 export { FigmaIcon } from './figma-icon';
 export { ImageIcon } from './image-icon';
+export { OpenAiIcon } from './openai-icon';
+export { GoogleGeminiIcon } from './google-gemini-icon';
 
 // Social platform icons
 export { GlobeIcon } from './globe-icon';

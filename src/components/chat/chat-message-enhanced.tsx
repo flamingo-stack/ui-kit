@@ -5,6 +5,7 @@ import { cn } from "../../utils/cn"
 import { SquareAvatar } from "../ui/square-avatar"
 import { ChatTypingIndicator } from "./chat-typing-indicator"
 import { ToolExecutionDisplay, type ToolExecutionMessage } from "./tool-execution-display"
+import { SimpleMarkdownRenderer } from "../ui/simple-markdown-renderer"
 
 export type MessageSegment =
   | { type: 'text'; text: string }
@@ -93,7 +94,7 @@ const ChatMessageEnhanced = forwardRef<HTMLDivElement, ChatMessageEnhancedProps>
         )}
         
         {/* Message Content */}
-        <div className="flex flex-1 flex-col gap-1">
+        <div className="flex flex-1 flex-col gap-1 min-w-0">
           {/* Name and Timestamp Row */}
           <div className="flex items-center justify-between pr-2">
             <span className={cn(
@@ -118,15 +119,14 @@ const ChatMessageEnhanced = forwardRef<HTMLDivElement, ChatMessageEnhancedProps>
                 if (segment.type === 'text') {
                   return (
                     <div key={index} className={cn(
-                      "whitespace-pre-wrap",
-                      "font-dm-sans text-[18px] font-normal leading-[24px]",
+                      "min-w-0 w-full overflow-hidden",
                       isError
                         ? "text-ods-error"
                         : isUser
                           ? "text-ods-text-primary"
                           : "text-ods-text-primary"
                     )}>
-                      {segment.text}
+                      <SimpleMarkdownRenderer content={segment.text} />
                     </div>
                   )
                 } else if (segment.type === 'tool_execution') {
