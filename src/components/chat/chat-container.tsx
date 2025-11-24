@@ -4,6 +4,38 @@ import { SquareAvatar as Avatar } from "../ui/square-avatar"
 import { Button } from "../ui/button"
 import { PlusCircleIcon } from "../plus-circle-icon"
 
+interface ConnectionIndicatorProps {
+  status: 'connected' | 'disconnected' | 'connecting'
+}
+
+const ConnectionIndicator: React.FC<ConnectionIndicatorProps> = ({ status }) => {
+  const getStatusStyles = () => {
+    switch (status) {
+      case 'connected':
+        return 'bg-green-500'
+      case 'connecting':
+        return 'bg-yellow-500 animate-pulse'
+      case 'disconnected':
+        return 'bg-red-500'
+      default:
+        return 'bg-gray-500'
+    }
+  }
+
+  return (
+    <div className="flex items-center">
+      <div 
+        className={cn(
+          "w-2 h-2 rounded-full",
+          getStatusStyles()
+        )}
+        aria-label={`Connection status: ${status}`}
+        title={status === 'connected' ? 'Connected' : status === 'connecting' ? 'Connecting...' : 'Disconnected'}
+      />
+    </div>
+  )
+}
+
 export interface ChatContainerProps extends React.HTMLAttributes<HTMLDivElement> {
   children?: React.ReactNode
 }
@@ -36,10 +68,12 @@ interface ChatHeaderProps extends React.HTMLAttributes<HTMLDivElement> {
   onSettingsClick?: () => void
   onNewChat?: () => void
   showNewChat?: boolean
+  connectionStatus?: 'connected' | 'disconnected' | 'connecting'
+  serverUrl?: string | null
 }
 
 const ChatHeader = React.forwardRef<HTMLDivElement, ChatHeaderProps>(
-  ({ className, userName = 'Grace "Fae" Meadows', userTitle = "Your Personal Assistant", userAvatar, onSettingsClick, onNewChat, showNewChat = false, ...props }, ref) => {
+  ({ className, userName = 'Grace "Fae" Meadows', userTitle = "Your Personal Assistant", userAvatar, onSettingsClick, onNewChat, showNewChat = false, connectionStatus = 'disconnected', serverUrl = null, ...props }, ref) => {
     return (
       <div
         ref={ref}
@@ -63,7 +97,14 @@ const ChatHeader = React.forwardRef<HTMLDivElement, ChatHeaderProps>(
           />
           <div className="flex flex-col">
             <span className="text-base font-semibold text-ods-text-primary">{userName}</span>
-            <span className="text-sm text-ods-text-secondary">{userTitle}</span>
+            <div className="flex items-center gap-2">
+              {serverUrl && (
+                <>
+                  <span className="text-sm text-ods-text-secondary">{serverUrl}</span>
+                  <ConnectionIndicator status={connectionStatus} />
+                </>
+              )}
+            </div>
           </div>
         </div>
         {showNewChat && onNewChat && (

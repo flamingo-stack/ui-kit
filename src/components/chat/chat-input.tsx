@@ -9,10 +9,11 @@ export interface ChatInputProps extends Omit<TextareaHTMLAttributes<HTMLTextArea
   onSend?: (message: string) => void
   sending?: boolean
   reserveAvatarOffset?: boolean
+  disabled?: boolean
 }
 
 const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
-  ({ className, onSend, sending = false, placeholder = "Enter your request here...", reserveAvatarOffset = true, ...props }, ref) => {
+  ({ className, onSend, sending = false, placeholder = "Enter your request here...", reserveAvatarOffset = true, disabled = false, ...props }, ref) => {
     const [value, setValue] = useState('')
     const textareaRef = useRef<HTMLTextAreaElement>(null)
 
@@ -20,7 +21,7 @@ const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
 
     const handleSubmit = useCallback(() => {
       const message = value.trim()
-      if (message && !sending && onSend) {
+      if (message && !sending && !disabled && onSend) {
         onSend(message)
         setValue('')
 
@@ -28,7 +29,7 @@ const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
           textareaRef.current.style.height = 'auto'
         }
       }
-    }, [value, sending, onSend])
+    }, [value, sending, disabled, onSend])
 
     const handleKeyDown = useCallback((e: KeyboardEvent<HTMLTextAreaElement>) => {
       if (e.key === 'Enter' && !e.shiftKey) {
@@ -70,8 +71,8 @@ const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
             value={value}
             onChange={handleChange}
             onKeyDown={handleKeyDown}
-            placeholder={placeholder}
-            disabled={sending}
+            placeholder={disabled ? "Connection lost. Waiting to reconnect..." : placeholder}
+            disabled={sending || disabled}
             rows={1}
             className={cn(
               "flex-1 resize-none bg-transparent px-0 border-none focus-visible:ring-0",
@@ -87,10 +88,10 @@ const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
           <button
             type="button"
             onClick={handleSubmit}
-            disabled={sending || !value.trim()}
+            disabled={sending || disabled || !value.trim()}
             className={cn(
               "rounded-md p-1.5 text-ods-text-secondary transition-all",
-              sending || !value.trim() ? "cursor-not-allowed opacity-40" : "hover:text-ods-text-primary active:scale-95",
+              sending || disabled || !value.trim() ? "cursor-not-allowed opacity-40" : "hover:text-ods-text-primary active:scale-95",
               "focus:outline-none"
             )}
             aria-label="Send message"
