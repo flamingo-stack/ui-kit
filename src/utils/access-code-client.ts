@@ -10,7 +10,7 @@ import {
   AccessCodeValidation,
   AccessCodeValidationResponse,
   AccessCodeConsumptionResponse
-} from '@flamingo/ui-kit/types/access-code-cohorts';
+} from '../types/access-code-cohorts';
 
 /**
  * Validate an access code for a given email

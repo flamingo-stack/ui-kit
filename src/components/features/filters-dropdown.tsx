@@ -376,10 +376,10 @@ export const FiltersDropdown: React.FC<FiltersDropdownProps> = ({
                     {section.options.map((option, index) => {
                       const isSelected = sectionSelection.includes(option.id)
                       const isLast = index === section.options.length - 1
-                      
+
                       return (
                         <div
-                          key={option.id}
+                          key={`${section.id}-${option.id}-${index}`}
                           className={cn(
                             "flex items-center gap-2 px-2 py-2",
                             isSelected ? "bg-[#212121]" : "bg-[#161616]",
