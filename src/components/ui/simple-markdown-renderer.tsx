@@ -22,9 +22,6 @@ export const SimpleMarkdownRenderer: React.FC<SimpleMarkdownRendererProps> = ({
     setMounted(true);
   }, []);
 
-  // Fixed dark mode for platform consistency
-  const isDarkMode = true;
-
   // Memoize components to prevent React from losing event handlers
   const components = useMemo(() => ({
     // Custom code renderer
@@ -34,19 +31,9 @@ export const SimpleMarkdownRenderer: React.FC<SimpleMarkdownRendererProps> = ({
 
       if (!inline && match) {
         return (
-          <div className={`code-block-container border rounded-lg my-6 overflow-hidden ${
-            isDarkMode 
-              ? 'bg-ods-card border-ods-border' 
-              : 'bg-ods-bg-secondary border-ods-border'
-          }`}>
-            <div className={`code-header border-b px-4 py-2 ${
-              isDarkMode 
-                ? 'bg-ods-card border-ods-border' 
-                : 'bg-[#E5E7EB] border-[#D1D5DB]'
-            }`}>
-              <span className={`font-sans text-xs uppercase tracking-wide ${
-                isDarkMode ? 'text-ods-text-tertiary' : 'text-ods-text-tertiary'
-              }`}>
+          <div className="code-block-container border rounded-lg my-6 overflow-hidden bg-ods-card border-ods-border">
+            <div className="code-header border-b px-4 py-2 bg-ods-card border-ods-border">
+              <span className="font-sans text-xs uppercase tracking-wide text-ods-text-tertiary">
                 {language || 'code'}
               </span>
             </div>
@@ -58,7 +45,7 @@ export const SimpleMarkdownRenderer: React.FC<SimpleMarkdownRendererProps> = ({
                     fontSize: '14px',
                     fontFamily: "JetBrains Mono', 'SF Mono', Consolas, monospace",
                     background: 'transparent',
-                    color: isDarkMode ? 'var(--ods-text-primary)' : 'var(--ods-text-primary)',
+                    color: 'var(--ods-text-primary)',
                     wordBreak: 'break-all',
                     overflowWrap: 'anywhere'
                   }}
@@ -74,11 +61,7 @@ export const SimpleMarkdownRenderer: React.FC<SimpleMarkdownRendererProps> = ({
 
       return (
         <code
-          className={`font-mono text-[0.9em] px-1.5 py-0.5 rounded border ${
-            isDarkMode 
-              ? 'bg-ods-card text-ods-text-primary border-ods-border' 
-              : 'bg-ods-bg-secondary text-ods-text-primary border-ods-border'
-          }`}
+          className="font-mono text-[0.9em] px-1.5 py-0.5 rounded border bg-ods-card text-ods-text-primary border-ods-border"
           {...props}
         >
           {children}
@@ -88,16 +71,8 @@ export const SimpleMarkdownRenderer: React.FC<SimpleMarkdownRendererProps> = ({
 
     // Style blockquotes
     blockquote: ({ children }: any) => (
-      <blockquote className={`border-l-4 border-[#FFC008] ml-0 pl-6 my-8 py-4 rounded-r-lg ${
-        isDarkMode 
-          ? 'bg-[#1F1F1F]' 
-          : 'bg-[#F8F9FA]'
-      }`}>
-        <div className={`font-sans text-[1.125em] leading-relaxed ${
-          isDarkMode 
-            ? 'text-ods-text-secondary' 
-            : 'text-ods-text-primary'
-        }`}>
+      <blockquote className="border-l-4 border-ods-accent ml-0 pl-6 my-8 py-4 rounded-r-lg bg-ods-bg-secondary">
+        <div className="font-sans text-[1.125em] leading-relaxed text-ods-text-secondary">
           {children}
         </div>
       </blockquote>
@@ -105,34 +80,24 @@ export const SimpleMarkdownRenderer: React.FC<SimpleMarkdownRendererProps> = ({
 
     // Style headings
     h1: ({ children }: any) => (
-      <h1 className={`font-sans font-bold text-[24px] md:text-[28px] leading-[1.25] mt-6 mb-3 first:mt-0 ${
-        isDarkMode ? 'text-ods-text-primary' : 'text-[#111827]'
-      }`}>
+      <h1 className="font-sans font-bold text-[24px] md:text-[28px] leading-[1.25] mt-6 mb-3 first:mt-0 text-ods-text-primary">
         {children}
       </h1>
     ),
     h2: ({ children }: any) => (
-      <h2 className={`font-sans font-semibold text-[20px] md:text-[24px] mt-5 mb-3 pb-1 border-b ${
-        isDarkMode 
-          ? 'text-ods-text-primary border-ods-border' 
-          : 'text-[#111827] border-[#E5E7EB]'
-      }`}>
+      <h2 className="font-sans font-semibold text-[20px] md:text-[24px] mt-5 mb-3 pb-1 border-b text-ods-text-primary border-ods-border">
         {children}
       </h2>
     ),
     h3: ({ children }: any) => (
-      <h3 className={`font-sans font-semibold text-[18px] md:text-[20px] mt-4 mb-2 ${
-        isDarkMode ? 'text-ods-text-primary' : 'text-[#111827]'
-      }`}>
+      <h3 className="font-sans font-semibold text-[18px] md:text-[20px] mt-4 mb-2 text-ods-text-primary">
         {children}
       </h3>
     ),
 
     // Style paragraphs
     p: ({ children }: any) => (
-      <p className={`font-dm-sans text-[18px] font-normal leading-[24px] my-3 break-words overflow-wrap-anywhere ${
-        isDarkMode ? 'text-ods-text-primary' : 'text-[#374151]'
-      }`}>
+      <p className="font-dm-sans text-[18px] font-normal leading-[24px] my-3 break-words overflow-wrap-anywhere text-ods-text-primary">
         {children}
       </p>
     ),
@@ -141,7 +106,7 @@ export const SimpleMarkdownRenderer: React.FC<SimpleMarkdownRendererProps> = ({
     a: ({ href, children }: any) => (
       <a
         href={href}
-        className="text-ods-accent no-underline relative transition-colors duration-200 hover:after:w-full after:content-[''] after:absolute after:w-0 after:h-0.5 after:-bottom-0.5 after:left-0 after:bg-[#FFC008] after:transition-all after:duration-300 break-all"
+        className="text-ods-accent no-underline relative transition-colors duration-200 hover:after:w-full after:content-[''] after:absolute after:w-0 after:h-0.5 after:-bottom-0.5 after:left-0 after:bg-ods-accent after:transition-all after:duration-300 break-all"
         target={href?.startsWith('http') ? '_blank' : undefined}
         rel={href?.startsWith('http') ? 'noopener noreferrer' : undefined}
       >
@@ -151,16 +116,12 @@ export const SimpleMarkdownRenderer: React.FC<SimpleMarkdownRendererProps> = ({
 
     // Style lists
     ul: ({ children }: any) => (
-      <ul className={`list-disc list-outside my-3 ml-6 space-y-1 ${
-        isDarkMode ? 'text-ods-text-primary' : 'text-[#374151]'
-      }`}>
+      <ul className="list-disc list-outside my-3 ml-6 space-y-1 text-ods-text-primary">
         {children}
       </ul>
     ),
     ol: ({ children }: any) => (
-      <ol className={`list-decimal list-outside my-3 ml-6 space-y-1 ${
-        isDarkMode ? 'text-ods-text-primary' : 'text-[#374151]'
-      }`}>
+      <ol className="list-decimal list-outside my-3 ml-6 space-y-1 text-ods-text-primary">
         {children}
       </ol>
     ),
@@ -172,11 +133,9 @@ export const SimpleMarkdownRenderer: React.FC<SimpleMarkdownRendererProps> = ({
 
     // Style horizontal rules
     hr: () => (
-      <hr className={`border-0 border-t my-6 ${
-        isDarkMode ? 'border-ods-border' : 'border-[#E5E7EB]'
-      }`} />
+      <hr className="border-0 border-t my-6 border-ods-border" />
     ),
-  }), [isDarkMode]);
+  }), []);
 
   // Show loading state during hydration to prevent mismatch
   if (!mounted) {
