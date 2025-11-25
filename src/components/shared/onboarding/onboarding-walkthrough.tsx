@@ -43,10 +43,12 @@ export function OnboardingWalkthrough({
     markMultipleComplete
   } = useOnboardingState(storageKey)
 
-  // Refs to prevent race conditions
+  // Refs to prevent race conditions - ALL refs must be declared before any conditional returns
   const hasAutoMarkedRef = useRef(false)
   const autoMarkingInProgressRef = useRef(false)
   const lastCompletionStatusRef = useRef<string | null>(null)
+  // Ref to track in-flight action handlers - moved here to be before conditional return
+  const actionInProgressRef = useRef<Set<string>>(new Set())
 
   // Sync completion status from hooks to localStorage
   // Uses refs to prevent duplicate calls and race conditions
@@ -100,21 +102,7 @@ export function OnboardingWalkthrough({
     }
   }, [completionStatus, isLoadingCompletion, state.completedSteps, markMultipleComplete])
 
-  // Don't render if dismissed
-  if (state.dismissed) {
-    return null
-  }
-
-  const isAllComplete = allStepsComplete(steps)
-
-  const handleDismiss = () => {
-    dismissOnboarding()
-    onDismiss?.()
-  }
-
-  // Ref to track in-flight action handlers
-  const actionInProgressRef = useRef<Set<string>>(new Set())
-
+  // useCallback must be called unconditionally (before any early returns)
   const handleStepAction = useCallback(async (step: OnboardingStepConfig) => {
     // Prevent duplicate action handling for the same step
     if (actionInProgressRef.current.has(step.id)) {
@@ -165,6 +153,19 @@ export function OnboardingWalkthrough({
     step.onSkip?.()
     markSkipped(step.id)
   }
+
+  const handleDismiss = () => {
+    dismissOnboarding()
+    onDismiss?.()
+  }
+
+  // ALL hooks have been called above - now safe to do conditional returns
+  // Don't render if dismissed
+  if (state.dismissed) {
+    return null
+  }
+
+  const isAllComplete = allStepsComplete(steps)
 
   return (
     <div className={cn('w-full space-y-4', className)}>
