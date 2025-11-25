@@ -61,7 +61,12 @@ const MenuItem: React.FC<MenuItemProps> = ({
   const handleClick = useCallback((e: React.MouseEvent) => {
     e.stopPropagation()
     e.preventDefault()
-    
+
+    // Don't allow clicks on disabled items
+    if (item.disabled) {
+      return
+    }
+
     if (item.type === 'submenu') {
       setShowSubmenu(prev => !prev)
     } else if (item.type === 'checkbox') {
@@ -70,7 +75,7 @@ const MenuItem: React.FC<MenuItemProps> = ({
     } else if (item.onClick) {
       item.onClick()
       onItemClick?.(item)
-      
+
       if (isNested && parentCloseHandler) {
         parentCloseHandler()
       }
@@ -120,12 +125,12 @@ const MenuItem: React.FC<MenuItemProps> = ({
         onClick={handleClick}
       >
         {item.icon && (
-          <div className="w-6 h-6 flex-shrink-0 flex items-center justify-center">
+          <div className={`w-6 h-6 flex-shrink-0 flex items-center justify-center ${item.disabled ? 'opacity-50' : ''}`}>
             {item.icon}
           </div>
         )}
         
-        <span className="flex-1 text-[18px] font-medium leading-6 text-ods-text-primary">
+        <span className={`flex-1 text-[18px] font-medium leading-6 ${item.disabled ? 'text-ods-text-secondary' : 'text-ods-text-primary'}`}>
           {item.label}
         </span>
 
