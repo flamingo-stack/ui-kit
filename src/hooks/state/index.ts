@@ -39,6 +39,13 @@ export { introspector, GraphQLIntrospector } from './introspection'
 export type { JSType, VariableDefinition } from './graphql-parser'
 export type { FlattenedParam } from './flatten-schema'
 
+// Cursor pagination state management
+export { useCursorPaginationState } from './use-cursor-pagination-state'
+export type {
+  UseCursorPaginationStateOptions,
+  CursorPaginationStateReturn
+} from './use-cursor-pagination-state'
+
 // Utilities (for advanced use cases)
 export {
   extractVariablesFromQuery,
