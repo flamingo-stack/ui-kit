@@ -5,4 +5,6 @@ export { delay, generateRandomString, truncateString, deepClone, getSlackCommuni
 export * from './platform-config'
 export * from './os-platforms'
 export * from './access-code-client'
+// Validation utilities
+export * from './validation-utils'
 // Note: format and date-utils are imported via cn.ts to avoid duplicates

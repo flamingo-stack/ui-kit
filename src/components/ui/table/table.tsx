@@ -26,10 +26,10 @@ function injectActionsColumn<T>(
   const actionsColumn: TableColumn<T> = {
     key: '__actions__',
     label: '',
-    width: 'w-fit shrink-0',
+    width: 'min-w-[200px] w-auto shrink-0 flex-none',
     align: 'right',
     renderCell: (item: T) => (
-      <div className="flex gap-2 items-center justify-end pr-4" data-no-row-click>
+      <div className="flex gap-2 items-center justify-end" data-no-row-click>
         {renderRowActions ? (
           renderRowActions(item)
         ) : (

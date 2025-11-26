@@ -80,7 +80,7 @@ export function TableRow<T = any>({
       onClick={handleRowClick}
     >
       {/* Desktop Layout */}
-      <div className="hidden md:flex items-center gap-4 pl-4 py-0 h-20">
+      <div className="hidden md:flex items-center gap-4 px-4 py-0 h-20">
         {/* Selection checkbox */}
         {selectable && (
           <div className="flex items-center justify-center w-10 shrink-0" data-no-row-click>
