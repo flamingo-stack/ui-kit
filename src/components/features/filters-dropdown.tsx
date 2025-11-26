@@ -380,7 +380,7 @@ export const FiltersDropdown: React.FC<FiltersDropdownProps> = ({
                         return (
                           <div
                             key={`${section.id}-separator-${index}`}
-                            className="border-t border-[#3a3a3a] my-1"
+                            className="border-t border-ods-border my-1"
                           />
                         )
                       }
