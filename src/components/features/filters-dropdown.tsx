@@ -9,6 +9,7 @@ export interface FilterOption {
   id: string
   label: string
   value: string | number | boolean
+  type?: 'option' | 'separator'  // Add type for separator support
 }
 
 export interface FilterSection {
@@ -374,6 +375,16 @@ export const FiltersDropdown: React.FC<FiltersDropdownProps> = ({
                   {/* Options Container */}
                   <div className="bg-[#161616] rounded-[6px] border border-[#3a3a3a] overflow-hidden">
                     {section.options.map((option, index) => {
+                      // Handle separator type
+                      if (option.type === 'separator') {
+                        return (
+                          <div
+                            key={`${section.id}-separator-${index}`}
+                            className="border-t border-[#3a3a3a] my-1"
+                          />
+                        )
+                      }
+
                       const isSelected = sectionSelection.includes(option.id)
                       const isLast = index === section.options.length - 1
 
