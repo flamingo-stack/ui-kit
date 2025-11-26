@@ -63,7 +63,7 @@ export function validateEmailDomain(domain: string): EmailDomainValidationResult
 
   // Check for protocol (common mistake: entering full URL)
   if (trimmed.includes('://')) {
-    return { valid: false, error: 'Enter email domain only (e.g., openframe.com), not a URL' }
+    return { valid: false, error: 'Enter email domain only (e.g., openframe.ai), not a URL' }
   }
 
   // Check for @ symbol (common mistake: entering full email address)
@@ -83,7 +83,7 @@ export function validateEmailDomain(domain: string): EmailDomainValidationResult
 
   // Validate the domain format
   if (!isValidEmailDomain(trimmed)) {
-    return { valid: false, error: 'Invalid domain format (e.g., openframe.com)' }
+    return { valid: false, error: 'Invalid domain format (e.g., openframe.ai)' }
   }
 
   // Return success with the cleaned domain
