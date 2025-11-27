@@ -15,6 +15,19 @@ export interface ConfidenceField {
   confidence?: number
 }
 
+/**
+ * Represents a field required for AI enrichment.
+ * Used to drive both the canEnrich logic and display of AI-required badges.
+ */
+export interface AIRequiredField {
+  /** Form field key (e.g., 'version', 'email') */
+  key: string
+  /** Display label (e.g., 'Version', 'Email') */
+  label: string
+  /** Current state - is field filled? */
+  isFilled: boolean
+}
+
 export interface AIEnrichSectionProps {
   // Button state
   onEnrich: () => void
@@ -32,6 +45,9 @@ export interface AIEnrichSectionProps {
 
   // Confidence fields to display (optional - shown as simple list)
   confidenceFields?: ConfidenceField[]
+
+  // Required fields for AI enrichment - displays missing fields when disabled
+  requiredFields?: AIRequiredField[]
 
   // Custom content (like created tags info)
   children?: React.ReactNode
@@ -61,6 +77,7 @@ export const AIEnrichSection: React.FC<AIEnrichSectionProps> = ({
   overallConfidence,
   warnings,
   confidenceFields,
+  requiredFields,
   children,
   onClear,
   showClearButton = true,
@@ -73,6 +90,9 @@ export const AIEnrichSection: React.FC<AIEnrichSectionProps> = ({
 }) => {
   const hasResults = status === 'success' || status === 'error'
   const shouldDisable = disabled || !canEnrich
+
+  // Get list of unfilled required fields for display
+  const unfilledFields = requiredFields?.filter(f => !f.isFilled) || []
 
   return (
     <div
@@ -100,11 +120,26 @@ export const AIEnrichSection: React.FC<AIEnrichSectionProps> = ({
         />
       </div>
 
-      {/* Disabled message */}
+      {/* Disabled message with unfilled fields */}
       {shouldDisable && !loading && (
-        <p className="text-ods-text-secondary text-sm font-['DM_Sans']">
-          {disabledMessage}
-        </p>
+        <div className="space-y-2">
+          <p className="text-ods-text-secondary text-sm font-['DM_Sans']">
+            {disabledMessage}
+          </p>
+          {unfilledFields.length > 0 && (
+            <div className="flex flex-wrap gap-2">
+              {unfilledFields.map(field => (
+                <span
+                  key={field.key}
+                  className="inline-flex items-center gap-1 px-2 py-0.5 text-xs font-medium rounded-full bg-[--ods-flamingo-cyan-base]/10 text-[--ods-flamingo-cyan-base]/70 font-['DM_Sans']"
+                >
+                  <span className="w-1.5 h-1.5 rounded-full bg-[--ods-flamingo-cyan-base]/50" />
+                  {field.label}
+                </span>
+              ))}
+            </div>
+          )}
+        </div>
       )}
 
       {/* Results section */}

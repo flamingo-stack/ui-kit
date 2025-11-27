@@ -2,7 +2,7 @@
 
 import { Button, Input, Textarea, Label } from '../ui';
 import { Trash2, Plus, ChevronDown, ChevronUp } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import type { ChangelogEntry } from '../../types/product-release';
 
 interface ChangelogManagerProps {
@@ -10,15 +10,25 @@ interface ChangelogManagerProps {
   entries: ChangelogEntry[];
   onChange: (entries: ChangelogEntry[]) => void;
   className?: string;
+  /** Expand all items - useful after AI enrichment fills entries */
+  expandAll?: boolean;
 }
 
 export function ChangelogManager({
   title,
   entries,
   onChange,
-  className = ''
+  className = '',
+  expandAll = false
 }: ChangelogManagerProps) {
-  const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
+  const [expandedIndices, setExpandedIndices] = useState<Set<number>>(new Set());
+
+  // When expandAll changes to true and there are entries, expand all
+  useEffect(() => {
+    if (expandAll && entries.length > 0) {
+      setExpandedIndices(new Set(entries.map((_, i) => i)));
+    }
+  }, [expandAll, entries.length]);
 
   const addEntry = () => {
     const newEntry: ChangelogEntry = {
@@ -26,14 +36,21 @@ export function ChangelogManager({
       description: ''
     };
     onChange([...entries, newEntry]);
-    setExpandedIndex(entries.length); // Expand the newly added entry
+    // Expand the newly added entry
+    setExpandedIndices(prev => new Set([...prev, entries.length]));
   };
 
   const removeEntry = (index: number) => {
     onChange(entries.filter((_, i) => i !== index));
-    if (expandedIndex === index) {
-      setExpandedIndex(null);
-    }
+    // Remove from expanded and adjust indices for items after removed one
+    setExpandedIndices(prev => {
+      const newSet = new Set<number>();
+      prev.forEach(i => {
+        if (i < index) newSet.add(i);
+        else if (i > index) newSet.add(i - 1);
+      });
+      return newSet;
+    });
   };
 
   const updateEntry = (index: number, field: keyof ChangelogEntry, value: string) => {
@@ -43,7 +60,15 @@ export function ChangelogManager({
   };
 
   const toggleExpanded = (index: number) => {
-    setExpandedIndex(expandedIndex === index ? null : index);
+    setExpandedIndices(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(index)) {
+        newSet.delete(index);
+      } else {
+        newSet.add(index);
+      }
+      return newSet;
+    });
   };
 
   return (
@@ -65,7 +90,7 @@ export function ChangelogManager({
       </div>
 
       {entries.map((entry, index) => {
-        const isExpanded = expandedIndex === index;
+        const isExpanded = expandedIndices.has(index);
         const hasContent = entry.title.trim().length > 0;
 
         return (

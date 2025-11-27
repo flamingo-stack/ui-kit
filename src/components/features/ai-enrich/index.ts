@@ -12,4 +12,7 @@ export { AIWarningsSection } from './AIWarningsSection'
 export type { AIWarningsSectionProps } from './AIWarningsSection'
 
 export { AIEnrichSection } from './AIEnrichSection'
-export type { AIEnrichSectionProps, ConfidenceField } from './AIEnrichSection'
+export type { AIEnrichSectionProps, ConfidenceField, AIRequiredField } from './AIEnrichSection'
+
+export { AIRequiredBadge } from './AIRequiredBadge'
+export type { AIRequiredBadgeProps } from './AIRequiredBadge'
