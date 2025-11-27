@@ -32,3 +32,5 @@ export * from './media-gallery-manager'
 export * from './seo-editor-preview'
 export * from './organization-icon'
 export { DynamicThemeProvider, useDynamicTheme } from '../providers/dynamic-theme-provider'
+// AI Enrich components
+export * from './ai-enrich'

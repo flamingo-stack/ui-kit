@@ -8,3 +8,5 @@ export * from './access-code-client'
 // Validation utilities
 export * from './validation-utils'
 // Note: format and date-utils are imported via cn.ts to avoid duplicates
+// AI confidence utilities
+export * from './confidence-helpers'

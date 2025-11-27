@@ -113,6 +113,7 @@ export {
 
 // AI and Feature Icons
 export { AiRobotIcon } from './ai-robot-icon';
+export { SparklesIcon } from './sparkles-icon';
 
 // OpenFrame AI Agent Icons
 export {
