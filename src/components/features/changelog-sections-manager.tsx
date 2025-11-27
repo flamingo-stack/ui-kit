@@ -13,6 +13,8 @@ interface ChangelogSectionsManagerProps {
   onImprovementsChange: (entries: ChangelogEntry[]) => void;
   onBreakingChangesChange: (entries: ChangelogEntry[]) => void;
   className?: string;
+  /** Expand all items in all sections - useful after AI enrichment fills entries */
+  expandAll?: boolean;
 }
 
 export function ChangelogSectionsManager({
@@ -24,7 +26,8 @@ export function ChangelogSectionsManager({
   onBugsFixedChange,
   onImprovementsChange,
   onBreakingChangesChange,
-  className = ''
+  className = '',
+  expandAll = false
 }: ChangelogSectionsManagerProps) {
   return (
     <div className={`space-y-6 p-6 bg-ods-card border border-ods-border rounded-lg ${className}`}>
@@ -35,6 +38,7 @@ export function ChangelogSectionsManager({
         title="Features Added"
         entries={featuresAdded}
         onChange={onFeaturesAddedChange}
+        expandAll={expandAll}
       />
 
       {/* Bugs Fixed */}
@@ -42,6 +46,7 @@ export function ChangelogSectionsManager({
         title="Bugs Fixed"
         entries={bugsFixed}
         onChange={onBugsFixedChange}
+        expandAll={expandAll}
       />
 
       {/* Improvements */}
@@ -49,6 +54,7 @@ export function ChangelogSectionsManager({
         title="Improvements"
         entries={improvements}
         onChange={onImprovementsChange}
+        expandAll={expandAll}
       />
 
       {/* Breaking Changes */}
@@ -56,6 +62,7 @@ export function ChangelogSectionsManager({
         title="Breaking Changes"
         entries={breakingChanges}
         onChange={onBreakingChangesChange}
+        expandAll={expandAll}
       />
     </div>
   );

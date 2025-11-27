@@ -2,6 +2,7 @@
 
 import { ArrayEntryManager } from './array-entry-manager';
 import { Lightbulb } from 'lucide-react';
+import { ReactNode } from 'react';
 
 export interface ClickUpTaskLink {
   clickup_task_id: string; // Just the task ID
@@ -11,7 +12,7 @@ export interface ClickUpTaskLink {
 interface ClickUpTasksManagerProps {
   tasks: ClickUpTaskLink[];
   onChange: (tasks: ClickUpTaskLink[]) => void;
-  title?: string; // Optional custom title
+  title?: ReactNode; // Support string or ReactNode for badge integration
   className?: string;
 }
 
