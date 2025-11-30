@@ -66,5 +66,11 @@ export * from './chat'
 // Onboarding components
 export * from './shared/onboarding'
 
+// Product Release components
+export * from './shared/product-release'
+
+// Detail Page Skeleton
+export { DetailPageSkeleton, type DetailPageSkeletonProps } from './shared/detail-page-skeleton'
+
 // Priority UI components that exist in main components directory
 // Note: These are re-exported from ./ui already, no need to duplicate
