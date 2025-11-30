@@ -1,5 +1,7 @@
 // API Hooks exports
-// TODO: Add API hooks as they are moved from main project
+// NOTE: React Query hooks should NOT be exported from ui-kit due to
+// module resolution issues with QueryClientProvider context.
+// Keep hooks in the consuming app (e.g., hooks/api/use-product-releases.ts)
+// Types and pure fetch functions can be shared via ui-kit.
 
-// Temporary export to fix module resolution
-export const placeholder = true;
+// export * from './use-product-releases'  // DISABLED - use app-level hooks instead
