@@ -35,19 +35,20 @@ export function ProductReleaseCard({
       className={cn(
         'bg-ods-card border border-ods-border rounded-[6px]',
         'flex flex-col md:flex-row',
-        'min-h-[80px] md:h-[80px]',
         'items-start md:items-center',
         'gap-3 md:gap-4',
-        'px-4 py-4 md:py-0',
+        'p-4',
         className
       )}
     >
       {/* Left column - content */}
-      <div className="flex-1 w-full md:w-auto min-w-0 flex flex-col justify-center gap-1">
-        <h3 className="font-['DM_Sans'] font-medium text-[18px] leading-[24px] text-ods-text-primary truncate">
-          {title}
-        </h3>
-        <p className="font-['DM_Sans'] font-medium text-[14px] leading-[20px] text-ods-text-secondary truncate h-[20px]">
+      <div className="flex-1 w-full md:w-auto min-w-0 flex flex-col justify-center gap-2">
+        <div className="min-h-[48px] flex items-center">
+          <h3 className="font-['DM_Sans'] font-bold text-[18px] leading-[24px] text-ods-text-primary tracking-[-0.36px] line-clamp-2">
+            {title}
+          </h3>
+        </div>
+        <p className="font-['DM_Sans'] font-medium text-[18px] leading-[24px] text-ods-text-secondary line-clamp-3">
           {summary || '\u00A0'}
         </p>
       </div>
@@ -57,11 +58,11 @@ export function ProductReleaseCard({
         className="flex items-center gap-2 w-full md:w-auto justify-start md:justify-end shrink-0"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="w-[200px] flex flex-col justify-center gap-1">
-          <p className="font-['DM_Sans'] font-medium text-[18px] leading-[24px] text-ods-text-primary truncate">
+        <div className="w-[200px] flex flex-col justify-center gap-2">
+          <p className="font-['DM_Sans'] font-bold text-[18px] leading-[24px] text-ods-text-primary tracking-[-0.36px] truncate">
             {version}
           </p>
-          <p className="font-['DM_Sans'] font-medium text-[14px] leading-[20px] text-ods-text-tertiary truncate h-[20px]">
+          <p className="font-['DM_Sans'] font-medium text-[14px] leading-[20px] text-ods-text-secondary truncate">
             {formattedDate}
           </p>
         </div>
