@@ -42,10 +42,3 @@ jobs:
         run: npm publish --tag latest
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Cleanup Old Versions (keep last 10)
-        uses: actions/delete-package-versions@v5
-        with:
-          package-name: ui-kit
-          package-type: npm
-          min-versions-to-keep: 10
