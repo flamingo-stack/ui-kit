@@ -12,6 +12,7 @@ export type ToolType =
   | 'AUTHENTIK'
   | 'OPENFRAME'
   | 'OPENFRAME_CHAT'
+  | 'OPENFRAME_CLIENT'
   | 'SYSTEM'
 
 /**
@@ -24,6 +25,7 @@ export const toolLabels: Record<ToolType, string> = {
   AUTHENTIK: 'Authentik',
   OPENFRAME: 'OpenFrame',
   OPENFRAME_CHAT: 'OpenFrame Chat',
+  OPENFRAME_CLIENT: 'OpenFrame Client',
   SYSTEM: 'System'
 }
 

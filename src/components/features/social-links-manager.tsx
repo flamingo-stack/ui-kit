@@ -8,7 +8,7 @@ import {
   RedditIcon,
   SlackIcon,
   WhatsAppIcon
-} from '../icons';
+} from '@flamingo/ui-kit/components/icons';
 import {
   Button,
   Input,
@@ -18,7 +18,7 @@ import {
   SelectTrigger,
   SelectValue,
   Label
-} from '../ui';
+} from '@flamingo/ui-kit/components/ui';
 import { Trash2, User, Globe, Youtube, Instagram, Facebook, MessageCircle, Send, Music } from 'lucide-react';
 
 export interface SocialLink {
