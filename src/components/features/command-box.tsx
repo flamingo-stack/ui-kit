@@ -69,6 +69,16 @@ export interface CommandBoxProps {
  * />
  * ```
  */
+// Static mapping for line-clamp classes (Tailwind needs static class names at build time)
+const lineClampClasses: Record<number, string> = {
+  1: 'line-clamp-1',
+  2: 'line-clamp-2',
+  3: 'line-clamp-3',
+  4: 'line-clamp-4',
+  5: 'line-clamp-5',
+  6: 'line-clamp-6',
+}
+
 export function CommandBox({
   command,
   title,
@@ -78,6 +88,9 @@ export function CommandBox({
   commandClassName,
   maxLines = 0
 }: CommandBoxProps) {
+  // Get static line-clamp class or undefined for unlimited
+  const lineClampClass = maxLines > 0 ? lineClampClasses[maxLines] : undefined
+
   return (
     <div className={cn('flex flex-col gap-2', className)}>
       {title && (
@@ -89,7 +102,7 @@ export function CommandBox({
         <div
           className={cn(
             'text-ods-text-primary font-mono text-[14px] md:text-[16px] leading-relaxed break-all',
-            maxLines > 0 && `line-clamp-${maxLines}`,
+            lineClampClass,
             commandClassName
           )}
         >
@@ -103,6 +116,7 @@ export function CommandBox({
                 leftIcon={secondaryAction.icon}
                 onClick={secondaryAction.onClick}
                 disabled={secondaryAction.disabled}
+                loading={secondaryAction.loading}
                 className="w-full sm:w-auto"
               >
                 {secondaryAction.label}
@@ -114,6 +128,7 @@ export function CommandBox({
                 leftIcon={primaryAction.icon}
                 onClick={primaryAction.onClick}
                 disabled={primaryAction.disabled}
+                loading={primaryAction.loading}
                 className="w-full sm:w-auto"
               >
                 {primaryAction.label}
