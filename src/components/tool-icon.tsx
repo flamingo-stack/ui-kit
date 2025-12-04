@@ -27,6 +27,8 @@ export const ToolIcon = React.forwardRef<
         return <TacticalIcon size={size} />
       case 'OPENFRAME_CHAT':
         return <OpenFrameLogo className="h-4 w-auto" lowerPathColor="var(--color-accent-primary)" upperPathColor="var(--color-text-primary)" />
+      case 'OPENFRAME_CLIENT':
+        return <OpenFrameLogo className="h-4 w-auto" lowerPathColor="var(--color-accent-primary)" upperPathColor="var(--color-text-primary)" />
       default:
         return <></>
     }
