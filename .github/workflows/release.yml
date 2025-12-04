@@ -7,6 +7,14 @@ permissions:
 on:
   push:
     branches: [main]
+    paths:
+      - '.github/**'
+      - 'src/**'
+      - '.eslintrc.json'
+      - 'package.json'
+      - 'tailwind.config.js'
+      - 'tsconfig.json'
+      - 'tsup.config.ts'
 
 jobs:
   release:
