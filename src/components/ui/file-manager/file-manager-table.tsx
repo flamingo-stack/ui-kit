@@ -14,7 +14,6 @@ export function FileManagerTable({
   loading = false,
   onSelectFile,
   onSelectAll,
-  onFileClick,
   onFolderOpen,
   onFileAction,
   className 
@@ -122,7 +121,11 @@ export function FileManagerTable({
             isSelected={selectedFiles.includes(file.id)}
             showCheckbox={showCheckboxes}
             onSelect={(selected) => onSelectFile?.(file.id, selected)}
-            onClick={() => onFileClick?.(file)}
+            onClick={() => {
+              if (file.type === 'folder') {
+                onFolderOpen?.(file)
+              }
+            }}
             onDoubleClick={() => {
               if (file.type === 'folder') {
                 onFolderOpen?.(file)
