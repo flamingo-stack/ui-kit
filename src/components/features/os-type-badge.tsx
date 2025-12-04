@@ -19,6 +19,8 @@ export interface OSTypeBadgeProps {
   iconOnly?: boolean
   /** Icon size class (default: w-4 h-4) */
   iconSize?: string
+  /** Icon color (default: white) */
+  iconColor?: string
   variant?: "primary" | "secondary" | "table-display" | "outline" | "ghost" | "link" | "search" | "filter" | "white" | "transparent" | "ghost-nav" | "submit" | "destructive" | "success" | "warning" | "info" | "flamingo-primary" | "flamingo-secondary" | "footer-link" | "filter-active" | "section" | "section-active" | null | undefined
   alignment?: 'left' | 'center' | 'right'
   rigntIcon?: React.ReactNode
@@ -42,6 +44,7 @@ export function OSTypeBadge({
   iconOnly = false,
   alignment = 'left',
   iconSize = 'w-4 h-4',
+  iconColor,
   rigntIcon=undefined,
   variant = 'table-display',
   labelOnly = false
@@ -62,6 +65,7 @@ export function OSTypeBadge({
     return (
       <IconComponent
         className={cn( iconSize, className)}
+        color={iconColor}
       />
     )
   }
@@ -78,7 +82,7 @@ export function OSTypeBadge({
     <Button
       variant={variant}
       size="none"
-      leftIcon={IconComponent ? <IconComponent className={iconSize} /> : undefined}
+      leftIcon={IconComponent ? <IconComponent className={iconSize} color={iconColor} /> : undefined}
       rightIcon={rigntIcon}
       className={cn(className)}
       alignment={alignment}
