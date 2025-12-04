@@ -7,6 +7,14 @@ permissions:
 on:
   push:
     branches: [main]
+    paths:
+      - '.github/**'
+      - 'src/**'
+      - '.eslintrc.json'
+      - 'package.json'
+      - 'tailwind.config.js'
+      - 'tsconfig.json'
+      - 'tsup.config.ts'
 
 jobs:
   release:
@@ -27,6 +35,9 @@ jobs:
 
       - name: Build
         run: npm run build
+      
+      - name: Set Version
+        run: npm version "0.0.0-snapshot.$(date +%Y%m%d%H%M%S)" --no-git-tag-version
 
       - name: Publish to GitHub Packages
         run: npm publish --tag latest
