@@ -12,3 +12,6 @@ export * from './use-authenticated-image'
 
 // URL State Management hooks
 export * from './state'
+
+// API hooks for product releases
+export * from './api/use-product-releases'
