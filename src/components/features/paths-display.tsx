@@ -134,10 +134,8 @@ export const OPENFRAME_PATHS = {
     'C:\\Program Files\\Orbit'
   ],
   darwin: [
-    '/Applications/OpenFrame/',
-    '~/Library/Application Support/OpenFrame/',
-    '/usr/local/bin/tacticalagent',
-    '/opt/tacrmm'
+    '/Library/LaunchDaemons/com.openframe.client.plist',
+    '/Library/Application Support/OpenFrame/meshcentral-agent/'
   ],
   linux: [
     '/opt/openframe/',
