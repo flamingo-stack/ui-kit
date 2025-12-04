@@ -25,7 +25,6 @@ export function FileManager({
   onSelectFile,
   onSelectAll,
   onFileAction,
-  onFileClick,
   onFolderOpen,
   className 
 }: FileManagerProps) {
@@ -166,7 +165,6 @@ export function FileManager({
             loading={loading}
             onSelectFile={handleSelectFile}
             onSelectAll={handleSelectAll}
-            onFileClick={onFileClick}
             onFolderOpen={handleFolderOpen}
             onFileAction={onFileAction}
           />
