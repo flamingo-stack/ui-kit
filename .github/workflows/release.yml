@@ -27,6 +27,9 @@ jobs:
 
       - name: Build
         run: npm run build
+      
+      - name: Set Version
+        run: npm version "0.0.0-snapshot.$(date +%Y%m%d%H%M%S)" --no-git-tag-version
 
       - name: Publish to GitHub Packages
         run: npm publish --tag latest
