@@ -11,6 +11,7 @@ import { ImageGalleryModal } from '../../ui/image-gallery-modal';
 import { GitHubIcon } from '../../icons/github-icon';
 import { AlertTriangle, ExternalLink, BookMarked } from 'lucide-react';
 import { formatReleaseDate } from '../../../utils/date-formatters';
+import { YouTubeEmbed, extractYouTubeId } from '../../features/youtube-embed';
 import { DetailPageSkeleton } from '../detail-page-skeleton';
 import type { ChangelogEntry } from '../../../types/product-release';
 
@@ -165,6 +166,7 @@ export function ReleaseDetailPage({
   const knowledgeBaseLinks = release.knowledge_base_links as Array<{ id?: string; kb_article_path: string }> | string[] | undefined;
   const migrationGuideUrl = release.migration_guide_url as string | undefined;
   const documentationUrl = release.documentation_url as string | undefined;
+  const youtubeUrl = release.youtube_url as string | undefined;
   const breakingChanges = release.breaking_changes as ChangelogEntry[] | undefined;
   const featuresAdded = release.features_added as ChangelogEntry[] | undefined;
   const bugFixed = release.bugs_fixed as ChangelogEntry[] | undefined;
@@ -294,6 +296,19 @@ export function ReleaseDetailPage({
             <p>{releaseSummary}</p>
           </div>
         )}
+
+        {/* YouTube Video Section - Full Width */}
+        {youtubeUrl && (() => {
+          const videoId = extractYouTubeId(youtubeUrl);
+          return videoId ? (
+              <YouTubeEmbed
+                videoId={videoId}
+                title={`${releaseTitle} - Video`}
+                showTitle={false}
+                showMeta={true}
+              />
+          ) : null;
+        })()}
 
         {/* Content */}
         {releaseContent && (
