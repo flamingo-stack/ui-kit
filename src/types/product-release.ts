@@ -87,6 +87,9 @@ export interface ProductRelease {
   migration_guide_url: string | null
   documentation_url: string | null
 
+  // Video
+  youtube_url: string | null
+
   // SEO
   seo_title: string | null
   seo_description: string | null
@@ -140,6 +143,7 @@ export interface CreateProductReleaseData {
   featured_image?: string
   migration_guide_url?: string
   documentation_url?: string
+  youtube_url?: string
   seo_title?: string
   seo_description?: string
   og_image_url?: string
