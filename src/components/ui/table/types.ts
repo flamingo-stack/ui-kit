@@ -69,10 +69,13 @@ export interface TableProps<T = any> {
   data: T[]
   columns: TableColumn<T>[]
   rowKey: keyof T | ((item: T) => string)
-  
+
   // States
   loading?: boolean
   emptyMessage?: string
+
+  // Skeleton configuration
+  skeletonRows?: number // Number of skeleton rows to show when loading (default: 10)
   
   // Styling
   className?: string
@@ -183,9 +186,10 @@ export interface TableCellProps {
 
 export interface TableCardSkeletonProps {
   columns: TableColumn[]
-  rows?: number
+  rows?: number // Number of skeleton rows to display (default: 10)
   hasActions?: boolean
   className?: string
+  rowClassName?: string // Additional classes for each skeleton row
 }
 
 export interface TableEmptyStateProps {
