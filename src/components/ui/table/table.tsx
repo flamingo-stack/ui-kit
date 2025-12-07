@@ -4,7 +4,7 @@ import React from 'react'
 import { cn } from '../../../utils/cn'
 import { TableHeader } from './table-header'
 import { TableRow } from './table-row'
-import { TableCardSkeleton } from './table-skeleton'
+import { TableCardSkeleton, ROW_HEIGHT_DESKTOP, ROW_HEIGHT_MOBILE } from './table-skeleton'
 import { TableEmptyState } from './table-empty-state'
 import { CursorPagination } from '../cursor-pagination'
 import { Pagination } from '../../pagination'
@@ -192,24 +192,39 @@ export function Table<T = any>({
         ) : data.length === 0 ? (
           <TableEmptyState message={emptyMessage} />
         ) : (
-          data.map((item, index) => (
-            <TableRow
-              key={getRowKey(item, index)}
-              item={item}
-              columns={columnsWithActions}
-              rowKey={rowKey}
-              onClick={onRowClick}
-              className={getRowClassName(item, index)}
-              index={index}
-              mobileColumns={mobileColumns}
-              renderMobileRow={renderMobileRow}
-              rowActions={rowActions}
-              renderRowActions={renderRowActions}
-              selectable={selectable}
-              selected={isRowSelected(item)}
-              onSelect={handleSelectRow}
-            />
-          ))
+          <>
+            {data.map((item, index) => (
+              <TableRow
+                key={getRowKey(item, index)}
+                item={item}
+                columns={columnsWithActions}
+                rowKey={rowKey}
+                onClick={onRowClick}
+                className={getRowClassName(item, index)}
+                index={index}
+                mobileColumns={mobileColumns}
+                renderMobileRow={renderMobileRow}
+                rowActions={rowActions}
+                renderRowActions={renderRowActions}
+                selectable={selectable}
+                selected={isRowSelected(item)}
+                onSelect={handleSelectRow}
+              />
+            ))}
+            {/* Invisible placeholder rows to maintain consistent table height */}
+            {Array.from({ length: Math.max(0, skeletonRows - data.length) }).map((_, index) => (
+              <div
+                key={`placeholder-${index}`}
+                className="relative rounded-[6px] overflow-hidden pointer-events-none"
+                aria-hidden="true"
+              >
+                {/* Desktop placeholder - invisible but takes up space */}
+                <div className={cn('hidden md:flex items-center gap-4 px-4 py-0', ROW_HEIGHT_DESKTOP)} />
+                {/* Mobile placeholder - invisible but takes up space */}
+                <div className={cn('flex md:hidden gap-3 items-center justify-start px-3 py-0', ROW_HEIGHT_MOBILE)} />
+              </div>
+            ))}
+          </>
         )}
       </div>
 
