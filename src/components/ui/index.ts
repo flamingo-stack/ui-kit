@@ -86,6 +86,7 @@ export {
   TableRow,
   TableCell,
   TableDescriptionCell,
+  TableTimestampCell,
   TableCardSkeleton,
   TableEmptyState
 } from './table'
@@ -98,6 +99,7 @@ export type {
   TableRowProps,
   TableCellProps,
   TableDescriptionCellProps,
+  TableTimestampCellProps,
   TableCardSkeletonProps,
   TableEmptyStateProps,
   PagePagination

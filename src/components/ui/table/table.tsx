@@ -228,8 +228,8 @@ export function Table<T = any>({
         )}
       </div>
 
-      {/* Pagination */}
-      {cursorPagination && (
+      {/* Pagination - only show when there's data */}
+      {cursorPagination && data.length > 0 && (
         <CursorPagination
           hasNextPage={cursorPagination.hasNextPage}
           hasPreviousPage={cursorPagination.hasPreviousPage}
@@ -254,7 +254,7 @@ export function Table<T = any>({
         />
       )}
 
-      {pagePagination && !cursorPagination && (
+      {pagePagination && !cursorPagination && data.length > 0 && (
         <div className={cn(
           'border-t border-[#3a3a3a] pt-3 mt-2',
           paginationClassName
