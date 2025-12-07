@@ -63,6 +63,7 @@ export function Table<T = any>({
   rowKey,
   loading = false,
   emptyMessage = 'No data available',
+  skeletonRows = 10,
   className,
   containerClassName,
   headerClassName,
@@ -185,7 +186,7 @@ export function Table<T = any>({
         {loading ? (
           <TableCardSkeleton
             columns={columns}
-            rows={6}
+            rows={skeletonRows}
             hasActions={!!rowActions && rowActions.length > 0}
           />
         ) : data.length === 0 ? (

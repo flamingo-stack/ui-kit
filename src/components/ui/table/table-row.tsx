@@ -6,6 +6,7 @@ import { cn } from '../../../utils/cn'
 import { Button } from '../button'
 import { Checkbox } from '../checkbox'
 import { TableCell } from './table-cell'
+import { ROW_HEIGHT_DESKTOP, ROW_HEIGHT_MOBILE } from './table-skeleton'
 import type { TableRowProps } from './types'
 
 export function TableRow<T = any>({
@@ -80,7 +81,7 @@ export function TableRow<T = any>({
       onClick={handleRowClick}
     >
       {/* Desktop Layout */}
-      <div className="hidden md:flex items-center gap-4 px-4 py-0 h-20">
+      <div className={cn('hidden md:flex items-center gap-4 px-4 py-0', ROW_HEIGHT_DESKTOP)}>
         {/* Selection checkbox */}
         {selectable && (
           <div className="flex items-center justify-center w-10 shrink-0" data-no-row-click>
@@ -105,7 +106,7 @@ export function TableRow<T = any>({
       </div>
 
       {/* Mobile Layout */}
-      <div className="flex md:hidden gap-3 items-center justify-start px-3 py-0 min-h-[80px]">
+      <div className={cn('flex md:hidden gap-3 items-center justify-start px-3 py-0', ROW_HEIGHT_MOBILE)}>
         {renderMobileRow ? (
           // Custom mobile renderer
           renderMobileRow(item)

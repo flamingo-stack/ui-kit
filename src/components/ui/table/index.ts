@@ -3,7 +3,7 @@ export { TableHeader } from './table-header'
 export { TableRow } from './table-row'
 export { TableCell } from './table-cell'
 export { TableDescriptionCell } from './table-description-cell'
-export { TableCardSkeleton } from './table-skeleton'
+export { TableCardSkeleton, ROW_HEIGHT_DESKTOP, ROW_HEIGHT_MOBILE } from './table-skeleton'
 export { TableEmptyState } from './table-empty-state'
 
 export type {
