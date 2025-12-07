@@ -64,106 +64,106 @@ export function DateTimePicker({
         />
       </div>
       
-      <style jsx>{`
-        :global(.react-datepicker-wrapper) {
+      <style dangerouslySetInnerHTML={{ __html: `
+        .react-datepicker-wrapper {
           width: 100% !important;
           display: block !important;
         }
-        
-        :global(.react-datepicker__input-container) {
+
+        .react-datepicker__input-container {
           width: 100% !important;
         }
-        
-        :global(.react-datepicker__input-container input) {
+
+        .react-datepicker__input-container input {
           width: 100% !important;
         }
-        
-        // Dark theme for calendar popup
-        :global(.react-datepicker-popper) {
+
+        /* Dark theme for calendar popup */
+        .react-datepicker-popper {
           z-index: 9999 !important;
         }
 
-        :global(.react-datepicker) {
+        .react-datepicker {
           background-color: #212121 !important;
           border: 1px solid #3A3A3A !important;
           color: #FAFAFA !important;
           z-index: 9999 !important;
         }
-        
-        :global(.react-datepicker__header) {
+
+        .react-datepicker__header {
           background-color: #2A2A2A !important;
           border-bottom: 1px solid #3A3A3A !important;
           color: #FAFAFA !important;
         }
-        
-        :global(.react-datepicker__current-month) {
+
+        .react-datepicker__current-month {
           color: #FAFAFA !important;
         }
-        
-        :global(.react-datepicker__day-name) {
+
+        .react-datepicker__day-name {
           color: #888888 !important;
         }
-        
-        :global(.react-datepicker__day) {
+
+        .react-datepicker__day {
           color: #FAFAFA !important;
         }
-        
-        :global(.react-datepicker__day:hover) {
+
+        .react-datepicker__day:hover {
           background-color: #3A3A3A !important;
         }
-        
-        :global(.react-datepicker__day--selected) {
+
+        .react-datepicker__day--selected {
           background-color: #FFC008 !important;
           color: #000000 !important;
         }
-        
-        :global(.react-datepicker__day--keyboard-selected) {
+
+        .react-datepicker__day--keyboard-selected {
           background-color: #FFC008 !important;
           color: #000000 !important;
         }
-        
-        :global(.react-datepicker__time-container) {
+
+        .react-datepicker__time-container {
           border-left: 1px solid #3A3A3A !important;
         }
-        
-        :global(.react-datepicker__time) {
+
+        .react-datepicker__time {
           background: #212121 !important;
         }
-        
-        :global(.react-datepicker__time-box) {
+
+        .react-datepicker__time-box {
           width: 85px !important;
         }
-        
-        :global(.react-datepicker-time__header) {
+
+        .react-datepicker-time__header {
           background-color: #2A2A2A !important;
           color: #FAFAFA !important;
         }
-        
-        :global(.react-datepicker__time-list-item) {
+
+        .react-datepicker__time-list-item {
           color: #FAFAFA !important;
         }
-        
-        :global(.react-datepicker__time-list-item:hover) {
+
+        .react-datepicker__time-list-item:hover {
           background-color: #3A3A3A !important;
         }
-        
-        :global(.react-datepicker__time-list-item--selected) {
+
+        .react-datepicker__time-list-item--selected {
           background-color: #FFC008 !important;
           color: #000000 !important;
         }
-        
-        :global(.react-datepicker__navigation) {
+
+        .react-datepicker__navigation {
           top: 1rem !important;
         }
-        
-        :global(.react-datepicker__navigation--previous) {
+
+        .react-datepicker__navigation--previous {
           border-right-color: #888888 !important;
         }
-        
-        :global(.react-datepicker__navigation--next) {
+
+        .react-datepicker__navigation--next {
           border-left-color: #888888 !important;
         }
-      `}</style>
+      ` }} />
     </div>
   );
 } 
