@@ -176,7 +176,7 @@ export function OnboardingWalkthrough({
         </h2>
 
         {isLoadingCompletion ? (
-          <div className="h-[40px] w-full md:w-[160px] bg-ods-border rounded-[6px] animate-pulse" />
+          <div className="h-[48px] w-full md:w-[160px] bg-ods-border rounded-[6px] animate-pulse" />
         ) : isAllComplete ? (
           <Button
             variant="primary"
