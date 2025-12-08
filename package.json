@@ -1,72 +1,207 @@
 {
-  "name": "@flamingo/ui-kit",
-  "version": "1.0.0",
+  "name": "@flamingo-stack/openframe-frontend-common",
+  "version": "0.0.0",
   "description": "Shared design system and components for all Flamingo platforms",
-  "type": "module",
-  "main": "./src/index.ts",
-  "types": "./src/index.ts",
+  "author": "Flamingo Team",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/flamingo-stack/openframe-frontend-common.git"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com",
+    "access": "public"
+  },
+  "bugs": {
+    "url": "https://github.com/flamingo-stack/openframe-frontend-common/issues"
+  },
+  "homepage": "https://github.com/flamingo-stack/openframe-frontend-common#readme",
+  "keywords": [
+    "flamingo",
+    "flamingo-stack",
+    "design-system",
+    "components",
+    "react",
+    "typescript",
+    "tailwind"
+  ],
+  "sideEffects": [
+    "*.css",
+    "dist/styles/**"
+  ],
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist",
+    "README.md"
+  ],
   "exports": {
     ".": {
-      "types": "./src/index.ts",
-      "default": "./src/index.ts"
-    },
-    "./components/ui": {
-      "types": "./src/components/ui/index.ts",
-      "default": "./src/components/ui/index.ts"
-    },
-    "./components/features": {
-      "types": "./src/components/features/index.ts",
-      "default": "./src/components/features/index.ts"
-    },
-    "./components/toast": {
-      "types": "./src/components/toast/index.ts",
-      "default": "./src/components/toast/index.ts"
-    },
-    "./components/icons": {
-      "types": "./src/components/icons/index.ts",
-      "default": "./src/components/icons/index.ts"
-    },
-    "./components/navigation": {
-      "types": "./src/components/navigation/index.ts",
-      "default": "./src/components/navigation/index.ts"
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.js",
+      "default": "./dist/index.js"
     },
     "./hooks": {
-      "types": "./src/hooks/index.ts",
-      "default": "./src/hooks/index.ts"
+      "types": "./dist/hooks/index.d.ts",
+      "import": "./dist/hooks/index.js",
+      "require": "./dist/hooks/index.js",
+      "node": "./dist/hooks/index.js",
+      "default": "./dist/hooks/index.js"
+    },
+    "./hooks/*": {
+      "types": "./dist/hooks/*.d.ts",
+      "import": "./dist/hooks/*.js",
+      "require": "./dist/hooks/*.js",
+      "default": "./dist/hooks/*.js"
+    },
+    "./components/ui": {
+      "types": "./dist/components/ui/index.d.ts",
+      "import": "./dist/components/ui/index.js",
+      "require": "./dist/components/ui/index.js",
+      "default": "./dist/components/ui/index.js"
+    },
+    "./components/ui/file-manager": {
+      "types": "./dist/components/ui/file-manager/index.d.ts",
+      "import": "./dist/components/ui/file-manager/index.js",
+      "require": "./dist/components/ui/file-manager/index.js",
+      "default": "./dist/components/ui/file-manager/index.js"
+    },
+    "./components/ui/*": {
+      "types": "./dist/components/ui/*.d.ts",
+      "import": "./dist/components/ui/*.js",
+      "require": "./dist/components/ui/*.js",
+      "default": "./dist/components/ui/*.js"
+    },
+    "./components/features": {
+      "types": "./dist/components/features/index.d.ts",
+      "import": "./dist/components/features/index.js",
+      "require": "./dist/components/features/index.js",
+      "default": "./dist/components/features/index.js"
+    },
+    "./components/features/*": {
+      "types": "./dist/components/features/*.d.ts",
+      "import": "./dist/components/features/*.js",
+      "require": "./dist/components/features/*.js",
+      "default": "./dist/components/features/*.js"
+    },
+    "./components/toast": {
+      "types": "./dist/components/toast/index.d.ts",
+      "import": "./dist/components/toast/index.js",
+      "require": "./dist/components/toast/index.js",
+      "default": "./dist/components/toast/index.js"
+    },
+    "./components/icons": {
+      "types": "./dist/components/icons/index.d.ts",
+      "import": "./dist/components/icons/index.js",
+      "require": "./dist/components/icons/index.js",
+      "default": "./dist/components/icons/index.js"
+    },
+    "./components/icons/*": {
+      "types": "./dist/components/icons/*.d.ts",
+      "import": "./dist/components/icons/*.js",
+      "require": "./dist/components/icons/*.js",
+      "default": "./dist/components/icons/*.js"
+    },
+    "./components/navigation": {
+      "types": "./dist/components/navigation/index.d.ts",
+      "import": "./dist/components/navigation/index.js",
+      "require": "./dist/components/navigation/index.js",
+      "default": "./dist/components/navigation/index.js"
+    },
+    "./components/loading": {
+      "types": "./dist/components/loading/index.d.ts",
+      "import": "./dist/components/loading/index.js",
+      "require": "./dist/components/loading/index.js",
+      "default": "./dist/components/loading/index.js"
+    },
+    "./components/platform": {
+      "types": "./dist/components/platform/index.d.ts",
+      "import": "./dist/components/platform/index.js",
+      "require": "./dist/components/platform/index.js",
+      "default": "./dist/components/platform/index.js"
+    },
+    "./components/*": {
+      "types": "./dist/components/*.d.ts",
+      "import": "./dist/components/*.js",
+      "require": "./dist/components/*.js",
+      "default": "./dist/components/*.js"
     },
     "./utils": {
-      "types": "./src/utils/index.ts",
-      "default": "./src/utils/index.ts"
+      "types": "./dist/utils/index.d.ts",
+      "import": "./dist/utils/index.js",
+      "require": "./dist/utils/index.js",
+      "default": "./dist/utils/index.js"
     },
-    "./styles": "./src/styles/index.css",
+    "./utils/*": {
+      "types": "./dist/utils/*.d.ts",
+      "import": "./dist/utils/*.js",
+      "require": "./dist/utils/*.js",
+      "default": "./dist/utils/*.js"
+    },
     "./types": {
-      "types": "./src/types/index.ts",
-      "default": "./src/types/index.ts"
+      "types": "./dist/types/index.d.ts",
+      "import": "./dist/types/index.js",
+      "require": "./dist/types/index.js",
+      "default": "./dist/types/index.js"
     },
-    "./types/navigation": {
-      "types": "./src/types/navigation.ts",
-      "default": "./src/types/navigation.ts"
+    "./types/*": {
+      "types": "./dist/types/*.d.ts",
+      "import": "./dist/types/*.js",
+      "require": "./dist/types/*.js",
+      "default": "./dist/types/*.js"
     },
     "./assets": {
-      "types": "./src/assets/index.ts",
-      "default": "./src/assets/index.ts"
+      "types": "./dist/assets/index.d.ts",
+      "import": "./dist/assets/index.js",
+      "require": "./dist/assets/index.js",
+      "default": "./dist/assets/index.js"
     },
     "./fonts": {
-      "types": "./src/fonts.ts",
-      "default": "./src/fonts.ts"
+      "types": "./dist/fonts.d.ts",
+      "import": "./dist/fonts.js",
+      "require": "./dist/fonts.js",
+      "default": "./dist/fonts.js"
+    },
+    "./styles": {
+      "import": "./dist/styles/index.css",
+      "require": "./dist/styles/index.css",
+      "default": "./dist/styles/index.css"
+    },
+    "./styles/*": "./dist/styles/*",
+    "./tailwind.config.js": "./dist/tailwind.config.js",
+    "./tailwind-config": "./dist/tailwind.config.js",
+    "./*": {
+      "types": "./dist/*.d.ts",
+      "import": "./dist/*.js",
+      "require": "./dist/*.js",
+      "default": "./dist/*.js"
     }
   },
   "scripts": {
+    "build": "npm run clean && npm run build:ts && npm run build:copy-files",
+    "build:ts": "tsc -p tsconfig.build.json",
+    "build:copy-files": "npm run copy:styles && npm run copy:assets && npm run copy:config",
+    "copy:styles": "mkdir -p dist/styles && cp -r src/styles/* dist/styles/",
+    "copy:assets": "mkdir -p dist/assets && cp -r src/assets/*.{png,jpg,jpeg,svg,gif,webp} dist/assets/ 2>/dev/null || true",
+    "copy:config": "cp tailwind.config.js dist/",
+    "clean": "rm -rf dist",
     "type-check": "tsc --noEmit",
     "type-check-ui": "tsc --noEmit src/components/ui/*.tsx src/utils/*.ts src/hooks/**/*.ts",
-    "dev": "echo 'This is a source-only package. No build process required.'",
-    "lint": "echo 'UI Kit: TypeScript check passed - main components compile without errors'"
+    "dev": "npm run build -- --watch",
+    "prepublishOnly": "npm run build",
+    "lint": "echo 'UI Kit: TypeScript check passed - main components compile without errors'",
+    "yalc:publish": "npm run build && yalc publish --push",
+    "yalc:push": "npm run build && yalc push",
+    "yalc:watch": "nodemon --watch src --ext ts,tsx,css,json --exec 'npm run yalc:push'",
+    "dev:local": "npm run yalc:publish",
+    "dev:watch": "npm run yalc:watch"
   },
   "peerDependencies": {
+    "@tanstack/react-query": "^5.0.0",
     "next": "^15.0.0 || ^16.0.0",
     "react": "^18.0.0 || ^19.0.0",
-    "react-dom": "^18.0.0 || ^19.0.0",
-    "@tanstack/react-query": "^5.0.0"
+    "react-dom": "^18.0.0 || ^19.0.0"
   },
   "dependencies": {
     "@floating-ui/react": "^0.27.15",
@@ -129,8 +264,10 @@
     "vaul": "^1.1.2"
   },
   "devDependencies": {
+    "@types/node": "^24.10.1",
     "@types/react": "^19.2.0",
     "@types/react-dom": "^19.2.0",
+    "nodemon": "^3.1.11",
     "typescript": "^5.8.3"
   }
 }

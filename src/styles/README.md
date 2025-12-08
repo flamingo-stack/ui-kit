@@ -1,12 +1,12 @@
 # UI Kit Styles Usage Guide
 
 ## Overview
-This directory contains the complete styling system for @flamingo/ui-kit, including the ODS (Open Design System) and application-specific styles.
+This directory contains the complete styling system for @flamingo-stack/openframe-frontend-common, including the ODS (Open Design System) and application-specific styles.
 
 ## File Structure
 
 ```
-ui-kit/src/styles/
+openframe-frontend-common/src/styles/
 ├── index.css              # Main entry point - imports everything
 ├── app-globals.css         # Application-specific global styles
 ├── ods-colors.css          # Color tokens and semantic aliases
@@ -25,7 +25,7 @@ Import the complete styling system in your main CSS file:
 
 ```css
 /* app/globals.css or src/styles/globals.css */
-@import "@flamingo/ui-kit/styles";
+@import "@flamingo-stack/openframe-frontend-common/styles";
 
 @tailwind base;
 @tailwind components;
@@ -43,12 +43,12 @@ If you need granular control, you can import specific files:
 
 ```css
 /* Import only ODS design tokens */
-@import "@flamingo/ui-kit/styles/ods-colors.css";
-@import "@flamingo/ui-kit/styles/ods-design-tokens.css";
-@import "@flamingo/ui-kit/styles/ods-dynamic-theming.css";
+@import "@flamingo-stack/openframe-frontend-common/styles/ods-colors.css";
+@import "@flamingo-stack/openframe-frontend-common/styles/ods-design-tokens.css";
+@import "@flamingo-stack/openframe-frontend-common/styles/ods-dynamic-theming.css";
 
 /* Import app-specific styles */
-@import "@flamingo/ui-kit/styles/app-globals.css";
+@import "@flamingo-stack/openframe-frontend-common/styles/app-globals.css";
 ```
 
 **Note**: Individual imports are not exposed in package.json exports and are for internal use only.
@@ -148,10 +148,10 @@ const StyledComponent = styled.div`
 ## Customization
 
 ### Adding Custom Styles
-For project-specific styles, add them after the ui-kit import:
+For project-specific styles, add them after the openframe-frontend-common import:
 
 ```css
-@import "@flamingo/ui-kit/styles";
+@import "@flamingo-stack/openframe-frontend-common/styles";
 
 @tailwind base;
 @tailwind components;
@@ -167,7 +167,7 @@ For project-specific styles, add them after the ui-kit import:
 To override specific tokens, define them after the import:
 
 ```css
-@import "@flamingo/ui-kit/styles";
+@import "@flamingo-stack/openframe-frontend-common/styles";
 
 :root {
   /* Override specific tokens */
@@ -181,8 +181,8 @@ To override specific tokens, define them after the import:
 ### Styles Not Loading
 Ensure you're importing the correct path:
 ```css
-@import "@flamingo/ui-kit/styles"; /* ✅ Correct */
-@import "@flamingo/ui-kit/styles/index.css"; /* ❌ Incorrect */
+@import "@flamingo-stack/openframe-frontend-common/styles"; /* ✅ Correct */
+@import "@flamingo-stack/openframe-frontend-common/styles/index.css"; /* ❌ Incorrect */
 ```
 
 ### Platform Theming Not Working
@@ -191,10 +191,10 @@ Ensure you're importing the correct path:
 3. Ensure the import is in your root CSS file
 
 ### CSS Variables Undefined
-Make sure you're importing the ui-kit styles before using any CSS variables:
+Make sure you're importing the openframe-frontend-common styles before using any CSS variables:
 ```css
 /* Import first */
-@import "@flamingo/ui-kit/styles";
+@import "@flamingo-stack/openframe-frontend-common/styles";
 
 /* Then use variables */
 .my-component {
@@ -205,7 +205,7 @@ Make sure you're importing the ui-kit styles before using any CSS variables:
 ### Duplicate Styles
 If you see duplicate styles, ensure you're not importing both:
 - Individual ODS files AND the main styles
-- The ui-kit styles AND manual copies of the same styles
+- The openframe-frontend-common styles AND manual copies of the same styles
 
 ## Best Practices
 
@@ -220,14 +220,14 @@ If you see duplicate styles, ensure you're not importing both:
 If migrating from individual style files:
 
 1. Remove individual `@import` statements for ODS files
-2. Replace with single `@import "@flamingo/ui-kit/styles"`
+2. Replace with single `@import "@flamingo-stack/openframe-frontend-common/styles"`
 3. Delete duplicate style files from your project
 4. Update any hardcoded colors/spacing to use CSS variables
 5. Test that platform theming still works correctly
 
 ## Contributing
 
-When adding new styles to the ui-kit:
+When adding new styles to the openframe-frontend-common:
 
 1. **Design tokens** go in the appropriate `ods-*.css` file
 2. **Application-specific styles** go in `app-globals.css`
