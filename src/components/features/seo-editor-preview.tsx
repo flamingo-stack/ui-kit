@@ -100,7 +100,7 @@ export function SEOEditorPreview({
             onChange={(e) => onSeoTitleChange(e.target.value)}
             disabled={disabled}
             placeholder="Enter SEO meta title..."
-            className="bg-[#161616] border-ods-border text-ods-text-primary"
+            className="bg-ods-bg border-ods-border text-ods-text-primary"
           />
           {!seoTitle && title && (
             <p className="text-[11px] text-ods-accent font-['DM_Sans']">
@@ -118,7 +118,7 @@ export function SEOEditorPreview({
             onChange={(e) => onSeoKeywordsChange(e.target.value)}
             disabled={disabled}
             placeholder="Enter SEO keywords..."
-            className="bg-[#161616] border-ods-border text-ods-text-primary"
+            className="bg-ods-bg border-ods-border text-ods-text-primary"
           />
         </div>
       </div>
@@ -134,7 +134,7 @@ export function SEOEditorPreview({
             onChange={(e) => onSeoDescriptionChange(e.target.value)}
             disabled={disabled}
             placeholder="Enter SEO meta description..."
-            className="bg-[#161616] border-ods-border text-ods-text-primary flex-1 resize-none"
+            className="bg-ods-bg border-ods-border text-ods-text-primary flex-1 resize-none"
             rows={6}
           />
           {!seoDescription && summary && (
@@ -152,12 +152,12 @@ export function SEOEditorPreview({
           {/* OG Image Upload/Display */}
           <div className="flex-1 relative">
             {displayImage && !imageError ? (
-              <div className="relative group h-full min-h-[200px]">
+              <div className="relative group h-full min-h-[280px]">
                 <Image
                   src={displayImage}
                   alt="OG Image"
                   fill
-                  className="object-cover rounded-lg"
+                  className="object-contain rounded-lg"
                   onError={() => setImageError(true)}
                 />
                 <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 transition-all rounded-lg flex items-center justify-center gap-2">
@@ -187,7 +187,7 @@ export function SEOEditorPreview({
               </div>
             ) : (
               <div
-                className="h-full min-h-[200px] border-2 border-dashed border-ods-border rounded-lg flex flex-col items-center justify-center cursor-pointer hover:border-[#FFC008] transition-colors bg-[#1A1A1A]"
+                className="h-full min-h-[280px] border-2 border-dashed border-ods-border rounded-lg flex flex-col items-center justify-center cursor-pointer hover:border-ods-accent transition-colors bg-ods-bg-hover"
                 onClick={() => onOgImageUpload && fileInputRef?.click()}
               >
                 {isUploading ? (
@@ -233,9 +233,9 @@ export function SEOEditorPreview({
         </div>
 
         {/* OG Card Preview */}
-        <div className="bg-[#161616] border border-ods-border rounded-lg overflow-hidden max-w-[500px]">
+        <div className="bg-ods-bg border border-ods-border rounded-lg overflow-hidden max-w-[500px]">
           {/* Image Section */}
-          <div className="relative w-full h-[260px] bg-[#2A2A2A]">
+          <div className="relative w-full h-[260px] bg-ods-bg-active">
             {displayImage && !imageError ? (
               <Image
                 src={displayImage}
@@ -247,8 +247,8 @@ export function SEOEditorPreview({
             ) : (
               <div className="absolute inset-0 flex items-center justify-center">
                 <div className="text-center">
-                  <Globe className="w-12 h-12 text-[#666666] mx-auto mb-2" />
-                  <p className="text-[#666666] text-sm font-['DM_Sans']">No preview image</p>
+                  <Globe className="w-12 h-12 text-ods-text-secondary mx-auto mb-2" />
+                  <p className="text-ods-text-secondary text-sm font-['DM_Sans']">No preview image</p>
                 </div>
               </div>
             )}
@@ -270,7 +270,7 @@ export function SEOEditorPreview({
             </h3>
 
             {/* Description */}
-            <p className="font-['DM_Sans'] text-[14px] text-[#CCCCCC] leading-[1.4] line-clamp-3">
+            <p className="font-['DM_Sans'] text-[14px] text-ods-text-secondary leading-[1.4] line-clamp-3">
               {displayDescription}
             </p>
           </div>
