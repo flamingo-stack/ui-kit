@@ -55,6 +55,12 @@
       "require": "./dist/hooks/*.js",
       "default": "./dist/hooks/*.js"
     },
+    "./components": {
+      "types": "./dist/components/index.d.ts",
+      "import": "./dist/components/index.js",
+      "require": "./dist/components/index.js",
+      "default": "./dist/components/index.js"
+    },
     "./components/ui": {
       "types": "./dist/components/ui/index.d.ts",
       "import": "./dist/components/ui/index.js",
