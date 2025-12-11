@@ -19,6 +19,7 @@ export function FileManager({
   showSearch = true,
   showActions = true,
   canPaste = false,
+  disableSearch = false,
   resultsCount,
   onNavigate,
   onBreadcrumbClick,
@@ -156,6 +157,7 @@ export function FileManager({
             value={searchQuery}
             onSubmit={onSearch}
             loading={isSearching}
+            disabled={disableSearch}
           />
         )}
         
