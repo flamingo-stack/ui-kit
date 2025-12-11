@@ -14,6 +14,7 @@ export function FileManager({
   selectedFiles,
   searchQuery,
   loading = false,
+  isSearching = false,
   showCheckboxes = true,
   showSearch = true,
   showActions = true,
@@ -25,6 +26,7 @@ export function FileManager({
   onSelectFile,
   onSelectAll,
   onFileAction,
+  onFileClick,
   onFolderOpen,
   className 
 }: FileManagerProps) {
@@ -153,6 +155,7 @@ export function FileManager({
           <SearchBar
             value={searchQuery}
             onSubmit={onSearch}
+            loading={isSearching}
           />
         )}
         
@@ -163,8 +166,10 @@ export function FileManager({
             resultsCount={resultsCount || files.length}
             showCheckboxes={showCheckboxes}
             loading={loading}
+            isSearchResult={!!searchQuery}
             onSelectFile={handleSelectFile}
             onSelectAll={handleSelectAll}
+            onFileClick={onFileClick}
             onFolderOpen={handleFolderOpen}
             onFileAction={onFileAction}
           />

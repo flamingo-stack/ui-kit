@@ -74,12 +74,16 @@ export function FileManagerContextMenu({
       <DropdownMenuContent 
         align="end" 
         className={cn('w-56', className)}
+        onClick={(e) => e.stopPropagation()}
       >
         {visibleItems.map((item, index) => (
           <React.Fragment key={item.action}>
             {item.separator && index > 0 && <DropdownMenuSeparator />}
             <DropdownMenuItem
-              onClick={() => onAction(item.action)}
+              onClick={(e) => {
+                e.stopPropagation()
+                onAction(item.action)
+              }}
               className="cursor-pointer"
             >
               <item.icon className="mr-3 h-4 w-4" />

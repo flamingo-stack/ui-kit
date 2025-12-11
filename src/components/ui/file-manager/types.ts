@@ -35,6 +35,7 @@ export interface FileManagerProps {
   deviceInfo?: string
   searchQuery?: string
   loading?: boolean
+  isSearching?: boolean
   showCheckboxes?: boolean
   showSearch?: boolean
   showActions?: boolean
@@ -83,6 +84,7 @@ export interface FileManagerTableProps {
   resultsCount?: number
   showCheckboxes?: boolean
   loading?: boolean
+  isSearchResult?: boolean
   onSelectFile?: (fileId: string, selected: boolean) => void
   onSelectAll?: (selected: boolean) => void
   onFileClick?: (file: FileItem) => void
@@ -98,6 +100,7 @@ export interface FileManagerTableRowProps {
   file: FileItem
   isSelected?: boolean
   showCheckbox?: boolean
+  showPath?: boolean
   onSelect?: (selected: boolean) => void
   onClick?: () => void
   onDoubleClick?: () => void

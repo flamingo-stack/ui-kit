@@ -13,6 +13,7 @@ export function FileManagerTableRow({
   file,
   isSelected = false,
   showCheckbox = true,
+  showPath = false,
   onSelect,
   onClick,
   onDoubleClick,
@@ -74,9 +75,16 @@ export function FileManagerTableRow({
           extension={fileExtension}
           size="md" 
         />
-        <span className="text-sm text-ods-text-primary truncate">
-          {file.name}
-        </span>
+        <div className="flex flex-col min-w-0">
+          <span className="text-sm text-ods-text-primary truncate">
+            {file.name}
+          </span>
+          {showPath && file.path && (
+            <span className="text-xs text-ods-text-secondary truncate">
+              {file.path}
+            </span>
+          )}
+        </div>
       </div>
       
       <div className="w-24 shrink-0 pr-4 text-sm text-ods-text-secondary">
@@ -98,6 +106,9 @@ export function FileManagerTableRow({
               variant="ghost"
               size="sm"
               className="h-8 w-8 p-0 opacity-0 group-hover:opacity-100 transition-opacity"
+              onClick={(e) => {
+                e.stopPropagation()
+              }}
             >
               <MoreHorizontal className="h-4 w-4" />
             </Button>

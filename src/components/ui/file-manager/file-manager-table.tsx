@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useLayoutEffect, useMemo, useRef, useState } from 'react'
+import { Loader2 } from 'lucide-react'
 import { Checkbox } from '../checkbox'
 import { cn } from '../../../utils/cn'
 import { FileManagerTableRow } from './file-manager-table-row'
@@ -12,8 +13,10 @@ export function FileManagerTable({
   selectedFiles,
   showCheckboxes = true,
   loading = false,
+  isSearchResult = false,
   onSelectFile,
   onSelectAll,
+  onFileClick,
   onFolderOpen,
   onFileAction,
   className 
@@ -69,8 +72,9 @@ export function FileManagerTable({
 
   if (loading) {
     return (
-      <div className={cn('flex items-center justify-center h-96', className)}>
-        <div className="text-ods-text-secondary">Loading files...</div>
+      <div className={cn('flex flex-col items-center justify-center h-96 gap-4', className)}>
+        <Loader2 className="h-8 w-8 animate-spin text-ods-text-secondary" />
+        <div className="text-sm text-ods-text-secondary">Loading files...</div>
       </div>
     )
   }
@@ -120,14 +124,17 @@ export function FileManagerTable({
             file={file}
             isSelected={selectedFiles.includes(file.id)}
             showCheckbox={showCheckboxes}
+            showPath={isSearchResult}
             onSelect={(selected) => onSelectFile?.(file.id, selected)}
             onClick={() => {
-              if (file.type === 'folder') {
+              if (isSearchResult) {
+                onFileClick?.(file)
+              } else if (file.type === 'folder') {
                 onFolderOpen?.(file)
               }
             }}
             onDoubleClick={() => {
-              if (file.type === 'folder') {
+              if (file.type === 'folder' && !isSearchResult) {
                 onFolderOpen?.(file)
               }
             }}
