@@ -40,6 +40,7 @@ export interface FileManagerProps {
   showSearch?: boolean
   showActions?: boolean
   canPaste?: boolean
+  disableSearch?: boolean
   resultsCount?: number
   onNavigate?: (path: string) => void
   onBreadcrumbClick?: (path: string) => void
