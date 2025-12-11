@@ -14,6 +14,7 @@ export function FileManager({
   selectedFiles,
   searchQuery,
   loading = false,
+  isSearching = false,
   showCheckboxes = true,
   showSearch = true,
   showActions = true,
@@ -154,6 +155,7 @@ export function FileManager({
           <SearchBar
             value={searchQuery}
             onSubmit={onSearch}
+            loading={isSearching}
           />
         )}
         

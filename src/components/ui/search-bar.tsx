@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useCallback } from "react"
-import { Search } from "lucide-react"
+import { Search, Loader2 } from "lucide-react"
 import { cn } from "../../utils/cn"
 
 export interface SearchBarProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onChange' | 'onSubmit'> {
@@ -30,6 +30,10 @@ export interface SearchBarProps extends Omit<React.InputHTMLAttributes<HTMLInput
    * Whether the search input is disabled
    */
   disabled?: boolean
+  /**
+   * Whether to show loading indicator
+   */
+  loading?: boolean
 }
 
 export function SearchBar({
@@ -39,6 +43,7 @@ export function SearchBar({
   value: controlledValue,
   className,
   disabled = false,
+  loading = false,
   ...props
 }: SearchBarProps) {
   const [internalValue, setInternalValue] = useState("")
@@ -71,7 +76,11 @@ export function SearchBar({
       <div className="flex items-center gap-2 px-3 py-3">
         {/* Icon */}
         <div className="flex-shrink-0 w-6 h-6 text-[#888888]">
-          {icon || <Search className="w-full h-full" />}
+          {loading ? (
+            <Loader2 className="w-full h-full animate-spin" />
+          ) : (
+            icon || <Search className="w-full h-full" />
+          )}
         </div>
         
         {/* Input field */}

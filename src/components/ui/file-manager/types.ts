@@ -35,6 +35,7 @@ export interface FileManagerProps {
   deviceInfo?: string
   searchQuery?: string
   loading?: boolean
+  isSearching?: boolean
   showCheckboxes?: boolean
   showSearch?: boolean
   showActions?: boolean
