@@ -210,10 +210,14 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         window.open(href, '_blank', 'noopener,noreferrer')
       }
 
+      console.log('showExternalLinkOnHover:', showExternalLinkOnHover);
+      if (showExternalLinkOnHover) {
+        console.log('is disabled:', isDisabled);  
+      }
       return (
         <Link
           href={href}
-          className={cn(composedClassName, showExternalLinkOnHover && 'group')}
+          className={cn(composedClassName, showExternalLinkOnHover && 'group', isDisabled ? "pointer-events-none cursor-not-allowed opacity-50 text-ods-text-secondary" : '')}
           aria-disabled={isDisabled}
           tabIndex={isDisabled ? -1 : undefined}
           target={openInNewTab ? '_blank' : undefined}
@@ -223,11 +227,11 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
           {renderContent()}
           {showExternalLinkOnHover && !isDisabled && (
             <span
-              className="ml-2 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-auto"
+              className="ml-2 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-auto hover:text-ods-text-primary"
               onClick={handleExternalClick}
             >
               <ExternalLink
-                className="w-4 h-4 text-ods-text-secondary hover:text-ods-text-primary transition-colors cursor-pointer pointer-events-auto"
+                className="w-4 h-4 text-ods-text-secondary transition-colors cursor-pointer pointer-events-auto"
               />
             </span>
           )}
