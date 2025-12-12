@@ -210,10 +210,6 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         window.open(href, '_blank', 'noopener,noreferrer')
       }
 
-      console.log('showExternalLinkOnHover:', showExternalLinkOnHover);
-      if (showExternalLinkOnHover) {
-        console.log('is disabled:', isDisabled);  
-      }
       return (
         <Link
           href={href}
