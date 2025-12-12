@@ -2,7 +2,7 @@
 
 import React, { useState, useRef, useEffect, useCallback } from 'react'
 import ReactDOM from 'react-dom'
-import { ChevronRight, Check } from 'lucide-react'
+import { ChevronRight, Check, ExternalLink } from 'lucide-react'
 
 export interface ActionsMenuItem {
   id: string
@@ -13,6 +13,10 @@ export interface ActionsMenuItem {
   type?: 'item' | 'checkbox' | 'submenu' | 'separator'
   checked?: boolean
   submenu?: ActionsMenuItem[]
+  /** Optional URL for navigation items */
+  href?: string
+  /** Show an external link icon on hover that opens href in a new tab */
+  showExternalLinkOnHover?: boolean
 }
 
 export interface ActionsMenuGroup {
@@ -47,9 +51,28 @@ const MenuItem: React.FC<MenuItemProps> = ({
   useEffect(() => {
     if (showSubmenu && itemRef.current) {
       const rect = itemRef.current.getBoundingClientRect()
+      const submenuWidth = 256 // min-w-[256px]
+      const viewportWidth = window.innerWidth
+
+      // Check available space on both sides
+      const spaceRight = viewportWidth - rect.right
+      const spaceLeft = rect.left
+
+      let left: number
+      if (spaceRight >= submenuWidth + 4) {
+        // Position to the right (default)
+        left = rect.right + 4
+      } else if (spaceLeft >= submenuWidth + 4) {
+        // Position to the left
+        left = rect.left - submenuWidth - 4
+      } else {
+        // Fallback: position to whichever side has more space
+        left = spaceRight >= spaceLeft ? rect.right + 4 : rect.left - submenuWidth - 4
+      }
+
       setSubmenuPosition({
         top: rect.top,
-        left: rect.right + 4
+        left
       })
     }
   }, [showSubmenu])
@@ -82,6 +105,18 @@ const MenuItem: React.FC<MenuItemProps> = ({
     }
   }, [item, onItemClick, isNested, parentCloseHandler])
 
+  const handleExternalClick = useCallback((e: React.MouseEvent) => {
+    e.stopPropagation()
+    e.preventDefault()
+    if (item.href) {
+      window.open(item.href, '_blank', 'noopener,noreferrer')
+    }
+    onItemClick?.(item)
+    if (isNested && parentCloseHandler) {
+      parentCloseHandler()
+    }
+  }, [item, onItemClick, isNested, parentCloseHandler])
+
   useEffect(() => {
     if (showSubmenu) {
       const handleClickOutside = (e: MouseEvent) => {
@@ -109,12 +144,13 @@ const MenuItem: React.FC<MenuItemProps> = ({
   const itemClasses = `
     flex items-center gap-2 px-3 py-3 cursor-pointer transition-colors
     bg-ods-card
-    ${item.disabled 
-      ? 'text-ods-text-secondary cursor-not-allowed' 
+    ${item.disabled
+      ? 'text-ods-text-secondary cursor-not-allowed'
       : 'text-ods-text-primary hover:bg-[#2b2b2b]'
     }
     ${showSubmenu && item.type === 'submenu' ? 'bg-[#2b2b2b]' : ''}
     ${!isNested ? 'border-b border-ods-border' : ''}
+    ${item.showExternalLinkOnHover && item.href ? 'group' : ''}
   `
 
   return (
@@ -133,6 +169,18 @@ const MenuItem: React.FC<MenuItemProps> = ({
         <span className={`flex-1 text-[18px] font-medium leading-6 ${item.disabled ? 'text-ods-text-secondary' : 'text-ods-text-primary'}`}>
           {item.label}
         </span>
+
+        {/* External link icon - appears on hover */}
+        {item.showExternalLinkOnHover && item.href && !item.disabled && (
+          <span
+            className="opacity-0 group-hover:opacity-100 transition-opacity"
+            onClick={handleExternalClick}
+          >
+            <ExternalLink
+              className="w-5 h-5 text-ods-text-secondary hover:text-ods-text-primary transition-colors cursor-pointer"
+            />
+          </span>
+        )}
 
         {item.type === 'checkbox' && (
           <div className={`
