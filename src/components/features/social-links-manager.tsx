@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from 'react';
 import {
   LinkedInIcon,
   GitHubIcon,
@@ -8,7 +7,7 @@ import {
   RedditIcon,
   SlackIcon,
   WhatsAppIcon
-} from '@flamingo/ui-kit/components/icons';
+} from '../icons';
 import {
   Button,
   Input,
@@ -18,7 +17,7 @@ import {
   SelectTrigger,
   SelectValue,
   Label
-} from '@flamingo/ui-kit/components/ui';
+} from '../ui';
 import { Trash2, User, Globe, Youtube, Instagram, Facebook, MessageCircle, Send, Music } from 'lucide-react';
 
 export interface SocialLink {
