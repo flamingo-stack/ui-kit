@@ -2,6 +2,7 @@ import React from "react"
 import { Slot } from "@radix-ui/react-slot"
 import { cva, type VariantProps } from "class-variance-authority"
 import Link from "next/link"
+import { ExternalLink } from "lucide-react"
 
 import { cn } from "../../utils/cn"
 
@@ -88,7 +89,7 @@ const buttonVariants = cva(
   }
 )
 
-export interface ButtonProps
+interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonVariants> {
   asChild?: boolean
@@ -116,10 +117,16 @@ export interface ButtonProps
    * Default is 'center', can be 'left', 'right', or 'center'
    */
   alignment?: 'left' | 'center' | 'right'
+  /**
+   * Show an external link icon on hover that opens href in a new tab.
+   * Only works when href is provided. Clicking the icon opens in new tab,
+   * clicking elsewhere on the button navigates normally.
+   */
+  showExternalLinkOnHover?: boolean
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, asChild = false, href, openInNewTab = false, leftIcon, rightIcon, centerIcon, loading, children, disabled, onClick, fullWidthOnMobile, alignment = 'center', ...props }, ref) => {
+  ({ className, variant, size, asChild = false, href, openInNewTab = false, leftIcon, rightIcon, centerIcon, loading, children, disabled, onClick, fullWidthOnMobile, alignment = 'center', showExternalLinkOnHover, ...props }, ref) => {
     const isDisabled = disabled || loading
 
     const isCenterIconOnly = !!centerIcon && !children && !leftIcon && !rightIcon
@@ -190,16 +197,23 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     // When href is provided, render as Next.js Link for client-side navigation
     if (href) {
       // Handle onClick type conversion for Link component
-      const handleLinkClick = onClick 
+      const handleLinkClick = onClick
         ? (e: React.MouseEvent<HTMLAnchorElement>) => {
             onClick(e as unknown as React.MouseEvent<HTMLButtonElement>)
           }
         : undefined
-      
+
+      // Handle external link icon click
+      const handleExternalClick = (e: React.MouseEvent) => {
+        e.preventDefault()
+        e.stopPropagation()
+        window.open(href, '_blank', 'noopener,noreferrer')
+      }
+
       return (
         <Link
           href={href}
-          className={composedClassName}
+          className={cn(composedClassName, showExternalLinkOnHover && 'group')}
           aria-disabled={isDisabled}
           tabIndex={isDisabled ? -1 : undefined}
           target={openInNewTab ? '_blank' : undefined}
@@ -207,6 +221,16 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
           onClick={handleLinkClick}
         >
           {renderContent()}
+          {showExternalLinkOnHover && !isDisabled && (
+            <span
+              className="ml-2 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-auto"
+              onClick={handleExternalClick}
+            >
+              <ExternalLink
+                className="w-4 h-4 text-ods-text-secondary hover:text-ods-text-primary transition-colors cursor-pointer pointer-events-auto"
+              />
+            </span>
+          )}
         </Link>
       )
     }
@@ -227,4 +251,4 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 )
 Button.displayName = "Button"
 
-export { Button, buttonVariants }
+export { Button, buttonVariants, type ButtonProps }
